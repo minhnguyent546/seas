@@ -4,7 +4,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 
-class UserRole(enum.Enum):
+class UserRole(str, enum.Enum):
     ADMIN = "admin"
     USER = "user"
 
