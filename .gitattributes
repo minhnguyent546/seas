@@ -1,0 +1,3 @@
+* text=auto eol=lf
+*.ipynb linguist-generated
+pyrightconfig.json linguist-language=jsonc

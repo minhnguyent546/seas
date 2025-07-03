@@ -1,0 +1,32 @@
+# python stuff
+.ipynb_checkpoints
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# virtual environments
+.venv
+.venv.*
+.venv-*
+
+# local stuff
+_*
+!__init__.py
+*.local
+
+# log files
+*.log
+*.logs
+
+# environment files
+.env
+.env.local
+.env.dev
+.env.prod
+
+# other
+*.bak
+*.backup
