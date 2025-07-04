@@ -36,14 +36,11 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - FIRST_USER_USERNAME=${FIRST_USER_USERNAME?Variable not set}
       - FIRST_USER_PASSWORD=${FIRST_USER_PASSWORD?Variable not set}
-
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8444/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
-    ports:
-      - "8444:8444"
     depends_on:
       db:
         condition: service_healthy

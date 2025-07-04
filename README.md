@@ -21,6 +21,11 @@
 3. **Start the application:**
   You can start the application via Docker compose:
   ```bash
-  docker compose up --build
+  docker compose -f docker-compose.yaml up --build
+  ```
+
+  To run in development mode, you can use:
+  ```bash
+  docker compose up --build --watch
   ```
   Point your browser to http://localhost:8444/docs to see the API documentation.
