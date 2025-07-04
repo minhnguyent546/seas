@@ -26,12 +26,12 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
+    # frontend
+    FRONTEND_HOST: str = "http://localhost:5173"
+
     # general
     API_PREFIX: str = "/api/v1"
     API_PORT: int = 8444
-
-    # frontend
-    FRONTEND_HOST: str = "http://localhost:5173"
 
     # cors
     BACKEND_CORS_ORIGINS: Annotated[
