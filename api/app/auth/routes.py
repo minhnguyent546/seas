@@ -6,11 +6,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 import app.auth.service as auth_service
+import app.users.service as user_service
 from app.auth.schemas import NewPassword, Token
-from app.auth.utils import create_access_token
+from app.auth.utils import create_access_token, hash_password
 from app.core.config import settings
 from app.deps import AsyncSessionDep, CurrentActiveUserDep
-from app.users.schemas import UserPublic
+from app.users.models import User
+from app.users.schemas import UserPublic, UserRegister, UserRole
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -50,6 +52,42 @@ async def login_for_access_token(
         token_type="bearer",
         expires_in=access_token_expires.total_seconds(),
     )
+
+
+@router.post(
+    "/signup", response_model=UserPublic, status_code=status.HTTP_201_CREATED
+)
+async def signup(
+    session: AsyncSessionDep,
+    user_register: UserRegister,
+):
+    """
+    Sign up a new user.
+    """
+    db_user = await user_service.get_user_by_username(
+        session=session, username=user_register.username
+    )
+    if db_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists",
+        )
+    db_user = await user_service.get_user_by_email(
+        session=session, email=user_register.email
+    )
+    if db_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already exists",
+        )
+    user_register.password = hash_password(user_register.password)
+    user = User(
+        **user_register.model_dump(), is_active=True, role=UserRole.USER
+    )
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    return user
 
 
 @router.post("/login/test-token", response_model=UserPublic)

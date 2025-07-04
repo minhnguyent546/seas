@@ -9,6 +9,7 @@ import app.users.service as user_service
 from app.core.config import settings
 from app.core.database import AsyncSessionDep
 from app.users.models import User
+from app.users.schemas import UserRole
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_PREFIX}/auth/login/access-token"
@@ -52,5 +53,17 @@ async def get_current_active_user(
     return current_user
 
 
+async def get_current_superuser(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> User:
+    if not current_user.role == UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions. Should be a superuser/admin",
+        )
+    return current_user
+
+
 CurrentUserDep = Annotated[User, Depends(get_current_user)]
 CurrentActiveUserDep = Annotated[User, Depends(get_current_active_user)]
+CurrentSuperuserDep = Annotated[User, Depends(get_current_superuser)]
