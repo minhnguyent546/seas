@@ -1,6 +1,7 @@
+import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Enum, Integer, String, func, select
+from sqlalchemy import Boolean, DateTime, Enum, String, func, select
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.base import Base
@@ -11,12 +12,16 @@ from app.users.schemas import UserRole
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     username: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     full_name: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.USER)
+    role: Mapped[UserRole] = mapped_column(
+        Enum(UserRole), default=UserRole.USER
+    )
     password: Mapped[str] = mapped_column(String())
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
@@ -44,7 +49,9 @@ if __name__ == "__main__":
     print(
         f"{
             select(
-                User.username, User.email, func.count(User.is_active).label('num_active_users')
+                User.username,
+                User.email,
+                func.count(User.is_active).label('num_active_users'),
             ).order_by(User.username.desc())
         }"
     )
@@ -53,5 +60,7 @@ if __name__ == "__main__":
 
     sub_query = select(User.id, User.username).where(User.is_active).subquery()
     print(f"{sub_query = }")
-    result = select(sub_query.c.id, sub_query.c.username).order_by(sub_query.c.username)
+    result = select(sub_query.c.id, sub_query.c.username).order_by(
+        sub_query.c.username
+    )
     print(f"{result = }")

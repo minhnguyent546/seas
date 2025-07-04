@@ -9,5 +9,5 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/", response_model=list[UserPublic])
 async def get_users(session: AsyncSessionDep, offset: int = 0, limit: int = 100):
-    result = await user_service.get_users(session=session, offset=offset, limit=limit)
-    return result
+    users = await user_service.get_users(session=session, offset=offset, limit=limit)
+    return users

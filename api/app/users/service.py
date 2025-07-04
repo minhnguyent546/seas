@@ -8,7 +8,7 @@ from app.users.models import User
 
 async def get_user_by_id(
     session: AsyncSession,
-    user_id: int,
+    user_id: str,
 ) -> User | None:
     result = await session.execute(select(User).where(User.id == user_id))
     return result.scalars().first()
@@ -18,7 +18,9 @@ async def get_user_by_username(
     session: AsyncSession,
     username: str,
 ) -> User | None:
-    result = await session.execute(select(User).where(User.username == username))
+    result = await session.execute(
+        select(User).where(User.username == username)
+    )
     return result.scalars().first()
 
 
