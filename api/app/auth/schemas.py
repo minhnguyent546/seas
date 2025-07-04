@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    expires_in: float  # in seconds
 
 
 class TokenData(BaseModel):

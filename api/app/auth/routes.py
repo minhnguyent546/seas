@@ -45,7 +45,11 @@ async def login_for_access_token(
     access_token = create_access_token(
         subject=user.id, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer")
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        expires_in=access_token_expires.total_seconds(),
+    )
 
 
 @router.post("/login/test-token", response_model=UserPublic)
