@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from loguru import logger
 
 from app.api import api_router
 from app.core.config import settings
@@ -14,6 +15,8 @@ from app.core.database import AsyncSessionLocal, init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info('"Starting application...')
+    logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
     try:
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
             await init_db(session)

@@ -33,7 +33,7 @@ async def init_db(session: AsyncSession):
         user_create = UserCreate(
             username=settings.FIRST_USER_USERNAME,
             email=settings.FIRST_USER_USERNAME + "@example.com",
-            full_name="Root",
+            full_name="root",
             is_active=True,
             password=hash_password(settings.FIRST_USER_PASSWORD),
             role=UserRole.ADMIN,

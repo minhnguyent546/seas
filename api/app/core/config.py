@@ -1,10 +1,19 @@
 import secrets
+from typing import Annotated, Any
 
 import pytz
-from pydantic import PostgresDsn, computed_field
+from pydantic import AnyUrl, BeforeValidator, PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 timezone_vi = pytz.timezone("Asia/Ho_Chi_Minh")
+
+
+def parse_cors_origins(origins: Any) -> list[str] | str:
+    if isinstance(origins, str) and not origins.startswith("["):
+        return [origin.strip() for origin in origins.split(",") if origin.strip()]
+    elif isinstance(origins, (list, str)):
+        return origins
+    raise ValueError(f"Failed to parse CORS origins: {origins}")
 
 
 class Settings(BaseSettings):
@@ -19,8 +28,20 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api/v1"
     API_PORT: int = 8444
 
+    # frontend
+    FRONTEND_HOST: str = "http://localhost:5173"
+
     # cors
-    CORS_ORIGINS: list[str] = ["http://localhost:8444"]
+    BACKEND_CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_cors_origins)]
+
+    @computed_field
+    @property
+    def CORS_ORIGINS(self) -> list[str]:
+        if isinstance(self.BACKEND_CORS_ORIGINS, str):
+            return [self.BACKEND_CORS_ORIGINS, self.FRONTEND_HOST]
+        return [str(origin).rstrip("/") for origin in self.BACKEND_CORS_ORIGINS if origin] + [
+            self.FRONTEND_HOST
+        ]
 
     # jwt
     SECRET_KEY: str = secrets.token_urlsafe(32)
