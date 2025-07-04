@@ -4,6 +4,10 @@ services:
     ports:
       - "5433:5432"
 
+  adminer:
+    restart: "no"
+    ports:
+      - "8555:8080"
   api:
     build:
       context: api

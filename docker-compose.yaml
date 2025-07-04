@@ -19,6 +19,16 @@ services:
     networks:
       - seas
 
+  adminer:
+    image: adminer:5.3.0
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ADMINER_DESIGN=rmsoft
+    networks:
+      - seas
   api:
     build:
       context: api
