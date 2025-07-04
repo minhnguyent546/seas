@@ -15,7 +15,7 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 [*.py]
-max_line_length = 100
+max_line_length = 80
 
 [*.sh]
 indent_size = 2

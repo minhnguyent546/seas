@@ -10,7 +10,9 @@ timezone_vi = pytz.timezone("Asia/Ho_Chi_Minh")
 
 def parse_cors_origins(origins: Any) -> list[str] | str:
     if isinstance(origins, str) and not origins.startswith("["):
-        return [origin.strip() for origin in origins.split(",") if origin.strip()]
+        return [
+            origin.strip() for origin in origins.split(",") if origin.strip()
+        ]
     elif isinstance(origins, (list, str)):
         return origins
     raise ValueError(f"Failed to parse CORS origins: {origins}")
@@ -32,16 +34,20 @@ class Settings(BaseSettings):
     FRONTEND_HOST: str = "http://localhost:5173"
 
     # cors
-    BACKEND_CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_cors_origins)]
+    BACKEND_CORS_ORIGINS: Annotated[
+        list[AnyUrl] | str, BeforeValidator(parse_cors_origins)
+    ]
 
     @computed_field
     @property
     def CORS_ORIGINS(self) -> list[str]:
         if isinstance(self.BACKEND_CORS_ORIGINS, str):
             return [self.BACKEND_CORS_ORIGINS, self.FRONTEND_HOST]
-        return [str(origin).rstrip("/") for origin in self.BACKEND_CORS_ORIGINS if origin] + [
-            self.FRONTEND_HOST
-        ]
+        return [
+            str(origin).rstrip("/")
+            for origin in self.BACKEND_CORS_ORIGINS
+            if origin
+        ] + [self.FRONTEND_HOST]
 
     # jwt
     SECRET_KEY: str = secrets.token_urlsafe(32)

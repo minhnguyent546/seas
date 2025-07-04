@@ -27,9 +27,13 @@ async def init_db(session: AsyncSession):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    user = await user_service.get_user_by_username(session, settings.FIRST_USER_USERNAME)
+    user = await user_service.get_user_by_username(
+        session, settings.FIRST_USER_USERNAME
+    )
     if user is None:
-        logger.info(f"Creating first user with username: {settings.FIRST_USER_USERNAME}")
+        logger.info(
+            f"Creating first user with username: {settings.FIRST_USER_USERNAME}"
+        )
         user_create = UserCreate(
             username=settings.FIRST_USER_USERNAME,
             email=settings.FIRST_USER_USERNAME + "@example.com",
