@@ -3,7 +3,6 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 
 import app.users.service as user_service
-from app.auth.utils import hash_password, verify_password
 from app.deps import (
     AsyncSessionDep,
     CurrentActiveUserDep,
@@ -73,22 +72,12 @@ async def update_user_me(
     current_user: CurrentActiveUserDep,
 ):
     """Update current user's information"""
-    if user_update_me.email is not None:
-        existing_user = await user_service.get_user_by_email(
-            session=session, email=user_update_me.email
-        )
-        if existing_user is not None and existing_user.id != current_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
-            )
-    user_data = user_update_me.model_dump(exclude_unset=True)
-    current_user.email = user_data.get("email", current_user.email)
-    current_user.full_name = user_data.get("full_name", current_user.full_name)
-    session.add(current_user)
-    await session.commit()
-    await session.refresh(current_user)
-    return current_user
+    updated_current_user = await user_service.update_user_me(
+        session=session,
+        user_update_me=user_update_me,
+        current_user=current_user,
+    )
+    return updated_current_user
 
 
 @router.patch("/me/password", response_model=MessageResponse)
@@ -98,23 +87,12 @@ async def update_my_password(
     update_password: UpdatePassword,
 ):
     """Update current user's password"""
-    if not verify_password(
-        plain_password=update_password.current_password,
-        hashed_password=current_user.password,
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect password",
-        )
-    if update_password.current_password == update_password.new_password:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="New password must be different from current password",
-        )
-    current_user.hashed_password = hash_password(update_password.new_password)
-    session.add(current_user)
-    await session.commit()
-    return MessageResponse(message='"Password updated successfully"')
+    message = await user_service.update_my_password(
+        session=session,
+        current_user=current_user,
+        update_password=update_password,
+    )
+    return message
 
 
 @router.delete("/me", response_model=MessageResponse)
@@ -123,14 +101,10 @@ async def delete_user_me(
     current_user: CurrentActiveUserDep,
 ):
     """Delete current user"""
-    if current_user.role == UserRole.ADMIN:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Superuser cannot delete themselves",
-        )
-    await session.delete(current_user)
-    await session.commit()
-    return MessageResponse(message='"User deleted successfully"')
+    message = await user_service.delete_user_me(
+        session=session, current_user=current_user
+    )
+    return message
 
 
 @router.get("/{user_id}", response_model=UserPublic)
@@ -167,34 +141,10 @@ async def update_user_by_id(
     user_id: uuid.UUID, session: AsyncSessionDep, user_update: UserUpdate
 ):
     """Update a user by ID. Requires superuser permissions."""
-    db_user = await user_service.get_user_by_id(
-        session=session, user_id=str(user_id)
+    user = await user_service.update_user_by_id(
+        user_id=user_id, session=session, user_update=user_update
     )
-    if db_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-    if user_update.email is not None:
-        existing_user = await user_service.get_user_by_email(
-            session=session, email=user_update.email
-        )
-        if existing_user is not None and existing_user.id != db_user.id:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email already exists",
-            )
-    user_data = user_update.model_dump(exclude_unset=True)
-    db_user.email = user_data.get("email", db_user.email)
-    db_user.full_name = user_data.get("full_name", db_user.full_name)
-    db_user.is_active = user_data.get("is_active", db_user.is_active)
-    db_user.role = user_data.get("role", db_user.role)
-    if "password" in user_data:
-        db_user.password = hash_password(user_data["password"])
-    session.add(db_user)
-    await session.commit()
-    await session.refresh(db_user)
-    return db_user
+    return user
 
 
 @router.delete("/{user_id}", response_model=MessageResponse)
@@ -204,19 +154,7 @@ async def delete_user_by_id(
     current_user: CurrentActiveUserDep,
 ):
     """Delete a user by ID. Requires superuser permissions."""
-    db_user = await user_service.get_user_by_id(
-        session=session, user_id=str(user_id)
+    message = await user_service.delete_user_by_id(
+        user_id=user_id, session=session, current_user=current_user
     )
-    if db_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-    if db_user.id == current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Superuser cannot delete themselves",
-        )
-    await session.delete(db_user)
-    await session.commit()
-    return MessageResponse(message='"User deleted successfully"')
+    return message
