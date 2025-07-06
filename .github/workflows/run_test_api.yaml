@@ -20,16 +20,26 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: "${{ github.workspace }}/api"
-      POSTGRES_HOST: http://localhost
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: seas
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 8877
+      POSTGRES_DB: seas-test
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 11111111
+      POSTGRES_PASSWORD: seas
       FIRST_USER_USERNAME: root
-      FIRST_USER_PASSWORD: 22222222
     defaults:
       run:
         working-directory: ./api
+    services:
+      postgres:
+        image: postgres:17.5-bookworm
+        env:
+          POSTGRES_DB: seas-test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: seas
+        ports:
+          - 8877:5432
+        options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 3
+
     strategy:
       matrix:
         python-version: ["3.12", "3.13"]
@@ -42,10 +52,14 @@ jobs:
           version: ">=0.7.0"
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+
+      - name: Generate random password for testing
+        run: |
+          echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
       - name: Lint with ruff
         run: |
           uv run ruff check app tests
           uv run ruff format app tests
       - name: run tests with pytest
         run: |
-          echo "[will be added]"
+          uv run pytest --cov=app --cov-report=xml --cov-report=html --cov-report=term
