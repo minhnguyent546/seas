@@ -37,7 +37,7 @@ jobs:
           enable-cache: true
       - name: Generate random password
         run: |
-          echo "POSTGRES_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)" >> $GITHUB_ENV
           echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
       - name: Check python imports
         run: |
