@@ -74,3 +74,6 @@ preview = true
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
