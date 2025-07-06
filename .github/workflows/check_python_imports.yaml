@@ -20,6 +20,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: "${{ github.workspace }}/api"
+      POSTGRES_HOST: http://localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: seas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 11111111
+      FIRST_USER_USERNAME: root
+      FIRST_USER_PASSWORD: 22222222
     defaults:
       run:
         working-directory: ./api
