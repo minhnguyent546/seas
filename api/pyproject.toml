@@ -29,6 +29,8 @@ dev = [
     "colorama>=0.4.6",
     "flake8>=7.2.0,<8.0.0",
     "isort>=6.0.1,<7.0.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
     "ruff>=0.12.1",
     "tabulate>=0.9.0",
 ]
