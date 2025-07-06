@@ -21,12 +21,18 @@ class ChatSession(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
-    started_at: Mapped[datetime] = mapped_column(
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
     )
-    ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    metadata: Mapped[dict] = mapped_column(JSONB, default=dict)  # pyright: ignore[reportMissingTypeArgument]
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=datetime.now(tz=timezone_vi),
+        onupdate=datetime.now(tz=timezone_vi),
+    )
+    session_metadata: Mapped[dict] = mapped_column(JSONB, default=dict)  # pyright: ignore[reportMissingTypeArgument]  # e.g., title, description, etc.
     chat_messages: Mapped[list["ChatMessage"]] = relationship(
         back_populates="chat_session"
     )
@@ -38,12 +44,14 @@ class ChatMessage(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    session_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("chat_sessions.id")
+    chat_session_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("chat_sessions.id"), index=True
     )
     sender: Mapped[Sender] = mapped_column(Enum(Sender))
     content: Mapped[str] = mapped_column(String)
-
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
+    )
     chat_session: Mapped["ChatSession"] = relationship(
         back_populates="chat_messages"
     )

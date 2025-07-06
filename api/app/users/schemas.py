@@ -2,10 +2,9 @@ import enum
 from datetime import datetime
 from typing import Annotated
 
-from loguru import logger
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_serializer
 
-from app.core.config import timezone_vi
+from app.utils import serialize_datetime
 
 
 class UserRole(str, enum.Enum):
@@ -57,6 +56,8 @@ class UpdatePassword(BaseModel):
 
 
 class UserPublic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     username: Annotated[str, Field(min_length=3, max_length=50)]
     email: EmailStr
@@ -65,18 +66,9 @@ class UserPublic(BaseModel):
     role: UserRole
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
-
     @field_serializer("created_at")
     def serialize_created_at(self, value: datetime, _info):
-        try:
-            value = value.astimezone(timezone_vi).replace(tzinfo=timezone_vi)
-        except Exception as e:
-            logger.error(
-                f"Error converting timezone to {timezone_vi}: {e}. Leaving as is."
-            )
-
-        return value.strftime("%Y-%m-%d - %H:%M:%S")
+        return serialize_datetime(value)
 
 
 class UserPublicList(BaseModel):
