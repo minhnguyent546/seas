@@ -55,10 +55,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 2 * 24 * 60  # 2 days
 
     # postgres
-    POSTGRES_HOST: str
+    POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str
-    POSTGRES_USER: str
+    POSTGRES_DB: str = "seas"
+    POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str
     FIRST_USER_USERNAME: str = "root"
     FIRST_USER_PASSWORD: str
