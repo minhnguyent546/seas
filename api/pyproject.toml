@@ -21,6 +21,7 @@ dependencies = [
     "python-dotenv>=1.1.0,<2.0.0",
     "pytz>=2025.2",
     "sqlmodel>=0.0.24",
+    "httpx>=0.28.1",
 ]
 
 [dependency-groups]

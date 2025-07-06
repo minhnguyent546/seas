@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
         pass
 
 
-app = FastAPI(title="Smart Enrollment Advisory System API", lifespan=lifespan)
+app = FastAPI(title="FastAPI", lifespan=lifespan)
 
 # static
 app.mount(path="/static", app=StaticFiles(directory="static"), name="static")
