@@ -20,13 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: "${{ github.workspace }}/api"
-      POSTGRES_HOST: http://localhost
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: seas
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 11111111
-      FIRST_USER_USERNAME: root
-      FIRST_USER_PASSWORD: 22222222
     defaults:
       run:
         working-directory: ./api
@@ -42,6 +35,10 @@ jobs:
           version: ">=0.7.0"
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+      - name: Generate random password
+        run: |
+          echo "POSTGRES_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
+          echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
       - name: Check python imports
         run: |
           uv run python ../.github/workflows/check_python_imports.py --src_path app tests
