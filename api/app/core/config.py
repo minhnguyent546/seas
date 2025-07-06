@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     # cors
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors_origins)
-    ]
+    ] = []
 
     @computed_field
     @property

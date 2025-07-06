@@ -8,7 +8,9 @@ import sys
 
 def check_imports(args: argparse.Namespace) -> None:
     src_paths = [pathlib.Path(p) for p in args.src_path]
-    py_files_globs = [src_path.rglob("*.py") for src_path in src_paths]
+    py_files_globs = [
+        src_path.rglob("*.py") for src_path in src_paths if src_path.exists()
+    ]
     for src_path, py_files_glob in zip(src_paths, py_files_globs):
         num_files = 0
         ignored_files = 0
