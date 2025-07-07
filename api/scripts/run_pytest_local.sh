@@ -29,4 +29,4 @@ until docker exec $(docker ps -q --filter ancestor="$POSTGRES_IMAGE") pg_isready
   sleep 1
 done
 
-uv run pytest --cov=app --cov-report=html
+uv run pytest --cov=app --cov-report=html --capture=no

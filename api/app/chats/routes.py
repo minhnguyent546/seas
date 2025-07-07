@@ -66,11 +66,6 @@ async def get_chat_session(
     chat_session = await chats_service.get_chat_session_by_id(
         session=session, chat_session_id=str(chat_session_id)
     )
-    if chat_session is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Chat session not found",
-        )
     if chat_session.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

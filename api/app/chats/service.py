@@ -17,11 +17,16 @@ from app.users.models import User
 async def get_chat_session_by_id(
     session: AsyncSession,
     chat_session_id: str,
-) -> ChatSession | None:
+) -> ChatSession:
     chat_session_result = await session.execute(
         select(ChatSession).where(ChatSession.id == chat_session_id)
     )
     chat_session = chat_session_result.scalars().first()
+    if chat_session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat session not found",
+        )
     return chat_session
 
 
