@@ -23,9 +23,6 @@ jobs:
     defaults:
       run:
         working-directory: ./api
-    strategy:
-      matrix:
-        python-version: ["3.12", "3.13"]
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
@@ -33,7 +30,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           version: ">=0.7.0"
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
           enable-cache: true
       - name: Generate random password
         run: |

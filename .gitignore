@@ -21,6 +21,10 @@ _*
 *.log
 *.logs
 
+# cache files
+.ruff_cache
+.pytest_cache
+
 # environment files
 .env
 .env.local
