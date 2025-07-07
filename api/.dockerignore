@@ -25,6 +25,11 @@ _*
 .ruff_cache
 .pytest_cache
 
+# coverage files
+.coverage
+.coverage.*
+/htmlcov/
+
 # environment files
 .env
 .env.local
