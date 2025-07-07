@@ -65,7 +65,7 @@ jobs:
         with:
           name: coverage-report
           path: |
-            coverage.xml
-            htmlcov
+            api/coverage.xml
+            api/htmlcov
           if-no-files-found: error
           retention-days: 7
