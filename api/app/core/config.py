@@ -1,5 +1,5 @@
 import secrets
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 import pytz
 from pydantic import AnyUrl, BeforeValidator, PostgresDsn, computed_field
@@ -25,6 +25,9 @@ class Settings(BaseSettings):
         extra="ignore",
         case_sensitive=True,
     )
+
+    # environment
+    ENVIRONMENT: Literal["development", "production"] = "development"
 
     # frontend
     FRONTEND_HOST: str = "http://localhost:5173"

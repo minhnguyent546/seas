@@ -11,6 +11,7 @@ from loguru import logger
 from app.api import api_router
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
+from app.core.health import check_health
 
 
 @asynccontextmanager
@@ -52,7 +53,7 @@ app.add_middleware(
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
-    return {"status": "ok"}
+    return await check_health()
 
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
