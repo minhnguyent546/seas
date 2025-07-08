@@ -147,7 +147,11 @@ async def update_user_by_id(
     return user
 
 
-@router.delete("/{user_id}", response_model=MessageResponse)
+@router.delete(
+    "/{user_id}",
+    dependencies=[Depends(get_current_superuser)],
+    response_model=MessageResponse
+)
 async def delete_user_by_id(
     user_id: uuid.UUID,
     session: AsyncSessionDep,

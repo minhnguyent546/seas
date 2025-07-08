@@ -18,4 +18,4 @@ async def test_get_user_me_superuser(
     assert user["email"] == "root@example.com"
     assert user["full_name"] == "root"
     assert user["is_active"] is True
-    assert user["role"] == "admin"
+    assert user["role"] == "ADMIN"

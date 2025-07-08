@@ -21,8 +21,8 @@ class ChatSession(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id"), index=True
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete='SET NULL'), index=True, nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
@@ -34,7 +34,7 @@ class ChatSession(Base):
     )
     session_metadata: Mapped[dict] = mapped_column(JSONB, default=dict)  # pyright: ignore[reportMissingTypeArgument]  # e.g., title, description, etc.
     chat_messages: Mapped[list["ChatMessage"]] = relationship(
-        back_populates="chat_session"
+        back_populates="chat_session", cascade="all, delete, delete-orphan"
     )
 
 
@@ -45,7 +45,7 @@ class ChatMessage(Base):
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     chat_session_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("chat_sessions.id"), index=True
+        ForeignKey("chat_sessions.id", ondelete='CASCADE'), index=True
     )
     sender: Mapped[Sender] = mapped_column(Enum(Sender))
     content: Mapped[str] = mapped_column(String)
