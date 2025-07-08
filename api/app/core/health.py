@@ -18,9 +18,8 @@ async def check_health():
     try:
         # Test database connectivity
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
-            # Get database version
-            db_version_result = await session.execute(text("SELECT version()"))
-            db_version = db_version_result.scalar()
+            # environment
+            environment = getattr(settings, "ENVIRONMENT", "development")
 
             # Calculate uptime
             uptime_seconds = time.time() - _start_time
@@ -32,21 +31,36 @@ async def check_health():
             # Get system info
             memory = psutil.virtual_memory()
 
-            return {
+            health_check_data = {
                 "status": "ok",
                 "datetime": serialize_datetime(datetime.now(tz=timezone_vi)),
-                "database": {"connected": True, "version": db_version},
                 "api_version": getattr(settings, "API_VERSION", "1.0.0"),
-                "environment": getattr(settings, "ENVIRONMENT", "development"),
                 "uptime": uptime,
                 "system": {
                     "cpu_usage": f"{psutil.cpu_percent()}%",
-                    "memory_total": f"{psutil.virtual_memory().total / (1024**3):.2f} GiB",
                     "memory_usage": f"{memory.percent}%",
                     "platform": platform.platform(),
                     "python": platform.python_version(),
                 },
             }
+
+            if environment == "development":
+                # Get database version
+                db_version_result = await session.execute(
+                    text("SELECT version()")
+                )
+                db_version = db_version_result.scalar()
+                health_check_data["database"] = {
+                    "connected": True,
+                    "version": db_version,
+                }
+
+                # Total memory
+                health_check_data["system"]["memory_total"] = (  # pyright: ignore[reportIndexIssue]
+                    f"{psutil.virtual_memory().total / (1024**3):.2f} GiB"
+                )
+
+            return health_check_data
     except Exception as e:
         logger.error(f"Health check failed: {str(e)}")
         raise HTTPException(

@@ -22,7 +22,7 @@ class ChatSession(Base):
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     user_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("users.id", ondelete='SET NULL'), index=True, nullable=True
+        ForeignKey("users.id", ondelete="SET NULL"), index=True, nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
@@ -45,7 +45,7 @@ class ChatMessage(Base):
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
     chat_session_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("chat_sessions.id", ondelete='CASCADE'), index=True
+        ForeignKey("chat_sessions.id", ondelete="CASCADE"), index=True
     )
     sender: Mapped[Sender] = mapped_column(Enum(Sender))
     content: Mapped[str] = mapped_column(String)

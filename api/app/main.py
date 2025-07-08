@@ -1,3 +1,4 @@
+import time
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -13,11 +14,15 @@ from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
 from app.core.health import check_health
 
+_start_time = 0
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global _start_time
     logger.info('"Starting application...')
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
+    _start_time = time.time()
     try:
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
             await init_db(session)
