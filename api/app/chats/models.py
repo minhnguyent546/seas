@@ -21,7 +21,7 @@ class ChatSession(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id"), index=True
     )
     created_at: Mapped[datetime] = mapped_column(
