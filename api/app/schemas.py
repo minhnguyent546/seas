@@ -12,8 +12,8 @@ class Sender(str, enum.Enum):
 
 
 class MessageStatus(str, enum.Enum):
-    SUCCESS = "success"
-    ERROR = "error"
+    SUCCESS = "SUCCESS"
+    ERROR = "ERROR"
 
 
 class MessageResponse(BaseModel):
