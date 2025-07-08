@@ -1,3 +1,6 @@
+// Postman Post-response Script to set access token after login
+// Put this script in the Post-response script tab of your Postman request for login
+
 // Check if the response was successful
 if (pm.response.code === 200) {
     // Parse the response body to JSON

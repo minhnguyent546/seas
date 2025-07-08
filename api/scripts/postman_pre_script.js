@@ -1,5 +1,5 @@
 // Postman Pre-request Script to handle authentication token retrieval
-// Put this script in the Pre-request Script tab of your Postman request
+// Put this script in the Pre-request script tab of your Postman request
 
 const tokenRequest = {
     url: pm.environment.get("TOKEN_URL"),
