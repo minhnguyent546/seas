@@ -26,6 +26,9 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
+    # project name
+    PROJECT_NAME: str = "SEAS"
+
     # environment
     ENVIRONMENT: Literal["development", "production"] = "development"
 
@@ -65,6 +68,25 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     FIRST_USER_USERNAME: str = "root"
     FIRST_USER_PASSWORD: str
+
+    # email
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
+    SMTP_HOST: str | None = None
+    SMTP_PORT: int = 587  # default secure port for email submission
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    EMAILS_FROM_EMAIL: str | None = None
+    EMAILS_FROM_NAME: str = "SEAS"
+    EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48  # 48 hours
+    EMAIL_TEST_USER: str = "testuser@test.com"
+
+    @computed_field
+    @property
+    def emails_enabled(self) -> bool:
+        return (
+            self.SMTP_HOST is not None and self.EMAILS_FROM_EMAIL is not None
+        )
 
     @computed_field
     @property
