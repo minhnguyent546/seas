@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,400;1,500&display=swap');
+
+@import 'tailwindcss';
+
+/* @import 'tailwindcss' prefix(tw); */
+
+@theme {
+  /* fontFamily */
+  --font-display: 'Oswald', sans-serif;
+  --font-sans: 'Helvetica', 'Arial', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+  --font-oswald: 'Oswald', sans-serif;
+
+  /* colors */
+  --color-primary-50: #f3f3fb;
+  --color-primary-50: #f3f3fb;
+  --color-primary-100: #e3e4f6;
+  --color-primary-200: #ced0ef;
+  --color-primary-300: #acb1e4;
+  --color-primary-400: #848ad6;
+  --color-primary-500: #6767ca;
+  --color-primary-600: #5a53bd;
+  --color-primary-700: #5549ac;
+  --color-primary-800: #4b408d;
+  --color-primary: #363062; /* DEFAULT */
+  --color-primary-950: #2a2546;
+
+  --color-secondary: #435585;
+  --color-tertiary: #818fb4;
+  --color-yellow-light: #f5e8c7;
+  --color-yellow-dark: #ffc107;
+  --color-blue-light: #007bff;
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
