@@ -100,6 +100,7 @@ async def reset_password(session: AsyncSessionDep, new_password: NewPassword):
     session.add(user)
     await session.commit()
     return MessageResponse(message="Password reset successfully")
+    # TODO: invalidate this reset password token (e.g. using token blacklist)
 
 
 @router.post(
