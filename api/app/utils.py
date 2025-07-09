@@ -108,10 +108,11 @@ def generate_password_reset_email(
         template="reset_password.html",
         context={
             "project_name": project_name,
-            "sender_address": settings.SENDER_ADDRESS,
             "username": username,
-            "reset_password_url": reset_password_url,
+            "sender_address": settings.SENDER_ADDRESS,
+            "link": reset_password_url,
             "valid_hours": settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS,
+            "email": email_to,
         },
     )
     return EmailData(html_content=html_content, subject=subject)

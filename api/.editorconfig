@@ -23,6 +23,9 @@ indent_size = 2
 [*.{json,yaml,yml}]
 indent_size = 2
 
+[*.{html,mjml}]
+indent_size = 2
+
 [{Makefile,makefile}]
 indent_style = tab
 indent_size = 2

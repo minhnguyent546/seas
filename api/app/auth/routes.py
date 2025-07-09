@@ -96,7 +96,7 @@ async def reset_password(session: AsyncSessionDep, new_password: NewPassword):
             detail="No user found with this email.",
         )
     hashed_password = hash_password(new_password.new_password)
-    user.hashed_password = hashed_password
+    user.password = hashed_password
     session.add(user)
     await session.commit()
     return MessageResponse(message="Password reset successfully")
