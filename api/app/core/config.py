@@ -1,8 +1,15 @@
 import secrets
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Self
 
 import pytz
-from pydantic import AnyUrl, BeforeValidator, PostgresDsn, computed_field
+from pydantic import (
+    AnyUrl,
+    BeforeValidator,
+    EmailStr,
+    PostgresDsn,
+    computed_field,
+    model_validator,
+)
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 timezone_vi = pytz.timezone("Asia/Ho_Chi_Minh")
@@ -25,6 +32,10 @@ class Settings(BaseSettings):
         extra="ignore",
         case_sensitive=True,
     )
+
+    # project name
+    PROJECT_NAME: str = "SEAS"
+    SENDER_ADDRESS: str = "HCMC, Vietnam"
 
     # environment
     ENVIRONMENT: Literal["development", "production"] = "development"
@@ -66,6 +77,31 @@ class Settings(BaseSettings):
     FIRST_USER_USERNAME: str = "root"
     FIRST_USER_PASSWORD: str
 
+    # email
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
+    SMTP_HOST: str | None = None
+    SMTP_PORT: int = 587  # default secure port for email submission
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    EMAILS_FROM_EMAIL: EmailStr | None = None
+    EMAILS_FROM_NAME: EmailStr | None = None
+    EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 24  # 24 hours
+    EMAIL_TEST_USER: str = "testuser@test.com"
+
+    @model_validator(mode="after")
+    def _set_default_emails_from(self) -> Self:
+        if self.EMAILS_FROM_NAME is None:
+            self.EMAILS_FROM_NAME = self.PROJECT_NAME  # pyright: ignore[reportConstantRedefinition]
+        return self
+
+    @computed_field
+    @property
+    def emails_enabled(self) -> bool:
+        return (
+            self.SMTP_HOST is not None and self.EMAILS_FROM_EMAIL is not None
+        )
+
     @computed_field
     @property
     def SQLALCHEMY_POSTGRES_URI(self) -> str:
@@ -78,6 +114,30 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )  # pyright: ignore[reportReturnType]
         return postgres_dsn.encoded_string()
+
+    @computed_field
+    @property
+    def smtp_options(self) -> dict[str, Any]:
+        if not self.emails_enabled:
+            raise RuntimeError(
+                "Email environment variables are not configured."
+            )
+
+        options = {
+            "host": self.SMTP_HOST,
+            "port": self.SMTP_PORT,
+        }
+        if self.SMTP_TLS:
+            options["tls"] = True
+        elif self.SMTP_SSL:
+            options["ssl"] = True
+
+        if self.SMTP_USER is not None:
+            options["user"] = self.SMTP_USER
+        if self.SMTP_PASSWORD is not None:
+            options["password"] = self.SMTP_PASSWORD
+
+        return options
 
 
 settings = Settings()  # pyright: ignore[reportCallIssue]

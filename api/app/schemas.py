@@ -19,3 +19,8 @@ class MessageStatus(str, enum.Enum):
 class MessageResponse(BaseModel):
     status: MessageStatus = MessageStatus.SUCCESS
     message: str
+
+
+class EmailData(BaseModel):
+    html_content: str
+    subject: str

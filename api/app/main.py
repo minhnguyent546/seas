@@ -2,17 +2,20 @@ import time
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from loguru import logger
+from pydantic import EmailStr
 
+import app.utils as app_utils
 from app.api import api_router
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
 from app.core.health import check_health
+from app.schemas import MessageResponse
+from app.utils import templates
 
 _start_time = 0
 
@@ -43,9 +46,6 @@ app = FastAPI(title="FastAPI", lifespan=lifespan)
 # static
 app.mount(path="/static", app=StaticFiles(directory="static"), name="static")
 
-# jinja2 template
-templates = Jinja2Templates(directory="templates")
-
 # cors
 app.add_middleware(
     CORSMiddleware,
@@ -56,7 +56,7 @@ app.add_middleware(
 )
 
 
-@app.get("/health", status_code=status.HTTP_200_OK)
+@app.get("/health", status_code=status.HTTP_200_OK, tags=["utils"])
 async def health_check():
     return await check_health()
 
@@ -66,13 +66,52 @@ async def redirect_to_docs():
     return RedirectResponse(url="/docs", status_code=status.HTTP_302_FOUND)
 
 
-@app.get(f"{settings.API_PREFIX}/html", response_class=HTMLResponse)
+@app.get(
+    f"{settings.API_PREFIX}/html", response_class=HTMLResponse, tags=["utils"]
+)
 async def html(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="example.html",
         context={"title": "SEAS"},
     )
+
+
+@app.get(
+    f"{settings.API_PREFIX}/test-send-email",
+    response_model=MessageResponse,
+    tags=["utils"],
+    include_in_schema=(settings.ENVIRONMENT == "development"),
+)
+async def test_send_email(email_to: EmailStr):
+    """Test sending email"""
+    test_email_data = app_utils.generate_test_email(email_to=email_to)
+    app_utils.send_email(
+        email_to=email_to,
+        subject=test_email_data.subject,
+        html_content=test_email_data.html_content,
+    )
+    return MessageResponse(message="Test email sent")
+
+
+@app.get(
+    f"{settings.API_PREFIX}/test-send-email-background",
+    response_model=MessageResponse,
+    tags=["utils"],
+    include_in_schema=(settings.ENVIRONMENT == "development"),
+)
+async def test_send_email_background(
+    background_tasks: BackgroundTasks, email_to: EmailStr
+):
+    """Test sending email using FastAPI background tasks"""
+    test_email_data = app_utils.generate_test_email(email_to=email_to)
+    app_utils.send_email_in_background(
+        background_tasks=background_tasks,
+        email_to=email_to,
+        subject=test_email_data.subject,
+        html_content=test_email_data.html_content,
+    )
+    return MessageResponse(message="Test email sent in background")
 
 
 app.include_router(api_router, prefix=settings.API_PREFIX)
