@@ -7,7 +7,7 @@
         <mj-text align="center" font-size="16px" padding-left="25px" padding-right="25px" font-family=", sans-serif"><span>This e-mail is for testing purpose.</span></mj-text>
         <mj-divider border-color="#ccc" border-width="1px"></mj-divider>
         <mj-text align="center" padding="50px 0 0">{{ sender_address }}</mj-text>
-        <mj-text align="center" padding="20px 0 0">This e-mail has been sent to {{ email }}</mj-text>
+        <mj-text align="center" padding="20px 0 0">This e-mail has been sent to <a href="mailto:{{ email }}">{{ email }}</a></mj-text>
       </mj-column>
     </mj-section>
   </mj-body>
