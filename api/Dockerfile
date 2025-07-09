@@ -8,6 +8,7 @@ RUN apt update && apt install -y --no-install-recommends \
     gcc \
     libc-dev \
     libpq-dev \
+    curl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
