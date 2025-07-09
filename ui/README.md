@@ -57,8 +57,8 @@ export default tseslint.config({
 
 1. Start by cloning this repository
   ```bash
-  git clone https://github.com/minhnguyent546/react-ts-vite-template.git react-ts-vite
-  cd react-ts-vite
+  git clone https://github.com/minhnguyent546/seas.git
+  cd seas/ui
   ```
 2. Install the dependencies
   ```bash
