@@ -29,7 +29,7 @@ _*
 # coverage files
 .coverage
 .coverage.*
-/htmlcov/
+htmlcov/
 
 # environment files
 .env
