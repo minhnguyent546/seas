@@ -180,6 +180,32 @@ export const SettingsIcon: React.FC<IconProps> = ({
   );
 };
 
+export const MenuIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = '',
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  );
+};
+
 export const LightningIcon: React.FC<IconProps> = ({
   size = 24,
   className = '',
@@ -201,6 +227,47 @@ export const LightningIcon: React.FC<IconProps> = ({
     >
       <path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973" />
       <path d="m13 12-3 5h4l-3 5" />
+    </svg>
+  );
+};
+
+export const LeftDoubleArrowIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = '',
+  ...props
+}) => {
+  return (
+    // <svg
+    //   xmlns="http://www.w3.org/2000/svg"
+    //   width={size}
+    //   height={size}
+    //   viewBox="0 0 24 24"
+    //   fill="none"
+    //   stroke="currentColor"
+    //   strokeWidth="2"
+    //   // strokeLinecap="round"
+    //   // strokeLinejoin="round"
+    //   className={className}
+    //   {...props}
+    // >
+    //   <path fill="none" d="M0 0h24v24H0z"></path>
+    //   <path d="M17.59 18 19 16.59 14.42 12 19 7.41 17.59 6l-6 6z"></path>
+    //   <path d="m11 18 1.41-1.41L7.83 12l4.58-4.59L11 6l-6 6z"></path>
+    // </svg>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      width={size}
+      height={size}
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 24 24"
+      className={className}
+      {...props}
+    >
+      <path fill="none" d="M0 0h24v24H0z"></path>
+      <path d="M17.59 18 19 16.59 14.42 12 19 7.41 17.59 6l-6 6z"></path>
+      <path d="m11 18 1.41-1.41L7.83 12l4.58-4.59L11 6l-6 6z"></path>
     </svg>
   );
 };

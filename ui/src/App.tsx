@@ -32,18 +32,6 @@ function App() {
 
       {/* Main content */}
       <div className="flex flex-1 flex-col h-full">
-        {/* Header */}
-        <header className="flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-800 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-orange-500">SEAS-4</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
-              Control
-            </button>
-          </div>
-        </header>
-
         {/* Chat container */}
         <div className="flex-1 min-h-0">
           <ChatContainer userName={user.name.split(' ')[0]} />

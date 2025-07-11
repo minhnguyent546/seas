@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { ChatFeatures } from '@/components/chat/ChatFeatures';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
-import { ChatFeatures } from '@/components/chat/ChatFeatures';
 import { generateId } from '@/lib/utils';
-import type { Message as MessageType, ChatFeature } from '@/types/chat';
+import type { ChatFeature, Message as MessageType } from '@/types/chat';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatContainerProps {
   userName: string;
@@ -67,7 +67,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto p-4 min-h-0">
-        <div className="mx-auto w-full max-w-[var(--content-max-width)]">
+        <div className="mx-auto w-full max-w-[var(--content-max-width)] h-full">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
               <h1 className="mb-2 text-3xl font-semibold text-gray-800 dark:text-white">
