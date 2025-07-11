@@ -1,38 +1,53 @@
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { ChatContainer } from '@/components/chat/ChatContainer';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [user] = useState({
+    id: '1',
+    name: 'Test user',
+    image: undefined,
+  });
+
+  const handleNewChat = () => {
+    console.log('New chat created');
+    // Implementation would reset the current chat or create a new one
+  };
+
+  const handleSettings = () => {
+    console.log('Settings clicked');
+    // Implementation would open settings panel
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex h-screen w-screen overflow-hidden bg-white dark:bg-gray-950">
+      {/* Sidebar */}
+      <Sidebar
+        onNewChat={handleNewChat}
+        onSettingsClick={handleSettings}
+        userName={user.name}
+        userAvatar={user.image}
+      />
+
+      {/* Main content */}
+      <div className="flex flex-1 flex-col">
+        {/* Header */}
+        <header className="flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-800">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-orange-500">SEAS-4</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+              Control
+            </button>
+          </div>
+        </header>
+
+        {/* Chat container */}
+        <ChatContainer userName={user.name.split(' ')[0]} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div className="text-bold text-2xl">
-        This is a <span className="text-yellow-dark">test div</span> for testing tailwindcss with{' '}
-        <span className="text-tertiary">tertiary color</span>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
 

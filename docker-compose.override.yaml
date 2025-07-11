@@ -63,3 +63,13 @@ services:
             - ./api/.venv
         - path: ./api/pyproject.toml
           action: rebuild
+
+  ui:
+    restart: "no"
+    ports:
+      - "5333:80"
+    build:
+      context: ui
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
