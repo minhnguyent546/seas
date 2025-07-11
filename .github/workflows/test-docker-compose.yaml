@@ -14,11 +14,6 @@ on:
 jobs:
   test-docker-compose:
     runs-on: ubuntu-latest
-    # env:
-    #   POSTGRES_DB: seas-test
-    #   POSTGRES_USER: postgres
-    #   POSTGRES_PASSWORD: "$(openssl rand -hex 16)"
-    #   FIRST_USER_PASSWORD: "$(openssl rand -base64 16)"
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
