@@ -66,7 +66,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 min-h-0">
         <div className="mx-auto w-full max-w-[var(--content-max-width)]">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
@@ -97,7 +97,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
         </div>
       </div>
 
-      <div className="pb-4 rounded-b-xl">
+      <div className="pb-4 rounded-b-xl flex-shrink-0">
         <div className="mx-auto w-full max-w-[var(--content-max-width)]">
           <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>

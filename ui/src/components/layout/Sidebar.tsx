@@ -31,7 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     .toUpperCase();
 
   return (
-    <div className="flex h-full w-60 flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-full w-64 flex-col bg-gray-50 dark:bg-gray-900">
       <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <ChatIcon className="h-5 w-5 text-primary" />

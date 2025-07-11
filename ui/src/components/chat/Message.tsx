@@ -1,10 +1,10 @@
-import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { Message as MessageType } from '@/types/chat';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { formatDate } from '@/lib/utils';
+import type { Message as MessageType } from '@/types/chat';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
 
 interface MessageProps {
   message: MessageType;
@@ -13,16 +13,9 @@ interface MessageProps {
 
 export const UserMessage: React.FC<MessageProps> = ({ message }) => {
   return (
-    <div className="group flex items-start gap-4 py-4">
-      <Avatar className="rounded-xl">
-        <AvatarImage src="/user-avatar.png" alt="User" />
-        <AvatarFallback className="bg-blue-600 text-white rounded-xl">
-          U
-        </AvatarFallback>
-      </Avatar>
-      <div className="flex-1 space-y-2">
-        <div className="flex items-center gap-2">
-          <div className="font-medium">You</div>
+    <div className="group flex justify-end py-4">
+      <div className="max-w-[80%] space-y-2">
+        <div className="flex items-center justify-end gap-2">
           <div className="text-xs text-gray-500">
             {formatDate(message.timestamp)}
           </div>
@@ -45,12 +38,11 @@ export const BotMessage: React.FC<MessageProps> = ({ message }) => {
       </Avatar>
       <div className="flex-1 space-y-2">
         <div className="flex items-center gap-2">
-          <div className="font-medium">AI Assistant</div>
           <div className="text-xs text-gray-500">
             {formatDate(message.timestamp)}
           </div>
         </div>
-        <div className="prose prose-sm max-w-none dark:prose-invert bg-primary/5 dark:bg-primary/10 p-4 rounded-xl">
+        <div className="prose prose-sm max-w-none dark:prose-invert p-4 rounded-xl">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
