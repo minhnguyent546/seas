@@ -33,7 +33,9 @@ const features: ChatFeature[] = [
   },
 ];
 
-export const ChatFeatures: React.FC<ChatFeaturesProps> = ({ onFeatureClick }) => {
+export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
+  onFeatureClick,
+}) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       {features.map((feature) => (

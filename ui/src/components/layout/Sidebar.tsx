@@ -41,15 +41,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       <div className="flex flex-col gap-2 p-2">
         <div className="flex gap-2">
-          <Button          variant="ghost"
-          size="icon"
-          className="flex-1 justify-start gap-2 rounded-lg text-gray-700 dark:text-gray-300"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="flex-1 justify-start gap-2 rounded-lg text-gray-700 dark:text-gray-300"
           >
             <ChatIcon size={16} />
           </Button>
-          <Button          variant="ghost"
-          size="icon"
-          className="rounded-lg text-gray-700 dark:text-gray-300"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-lg text-gray-700 dark:text-gray-300"
           >
             <PlusIcon size={16} />
           </Button>
@@ -92,9 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </Button>
 
         <Avatar className="h-8 w-8">
-          {userAvatar ? (
-            <AvatarImage src={userAvatar} alt={userName} />
-          ) : null}
+          {userAvatar ? <AvatarImage src={userAvatar} alt={userName} /> : null}
           <AvatarFallback className="bg-primary text-white">
             {userInitials}
           </AvatarFallback>

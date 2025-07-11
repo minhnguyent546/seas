@@ -1,5 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { SendIcon, ImageIcon, FileIcon, MicrophoneIcon } from '@/components/icons';
+import {
+  SendIcon,
+  ImageIcon,
+  FileIcon,
+  MicrophoneIcon,
+} from '@/components/icons';
 import { Button } from '@/components/ui/button';
 
 interface ChatInputProps {
@@ -23,7 +28,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(
         textareaRef.current.scrollHeight,
-        200
+        200,
       )}px`;
     }
   };

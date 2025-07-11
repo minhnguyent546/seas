@@ -6,7 +6,7 @@ export interface IconProps extends React.SVGProps<SVGSVGElement> {
 
 export const SendIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -31,7 +31,7 @@ export const SendIcon: React.FC<IconProps> = ({
 
 export const ChatIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -55,7 +55,7 @@ export const ChatIcon: React.FC<IconProps> = ({
 
 export const ImageIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -81,7 +81,7 @@ export const ImageIcon: React.FC<IconProps> = ({
 
 export const FileIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -106,7 +106,7 @@ export const FileIcon: React.FC<IconProps> = ({
 
 export const MicrophoneIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -132,7 +132,7 @@ export const MicrophoneIcon: React.FC<IconProps> = ({
 
 export const PlusIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -157,7 +157,7 @@ export const PlusIcon: React.FC<IconProps> = ({
 
 export const SettingsIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (
@@ -182,7 +182,7 @@ export const SettingsIcon: React.FC<IconProps> = ({
 
 export const LightningIcon: React.FC<IconProps> = ({
   size = 24,
-  className = "",
+  className = '',
   ...props
 }) => {
   return (

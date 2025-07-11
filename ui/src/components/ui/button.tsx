@@ -20,13 +20,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const baseStyles = 'seas-btn inline-flex items-center justify-center rounded-xl font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50';
+    const baseStyles =
+      'seas-btn inline-flex items-center justify-center rounded-xl font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50';
 
     const variants = {
-      primary: 'bg-primary text-white hover:bg-primary-700 focus:ring-primary-500',
-      secondary: 'bg-secondary text-white hover:bg-secondary hover:brightness-95 focus:ring-secondary',
-      tertiary: 'bg-tertiary text-white hover:bg-tertiary hover:brightness-95 focus:ring-tertiary',
-      outline: 'border border-gray-300 bg-transparent hover:bg-gray-100 focus:ring-gray-500',
+      primary:
+        'bg-primary text-white hover:bg-primary-700 focus:ring-primary-500',
+      secondary:
+        'bg-secondary text-white hover:bg-secondary hover:brightness-95 focus:ring-secondary',
+      tertiary:
+        'bg-tertiary text-white hover:bg-tertiary hover:brightness-95 focus:ring-tertiary',
+      outline:
+        'border border-gray-300 bg-transparent hover:bg-gray-100 focus:ring-gray-500',
       ghost: 'bg-transparent hover:bg-gray-100 focus:ring-gray-500',
     };
 

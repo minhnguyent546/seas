@@ -1,7 +1,7 @@
+import { ChatContainer } from '@/components/chat/ChatContainer';
+import { Sidebar } from '@/components/layout/Sidebar';
 import { useState } from 'react';
 import './App.css';
-import { Sidebar } from '@/components/layout/Sidebar';
-import { ChatContainer } from '@/components/chat/ChatContainer';
 
 function App() {
   const [user] = useState({

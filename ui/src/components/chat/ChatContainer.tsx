@@ -86,7 +86,9 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
                 <Message
                   key={message.id}
                   message={message}
-                  isLastMessage={message.id === messages[messages.length - 1].id}
+                  isLastMessage={
+                    message.id === messages[messages.length - 1].id
+                  }
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -97,10 +99,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
 
       <div className="pb-4 rounded-b-xl">
         <div className="mx-auto w-full max-w-[var(--content-max-width)]">
-          <ChatInput
-            onSendMessage={handleSendMessage}
-            isLoading={isLoading}
-          />
+          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>
       </div>
     </div>

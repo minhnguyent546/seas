@@ -28,15 +28,15 @@ export default tseslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
 
 export default tseslint.config({
   plugins: {
@@ -50,29 +50,36 @@ export default tseslint.config({
     ...reactX.configs['recommended-typescript'].rules,
     ...reactDom.configs.recommended.rules,
   },
-})
+});
 ```
 
 ## Getting started
 
 1. Start by cloning this repository
-  ```bash
-  git clone https://github.com/minhnguyent546/seas.git
-  cd seas/ui
-  ```
+
+```bash
+git clone https://github.com/minhnguyent546/seas.git
+cd seas/ui
+```
+
 2. Install the dependencies
-  ```bash
-  yarn # short for `yarn install`
-  ```
+
+```bash
+yarn # short for `yarn install`
+```
+
 3. Start the development server
-  ```bash
-  yarn dev
-  ```
+
+```bash
+yarn dev
+```
+
 4. Open your browser and navigate to http://localhost:5173 to see the app running.
 5. To build the app for production, run:
-  ```bash
-  yarn build
 
-  # after that, you can preview the production build via:
-  yarn preview
-  ```
+```bash
+yarn build
+
+# after that, you can preview the production build via:
+yarn preview
+```
