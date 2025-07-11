@@ -39,9 +39,6 @@ services:
       - SMTP_SSL=false
       - SMTP_HOST=maildev
       - SMTP_PORT=1025
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL?Variable not set}
     command:
       - uvicorn
       - app.main:app

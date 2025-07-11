@@ -1,0 +1,38 @@
+name: Test docker compose
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+jobs:
+  test-docker-compose:
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_DB: seas-test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "$(openssl rand -hex 16)"
+      FIRST_USER_PASSWORD: "$(openssl rand -base64 16)"
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: build
+        run: docker compose build
+      - name: Remove existing containers
+        run: docker compose down -v --remove-orphans
+      - name: Start containers
+        run: docker compose up -d
+      - name: Test if backend is up
+        run: curl http://localhost:8444/health
+      - name: Test if frontend is up
+        run: curl http://localhost:5173
+      - name: Cleanup
+        run: docker compose down -v --remove-orphans
