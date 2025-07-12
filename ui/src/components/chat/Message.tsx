@@ -3,7 +3,7 @@ import { formatDate } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 
 interface MessageProps {
@@ -45,7 +45,7 @@ export const BotMessage: React.FC<MessageProps> = ({ message }) => {
         <div className="prose prose-sm max-w-none dark:prose-invert p-4 rounded-xl">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
+            rehypePlugins={[rehypeSanitize]}
           >
             {message.content}
           </ReactMarkdown>
