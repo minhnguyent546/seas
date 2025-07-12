@@ -1,5 +1,6 @@
 import { ApiError, OpenAPI } from '@/client';
 import { Loading } from '@/components/ui/loading';
+import { ROUTE_PATHS } from '@/constants/path_routes';
 import {
   MutationCache,
   QueryCache,
@@ -16,7 +17,7 @@ import { routeTree } from './routeTree.gen';
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
     localStorage.removeItem('access_token');
-    window.location.href = '/login';
+    window.location.href = ROUTE_PATHS.AUTH.LOGIN;
   }
 };
 

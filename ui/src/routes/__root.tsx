@@ -1,3 +1,4 @@
+import { ROUTE_PATHS } from '@/constants/path_routes';
 import { isLoggedIn } from '@/hooks/useAuth';
 import {
   Outlet,
@@ -11,17 +12,17 @@ export const Route = createRootRoute({
   // This is executed before the route is even loaded
   beforeLoad: ({ location }) => {
     // Redirect unauthenticated users to login page if they're trying to access protected routes
-    const isAuthRoute = location.pathname !== '/login';
+    const isAuthRoute = location.pathname !== ROUTE_PATHS.AUTH.LOGIN;
     if (isAuthRoute && !isLoggedIn()) {
       throw redirect({
-        to: '/login',
+        to: ROUTE_PATHS.AUTH.LOGIN,
       });
     }
 
     // Redirect authenticated users to home if they try to access login
-    if (location.pathname === '/login' && isLoggedIn()) {
+    if (location.pathname === ROUTE_PATHS.AUTH.LOGIN && isLoggedIn()) {
       throw redirect({
-        to: '/',
+        to: ROUTE_PATHS.HOME,
       });
     }
   },

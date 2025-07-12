@@ -6,6 +6,7 @@ import {
   type UserRegister,
   UsersService,
 } from '@/client';
+import { ROUTE_PATHS } from '@/constants/path_routes';
 import { handleError } from '@/lib/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -30,7 +31,7 @@ const useAuth = () => {
       await AuthService.signup({ requestBody: data });
     },
     onSuccess: () => {
-      navigate({ to: '/login' });
+      navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
     },
     onError: (err: ApiError) => {
       handleError(err);
@@ -50,7 +51,7 @@ const useAuth = () => {
     mutationFn: login,
     onSuccess: () => {
       setError(null);
-      navigate({ to: '/' });
+      navigate({ to: ROUTE_PATHS.HOME });
       // Force a re-render by invalidating the current user query
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
     },
@@ -80,7 +81,7 @@ const useAuth = () => {
     localStorage.removeItem('token_type');
 
     // Navigate to login page
-    navigate({ to: '/login' });
+    navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
 
     // Clear user data and force re-render
     queryClient.invalidateQueries({ queryKey: ['currentUser'] });
