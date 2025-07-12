@@ -4,6 +4,7 @@ from typing import Any
 import emails
 import jwt
 from fastapi import BackgroundTasks, HTTPException, status
+from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
@@ -141,3 +142,9 @@ def verify_password_reset_token(token: str) -> str | None:
     except jwt.InvalidTokenError:
         logger.error("Invalid password reset token")
         return None
+
+
+def custom_generate_unique_id(route: APIRoute) -> str:
+    if route.tags:
+        return f"{route.tags[0]}-{route.name}"
+    return f"default-{route.name}"

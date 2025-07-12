@@ -15,7 +15,7 @@ from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
 from app.core.health import check_health
 from app.schemas import MessageResponse
-from app.utils import templates
+from app.utils import custom_generate_unique_id, templates
 
 _start_time = 0
 
@@ -41,7 +41,12 @@ async def lifespan(app: FastAPI):
         pass
 
 
-app = FastAPI(title="FastAPI", lifespan=lifespan)
+app = FastAPI(
+    title="FastAPI",
+    lifespan=lifespan,
+    openapi_url=f"{settings.API_PREFIX}/openapi.json",
+    generate_unique_id_function=custom_generate_unique_id,
+)
 
 # static
 app.mount(path="/static", app=StaticFiles(directory="static"), name="static")
