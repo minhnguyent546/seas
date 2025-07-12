@@ -3,6 +3,7 @@ import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
 import { generateId } from '@/lib/utils';
 import type { ChatFeature, Message as MessageType } from '@/types/chat';
+import { Box, CircularProgress } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatContainerProps {
@@ -91,6 +92,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
                   }
                 />
               ))}
+              {isLoading && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+                  <CircularProgress size={30} />
+                </Box>
+              )}
               <div ref={messagesEndRef} />
             </div>
           )}

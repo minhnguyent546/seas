@@ -6,3 +6,6 @@ coverage
 # yarn
 node_modules
 .yarn
+
+# auto-generated files by tanstack router
+routeTree.gen.ts

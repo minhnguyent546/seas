@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react';
 import {
-  SendIcon,
-  ImageIcon,
   FileIcon,
+  ImageIcon,
   MicrophoneIcon,
+  SendIcon,
 } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { CircularProgress } from '@mui/material';
+import React, { useRef, useState } from 'react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -101,7 +102,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             className="h-8 w-8 rounded-full bg-primary text-white hover:bg-primary-700"
             aria-label="Send message"
           >
-            <SendIcon size={16} />
+            {isLoading ? (
+              <CircularProgress size={16} color="inherit" />
+            ) : (
+              <SendIcon size={16} />
+            )}
           </Button>
         </div>
       </div>

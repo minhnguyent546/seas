@@ -44,8 +44,6 @@ const useAuth = () => {
     const response = await AuthService.loginForAccessToken({ formData: data });
     localStorage.setItem('access_token', response.access_token);
     localStorage.setItem('token_type', response.token_type || 'Bearer');
-
-    // No need to update OpenAPI.TOKEN here as it's configured in main.tsx to read from localStorage
   };
 
   const loginMutation = useMutation({
@@ -80,9 +78,6 @@ const useAuth = () => {
   const logout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
-
-    // No need to set OpenAPI.TOKEN to undefined as it's configured in main.tsx to read from localStorage
-    // which will now return an empty string
 
     // Navigate to login page
     navigate({ to: '/login' });
