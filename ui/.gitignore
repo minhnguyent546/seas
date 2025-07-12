@@ -41,4 +41,5 @@ dist-ssr
 
 # local stuff
 _*
+!/src/routes/_*.tsx
 
