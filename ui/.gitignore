@@ -36,6 +36,9 @@ dist-ssr
 !.yarn/sdks
 !.yarn/versions
 
+# tanstack
+/.tanstack
+
 # local stuff
 _*
 
