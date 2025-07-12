@@ -1,18 +1,9 @@
-import {
-  ChatIcon,
-  LeftDoubleArrowIcon,
-  PlusIcon,
-  SettingsIcon,
-} from '@/components/icons';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ChatIcon, LeftDoubleArrowIcon, PlusIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 
 interface SidebarProps {
   onNewChat: () => void;
-  onSettingsClick: () => void;
-  userName: string;
-  userAvatar?: string;
 }
 
 const historyItems = [
@@ -24,19 +15,8 @@ const historyItems = [
   { id: 'long-title', label: 'A very long title and it should be clipped' },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  onNewChat,
-  onSettingsClick,
-  userName,
-  userAvatar,
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const userInitials = userName
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -117,51 +97,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       )}
 
-      <div className="mt-auto flex items-center justify-between border-t border-gray-200 p-4 dark:border-gray-800">
-        {!isCollapsed ? (
-          <>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-gray-700 dark:text-gray-300"
-              onClick={onSettingsClick}
-            >
-              <SettingsIcon size={16} className="mr-1" />
-              Settings
-            </Button>
-
-            <Avatar className="h-8 w-8">
-              {userAvatar ? (
-                <AvatarImage src={userAvatar} alt={userName} />
-              ) : null}
-              <AvatarFallback className="bg-primary text-white">
-                {userInitials}
-              </AvatarFallback>
-            </Avatar>
-          </>
-        ) : (
-          <div className="flex flex-col gap-2 items-center w-full">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-700 dark:text-gray-300"
-              onClick={onSettingsClick}
-              title="Settings"
-            >
-              <SettingsIcon size={16} />
-            </Button>
-
-            <Avatar className="h-8 w-8">
-              {userAvatar ? (
-                <AvatarImage src={userAvatar} alt={userName} />
-              ) : null}
-              <AvatarFallback className="bg-primary text-white">
-                {userInitials}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        )}
-      </div>
+      {/* Bottom padding space */}
+      <div className="mt-auto p-4"></div>
     </div>
   );
 };
