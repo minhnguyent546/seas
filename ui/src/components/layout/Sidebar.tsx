@@ -1,16 +1,16 @@
-import {
-  ChatIcon,
-  EllipsisIcon,
-  LeftDoubleArrowIcon,
-  PlusIcon,
-  SearchIcon,
-} from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
   Dropdown,
   DropdownItem,
   DropdownSeparator,
 } from '@/components/ui/dropdown';
+import {
+  IconChevronLeft,
+  IconDots,
+  IconMessage,
+  IconPlus,
+  IconSearch,
+} from '@tabler/icons-react';
 import React, { useState } from 'react';
 
 interface SidebarProps {
@@ -46,7 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
             className={`h-6 w-6 rounded-md text-primary hover:text-primary/80 ${isCollapsed ? 'cursor-pointer' : 'cursor-default'}`}
             title={isCollapsed ? 'Open Sidebar' : 'SEAS'}
           >
-            <ChatIcon className="h-5 w-5" />
+            <IconMessage className="h-5 w-5" />
           </Button>
           {!isCollapsed && (
             <span className="text-lg font-semibold text-primary">SEAS</span>
@@ -61,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
             aria-label="Collapse Sidebar"
             title="Collapse Sidebar"
           >
-            <LeftDoubleArrowIcon size={20} />
+            <IconChevronLeft size={20} />
           </Button>
         )}
       </div>
@@ -74,14 +74,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
               variant="ghost"
               className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1 cursor-pointer"
             >
-              <ChatIcon size={16} />
+              <IconMessage size={16} />
               <span>New Chat</span>
             </Button>
             <Button
               variant="ghost"
               className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1 cursor-pointer"
             >
-              <SearchIcon size={16} />
+              <IconSearch size={16} />
               <span>Search Chats</span>
             </Button>
           </>
@@ -94,7 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
               className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
               title="New Chat"
             >
-              <PlusIcon size={16} />
+              <IconPlus size={16} />
             </Button>
             <Button
               variant="ghost"
@@ -102,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
               className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
               title="Search Chats"
             >
-              <SearchIcon size={16} />
+              <IconSearch size={16} />
             </Button>
           </>
         )}
@@ -125,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
                 <Dropdown
                   trigger={
                     <button className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer">
-                      <EllipsisIcon size={16} />
+                      <IconDots size={16} />
                     </button>
                   }
                   align="left"

@@ -1,5 +1,4 @@
 import { ChatContainer } from '@/components/chat/ChatContainer';
-import { LogoutIcon, SettingsIcon } from '@/components/icons';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/dropdown';
 import { Loading } from '@/components/ui/loading';
 import useAuth from '@/hooks/useAuth';
+import { IconLogout, IconSettings } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export function Chat() {
@@ -67,14 +67,14 @@ export function Chat() {
           <DropdownSeparator />
           <DropdownItem
             onClick={handleSettings}
-            icon={<SettingsIcon size={16} />}
+            icon={<IconSettings size={16} />}
           >
             Settings
           </DropdownItem>
           <DropdownSeparator />
           <DropdownItem
             onClick={() => logout()}
-            icon={<LogoutIcon size={16} />}
+            icon={<IconLogout size={16} />}
           >
             Sign out
           </DropdownItem>

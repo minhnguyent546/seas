@@ -19,6 +19,7 @@
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-tooltip": "^1.2.7",
+    "@tabler/icons-react": "^3.34.0",
     "@tailwindcss/vite": "^4.1.7",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-router": "^1.127.3",
