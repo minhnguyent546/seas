@@ -17,7 +17,10 @@ import { routeTree } from './routeTree.gen';
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
     localStorage.removeItem('access_token');
-    window.location.href = ROUTE_PATHS.AUTH.LOGIN;
+    // Only redirect if we're not already on the login page
+    if (window.location.pathname !== ROUTE_PATHS.AUTH.LOGIN) {
+      window.location.href = ROUTE_PATHS.AUTH.LOGIN;
+    }
   }
 };
 

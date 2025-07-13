@@ -32,11 +32,17 @@ export const Route = createRootRoute({
 function RootComponent() {
   const router = useRouter();
 
-  // This ensures the router is aware of auth state changes
+  // This ensures the router is aware of auth state changes from other tabs
   useEffect(() => {
-    const checkAuth = () => {
-      // Force a reload of the current route when auth state changes
-      router.invalidate();
+    const checkAuth = (event: StorageEvent) => {
+      // Only invalidate router if the access_token was removed/added
+      if (event.key === 'access_token') {
+        // Only trigger router invalidation if we're not already on the login page
+        // to avoid interfering with the login process
+        if (window.location.pathname !== ROUTE_PATHS.AUTH.LOGIN) {
+          router.invalidate();
+        }
+      }
     };
 
     // Listen for storage events (logout/login in other tabs)

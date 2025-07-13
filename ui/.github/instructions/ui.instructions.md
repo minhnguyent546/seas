@@ -26,6 +26,7 @@ This is a chat UI interface to interact with a backend hosting LLM/AI Agents wit
 - Sonner 2.x for notifications
 - `@hey-api/openapi-ts` 0.x for API client generation
 - `clsx` and `tailwind-merge` for conditional styling
+- Use `yarn berry` instead of npm for package management
 
 ## Coding Standards
 
