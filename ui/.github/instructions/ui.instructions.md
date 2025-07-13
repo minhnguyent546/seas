@@ -1,12 +1,15 @@
 ---
 applyTo: '**'
 ---
+
 # UI Development Instructions for GitHub Copilot
 
 ## Project Overview
+
 This is a chat UI interface to interact with a backend hosting LLM/AI Agents with RAG, built with React 19 using TypeScript 5.x and TailwindCSS 4.x.
 
 ## Tech Stack
+
 - React 19.x
 - TypeScript 5.x
 - TailwindCSS 4.x (Oxide engine)
@@ -31,18 +34,21 @@ This is a chat UI interface to interact with a backend hosting LLM/AI Agents wit
 ## Coding Standards
 
 ### React Components
+
 - Prefer functional components with hooks over class components
 - Use React hooks appropriately (useState, useEffect, useContext, useMemo, useCallback)
 - Implement proper state management for chat history, messages, and user input
 - Component folder structure should follow feature-based organization
 
 ### TypeScript
+
 - Always define proper interfaces or types for props, state, and API responses
 - Use explicit return types for functions and components
 - Leverage TypeScript's type inference when appropriate
 - Use discriminated unions for complex state management
 
 ### TailwindCSS Usage
+
 - Use TailwindCSS 4.x with the Oxide engine via `@tailwindcss/vite` plugin
 - Custom theme variables are defined in `src/index.css` using the `@theme` directive
 - Color scheme includes custom primary, secondary, tertiary colors with full shade ranges
@@ -82,12 +88,14 @@ When implementing chat UI features, prefer to create:
    - Accessibility features (proper ARIA attributes, keyboard navigation)
 
 ## State Management
+
 - For simple components, use useState and useReducer
 - For complex state, consider using React Context or a state management library
 - Implement optimistic UI updates for better user experience
 - Handle error states gracefully with user-friendly messages
 
 ## Best Practices
+
 - Implement proper error boundaries
 - Add appropriate loading states and feedback
 - Ensure responsive design across different device sizes
@@ -97,6 +105,7 @@ When implementing chat UI features, prefer to create:
 - Handle edge cases like network errors, long messages, code blocks, etc.
 
 ## Project Structure
+
 - `/src/`
   - `/assets/` - Static assets like images and SVGs
   - `/client/` - Generated API client and types
@@ -118,6 +127,7 @@ When implementing chat UI features, prefer to create:
   - `/types/` - Custom TypeScript type definitions for the application
 
 ## Performance Considerations
+
 - Use React.memo for expensive renders
 - Implement proper list virtualization for chat history
 - Optimize re-renders with useMemo and useCallback
@@ -125,6 +135,7 @@ When implementing chat UI features, prefer to create:
 - Implement proper code-splitting
 
 ## API Integration
+
 - API client is auto-generated using `@hey-api/openapi-ts` from OpenAPI specifications
 - Use TanStack Query for data fetching, caching, and synchronization
 - Authentication is handled via JWT tokens stored in localStorage

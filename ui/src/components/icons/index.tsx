@@ -237,30 +237,13 @@ export const LeftDoubleArrowIcon: React.FC<IconProps> = ({
   ...props
 }) => {
   return (
-    // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
-    //   width={size}
-    //   height={size}
-    //   viewBox="0 0 24 24"
-    //   fill="none"
-    //   stroke="currentColor"
-    //   strokeWidth="2"
-    //   // strokeLinecap="round"
-    //   // strokeLinejoin="round"
-    //   className={className}
-    //   {...props}
-    // >
-    //   <path fill="none" d="M0 0h24v24H0z"></path>
-    //   <path d="M17.59 18 19 16.59 14.42 12 19 7.41 17.59 6l-6 6z"></path>
-    //   <path d="m11 18 1.41-1.41L7.83 12l4.58-4.59L11 6l-6 6z"></path>
-    // </svg>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       stroke="currentColor"
       width={size}
       height={size}
       fill="currentColor"
-      stroke-width="0"
+      strokeWidth="0"
       viewBox="0 0 24 24"
       className={className}
       {...props}
@@ -268,6 +251,31 @@ export const LeftDoubleArrowIcon: React.FC<IconProps> = ({
       <path fill="none" d="M0 0h24v24H0z"></path>
       <path d="M17.59 18 19 16.59 14.42 12 19 7.41 17.59 6l-6 6z"></path>
       <path d="m11 18 1.41-1.41L7.83 12l4.58-4.59L11 6l-6 6z"></path>
+    </svg>
+  );
+};
+
+export const SearchIcon: React.FC<IconProps> = ({
+  size = 24,
+  className = '',
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" x2="16.65" y1="21" y2="16.65" />
     </svg>
   );
 };

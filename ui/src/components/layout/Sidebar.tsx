@@ -1,4 +1,4 @@
-import { ChatIcon, LeftDoubleArrowIcon, PlusIcon } from '@/components/icons';
+import { ChatIcon, LeftDoubleArrowIcon, PlusIcon, SearchIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 
@@ -60,22 +60,40 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
           <>
             <Button
               onClick={onNewChat}
-              className="flex w-full items-center justify-center gap-2 bg-gray-900 dark:bg-gray-800 rounded-xl"
+              variant="ghost"
+              className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1.5 cursor-pointer"
             >
               <ChatIcon size={16} />
               <span>New Chat</span>
             </Button>
+            <Button
+              variant="ghost"
+              className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1.5 cursor-pointer"
+            >
+              <SearchIcon size={16} />
+              <span>Search Chats</span>
+            </Button>
           </>
         ) : (
-          <Button
-            onClick={onNewChat}
-            variant="ghost"
-            size="icon"
-            className="rounded-lg text-gray-700 dark:text-gray-300"
-            title="New Chat"
-          >
-            <PlusIcon size={16} />
-          </Button>
+          <>
+            <Button
+              onClick={onNewChat}
+              variant="ghost"
+              size="icon"
+              className="rounded-lg text-gray-700 dark:text-gray-300"
+              title="New Chat"
+            >
+              <PlusIcon size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-lg text-gray-700 dark:text-gray-300"
+              title="Search Chats"
+            >
+              <SearchIcon size={16} />
+            </Button>
+          </>
         )}
       </div>
 
