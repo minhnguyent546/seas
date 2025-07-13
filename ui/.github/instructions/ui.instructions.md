@@ -1,0 +1,129 @@
+---
+applyTo: '**'
+---
+# UI Development Instructions for GitHub Copilot
+
+## Project Overview
+This is a chat UI interface to interact with a backend hosting LLM/AI Agents with RAG, built with React 19 using TypeScript 5.x and TailwindCSS 4.x.
+
+## Tech Stack
+- React 19.x
+- TypeScript 5.x
+- TailwindCSS 4.x (Oxide engine)
+- Vite 6.x as the build tool
+- TanStack Router 1.x for routing
+- TanStack Query 5.x for data fetching
+- `react-markdown` 10.x for rendering Markdown content
+- `rehype-sanitize` 6.x for secure HTML rendering
+- `rehype-raw` 7.x for raw HTML support in markdown
+- `remark-gfm` 4.x for GitHub Flavored Markdown support
+- `react-syntax-highlighter` 15.x for code syntax highlighting
+- Material UI 7.x for UI components (primarily CircularProgress)
+- Radix UI for primitive components (Avatar, Dialog, Dropdown, Tooltip)
+- Axios 1.x for HTTP requests
+- Framer Motion 12.x for animations
+- React Hook Form 7.x for form management
+- Sonner 2.x for notifications
+- `@hey-api/openapi-ts` 0.x for API client generation
+- `clsx` and `tailwind-merge` for conditional styling
+
+## Coding Standards
+
+### React Components
+- Prefer functional components with hooks over class components
+- Use React hooks appropriately (useState, useEffect, useContext, useMemo, useCallback)
+- Implement proper state management for chat history, messages, and user input
+- Component folder structure should follow feature-based organization
+
+### TypeScript
+- Always define proper interfaces or types for props, state, and API responses
+- Use explicit return types for functions and components
+- Leverage TypeScript's type inference when appropriate
+- Use discriminated unions for complex state management
+
+### TailwindCSS Usage
+- Use TailwindCSS 4.x with the Oxide engine via `@tailwindcss/vite` plugin
+- Custom theme variables are defined in `src/index.css` using the `@theme` directive
+- Color scheme includes custom primary, secondary, tertiary colors with full shade ranges
+- Custom fonts: Roboto and Oswald are imported and available via CSS variables
+- Layout includes custom content max-width and other design tokens
+- Responsive design using Tailwind's breakpoint system (sm, md, lg, xl, 2xl)
+- Use `clsx` and `tailwind-merge` utilities for conditional and merged class names
+
+## Chat UI Components
+
+When implementing chat UI features, prefer to create:
+
+1. **Message Components**:
+   - Separate components for user messages (UserMessage), AI responses (BotMessage), and system messages (SystemMessage)
+   - Support for message status (sending, sent, error)
+   - Support for markdown using react-markdown with remark-gfm and rehype-sanitize plugins
+   - Code blocks and syntax highlighting capabilities
+   - Timestamp and metadata display with proper formatting
+   - Avatar components using Radix UI primitives
+
+2. **Input Components**:
+   - Support for shortcuts and command handling
+   - File upload capabilities if needed
+   - Send button with appropriate states (idle, sending)
+   - Integration with Material UI's CircularProgress for loading states
+
+3. **Chat Container**:
+   - Auto-scrolling to newest messages
+   - Virtualized list for performance with many messages
+   - Loading states and indicators
+   - Empty/welcome state design
+
+4. **UI Patterns**:
+   - Use skeleton loaders for loading states
+   - Implement smooth transitions between UI states
+   - Support for light/dark mode based on system preference
+   - Accessibility features (proper ARIA attributes, keyboard navigation)
+
+## State Management
+- For simple components, use useState and useReducer
+- For complex state, consider using React Context or a state management library
+- Implement optimistic UI updates for better user experience
+- Handle error states gracefully with user-friendly messages
+
+## Best Practices
+- Implement proper error boundaries
+- Add appropriate loading states and feedback
+- Ensure responsive design across different device sizes
+- Write clean, self-documenting code with comments for complex logic
+- Prefer small, reusable components over large monolithic ones
+- Implement proper keyboard navigation and accessibility
+- Handle edge cases like network errors, long messages, code blocks, etc.
+
+## Project Structure
+- `/src/`
+  - `/assets/` - Static assets like images and SVGs
+  - `/client/` - Generated API client and types
+    - `/core/` - Core API request logic
+    - `sdk.gen.ts` - Generated API services
+    - `types.gen.ts` - Generated TypeScript types for API
+  - `/components/` - Reusable React components
+    - `/chat/` - Components specific to the chat interface (e.g., `ChatContainer`, `Message`)
+    - `/icons/` - SVG icon components
+    - `/layout/` - Layout components like `Sidebar`
+    - `/ui/` - Base UI components (e.g., `Button`, `Input`, `Avatar`)
+  - `/constants/` - Application-wide constants (e.g., `path_routes.ts`)
+  - `/hooks/` - Custom React hooks (e.g., `useAuth`)
+  - `/lib/` - Utility functions (e.g., `utils.ts`)
+  - `/routes/` - TanStack Router route definitions
+    - `__root.tsx` - The root layout of the application
+    - `index.tsx` - The main chat interface route
+    - `login.tsx` - The login page route
+  - `/types/` - Custom TypeScript type definitions for the application
+
+## Performance Considerations
+- Use React.memo for expensive renders
+- Implement proper list virtualization for chat history
+- Optimize re-renders with useMemo and useCallback
+- Lazy load components when appropriate
+- Implement proper code-splitting
+
+## API Integration
+- API client is auto-generated using `@hey-api/openapi-ts` from OpenAPI specifications
+- Use TanStack Query for data fetching, caching, and synchronization
+- Authentication is handled via JWT tokens stored in localStorage
