@@ -46,7 +46,7 @@ reviews:
     docstrings:
       enabled: true
     unit_tests:
-      enabled: true
+      enabled: false
   tools:
     ast-grep:
       rule_dirs: []
