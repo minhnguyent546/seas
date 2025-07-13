@@ -1,0 +1,33 @@
+version = 1
+
+exclude_patterns = [
+    "**/dist/",
+    "**/build/",
+    "**/node_modules/",
+    "**/venv/",
+    "**/.venv/",
+]
+
+[[analyzers]]
+name = "secrets"
+enabled = true
+
+[[analyzers]]
+    [analyzers.meta]
+    runtime_version = "3.12.x"
+name = "python"
+enabled = true
+include_patterns = ["api/**.py"]
+dependency_file_paths = [
+    "pyproject.toml",
+]
+transformers = ["ruff"]
+
+[[analyzers]]
+name = "typescript"
+enabled = true
+include_patterns = ["ui/**.ts", "ui/**.js", "ui/**.jsx", "ui/**.tsx", "ui/**.mjs", "ui/**.cjs", "ui/**.mts", "ui/**.cts"]
+dependency_file_paths = [
+    "package.json",
+]
+transformers = ["prettier"]
