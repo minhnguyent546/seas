@@ -7,9 +7,12 @@ import {
 import {
   IconChevronLeft,
   IconDots,
+  IconEdit,
   IconMessage,
+  IconPin,
   IconPlus,
   IconSearch,
+  IconTrash,
 } from '@tabler/icons-react';
 import React, { useState } from 'react';
 
@@ -132,10 +135,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
                   width="w-40"
                   offsetX={0}
                 >
-                  <DropdownItem>Rename</DropdownItem>
-                  <DropdownItem>Add to favorites</DropdownItem>
+                  <DropdownItem icon={<IconEdit size={16} />}>
+                    Rename
+                  </DropdownItem>
+                  <DropdownItem icon={<IconPin size={16} />}>
+                    Pin session
+                  </DropdownItem>
                   <DropdownSeparator />
-                  <DropdownItem danger>Delete</DropdownItem>
+                  <DropdownItem icon={<IconTrash size={16} />} danger>
+                    Delete
+                  </DropdownItem>
                 </Dropdown>
               </div>
             ))}
