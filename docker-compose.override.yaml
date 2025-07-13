@@ -1,0 +1,72 @@
+services:
+  db:
+    restart: "no"
+    ports:
+      - "5433:5432"
+
+  adminer:
+    restart: "no"
+    ports:
+      - "8555:8080"
+
+  maildev:
+    image: maildev/maildev:2.2.1
+    restart: "no"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --tries=1 --spider http://localhost:1080/healthz || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - seas
+    ports:
+      - "1025:1025"  # SMTP server
+      - "1080:1080"  # Web interface
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - MAILDEV_SMTP_PORT=1025  # Changed to match port mapping
+      - MAILDEV_WEB_PORT=1080
+
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    restart: "no"
+    ports:
+      - "8444:8444"
+    environment:
+      - SMTP_TLS=false
+      - SMTP_SSL=false
+      - SMTP_HOST=maildev
+      - SMTP_PORT=1025
+    command:
+      - uvicorn
+      - app.main:app
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8444"
+      - --reload
+    depends_on:
+      maildev:
+        condition: service_healthy
+    develop:
+      watch:
+        - path: ./api
+          action: sync
+          target: /app
+          ignore:
+            - .venv
+            - ./api/.venv
+        - path: ./api/pyproject.toml
+          action: rebuild
+
+  ui:
+    restart: "no"
+    ports:
+      - "5333:80"
+    build:
+      context: ui
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development

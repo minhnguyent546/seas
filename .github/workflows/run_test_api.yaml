@@ -1,0 +1,71 @@
+name: Run lint and tests on API
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - "api/**"
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - "api/**"
+  workflow_dispatch:
+
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: "${{ github.workspace }}/api"
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5789
+      POSTGRES_DB: seas-test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: seas
+      FIRST_USER_USERNAME: root
+    defaults:
+      run:
+        working-directory: ./api
+    services:
+      postgres:
+        image: postgres:17.5-bookworm
+        env:
+          POSTGRES_DB: seas-test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: seas
+        ports:
+          - 5789:5432
+        options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 3
+
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v4
+      - name: Install the latest version of uv and set the python version
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: ">=0.7.0"
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Generate random password for testing
+        run: |
+          echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
+      - name: Lint with ruff
+        run: |
+          uv run ruff check app tests
+          uv run ruff format app tests
+      - name: run tests with pytest
+        run: |
+          uv run pytest --cov=app --cov-report=html --cov-report=xml --cov-report=json:coverage.json --cov-report=term
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            api/coverage.xml
+            api/htmlcov
+          if-no-files-found: error
+          retention-days: 7
