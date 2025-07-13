@@ -5,6 +5,7 @@ interface DropdownProps {
   children: React.ReactNode;
   align?: 'left' | 'right';
   width?: string;
+  offsetX?: number; // Horizontal offset in pixels
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -12,6 +13,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   children,
   align = 'left',
   width = 'w-48',
+  offsetX = 0,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -43,9 +45,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div
-          className={`absolute z-20 mt-2 ${width} rounded-xl shadow-lg bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-5 focus:outline-none overflow-hidden ${
-            align === 'right' ? 'right-0' : 'left-0'
-          }`}
+          style={
+            align === 'right'
+              ? { right: `${offsetX}px` }
+              : { left: `${offsetX}px` }
+          }
+          className={`absolute z-20 mt-2 ${width} rounded-xl shadow-lg bg-white dark:bg-gray-800 ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-5 focus:outline-none overflow-hidden origin-top-right`}
         >
           <div className="py-1">{children}</div>
         </div>
@@ -80,4 +85,8 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
       {children}
     </button>
   );
+};
+
+export const DropdownSeparator: React.FC = () => {
+  return <div className="h-px my-1 bg-gray-200 dark:bg-gray-700" />;
 };

@@ -1,5 +1,16 @@
-import { ChatIcon, LeftDoubleArrowIcon, PlusIcon, SearchIcon } from '@/components/icons';
+import {
+  ChatIcon,
+  EllipsisIcon,
+  LeftDoubleArrowIcon,
+  PlusIcon,
+  SearchIcon,
+} from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownSeparator,
+} from '@/components/ui/dropdown';
 import React, { useState } from 'react';
 
 interface SidebarProps {
@@ -61,14 +72,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
             <Button
               onClick={onNewChat}
               variant="ghost"
-              className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1.5 cursor-pointer"
+              className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1 cursor-pointer"
             >
               <ChatIcon size={16} />
               <span>New Chat</span>
             </Button>
             <Button
               variant="ghost"
-              className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1.5 cursor-pointer"
+              className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1 cursor-pointer"
             >
               <SearchIcon size={16} />
               <span>Search Chats</span>
@@ -80,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
               onClick={onNewChat}
               variant="ghost"
               size="icon"
-              className="rounded-lg text-gray-700 dark:text-gray-300"
+              className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
               title="New Chat"
             >
               <PlusIcon size={16} />
@@ -88,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-lg text-gray-700 dark:text-gray-300"
+              className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
               title="Search Chats"
             >
               <SearchIcon size={16} />
@@ -104,12 +115,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
           </div>
           <div className="space-y-1">
             {historyItems.map((item) => (
-              <button
+              <div
                 key={item.id}
-                className="flex w-full cursor-pointer items-center justify-start text-left rounded-lg px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 group cursor-pointer relative"
               >
-                <span className="truncate">{item.label}</span>
-              </button>
+                <button className="truncate text-left cursor-pointer">
+                  {item.label}
+                </button>
+                <Dropdown
+                  trigger={
+                    <button className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer">
+                      <EllipsisIcon size={16} />
+                    </button>
+                  }
+                  align="left"
+                  width="w-40"
+                  offsetX={0}
+                >
+                  <DropdownItem>Rename</DropdownItem>
+                  <DropdownItem>Add to favorites</DropdownItem>
+                  <DropdownSeparator />
+                  <DropdownItem danger>Delete</DropdownItem>
+                </Dropdown>
+              </div>
             ))}
           </div>
         </div>
