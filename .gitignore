@@ -1,3 +1,9 @@
+# node modules
+node_modules/
+
+# vite pre-bundled deps
+.vite/
+
 # python stuff
 .ipynb_checkpoints
 __pycache__/
