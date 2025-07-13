@@ -1,0 +1,81 @@
+/* Reset some default styles */
+#root {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* Add scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Add prose styles for markdown content */
+.prose {
+  max-width: var(--content-max-width);
+  color: inherit;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+  line-height: 1.625;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.prose code {
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 1em;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+.dark .prose code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .prose {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Ensure our custom button class has higher specificity than global button styles */
+button.seas-btn {
+  /* background-color: inherit;
+  border-radius: inherit;
+  border: inherit;
+  padding: inherit;
+  font-size: inherit; */
+}

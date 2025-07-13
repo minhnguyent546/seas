@@ -37,17 +37,14 @@ services:
     env_file:
       - .env
     environment:
-      - API_PREFIX=${API_PREFIX}
       - API_PORT=8444
       - POSTGRES_HOST=db
-      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
-      - FIRST_USER_USERNAME=${FIRST_USER_USERNAME?Variable not set}
       - FIRST_USER_PASSWORD=${FIRST_USER_PASSWORD?Variable not set}
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8444/health || exit 1" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8444/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -56,6 +53,19 @@ services:
         condition: service_healthy
     networks:
       - seas
+
+  ui:
+    build:
+      context: ui
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - seas
+
 
 volumes:
   seas-db-data:
