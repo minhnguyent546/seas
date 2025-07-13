@@ -21,13 +21,14 @@ This is a chat UI interface to interact with a backend hosting LLM/AI Agents wit
 - `rehype-raw` 7.x for raw HTML support in markdown
 - `remark-gfm` 4.x for GitHub Flavored Markdown support
 - `react-syntax-highlighter` 15.x for code syntax highlighting
-- Material UI 7.x for UI components (primarily CircularProgress)
+- Material UI 7.x for UI components
 - Radix UI for primitive components (Avatar, Dialog, Dropdown, Tooltip)
 - Axios 1.x for HTTP requests
 - Framer Motion 12.x for animations
 - React Hook Form 7.x for form management
 - Sonner 2.x for notifications
 - `@hey-api/openapi-ts` 0.x for API client generation
+- `@tabler/icons-react` 3.x for consistent icon library
 - `clsx` and `tailwind-merge` for conditional styling
 - Use `yarn berry` instead of npm for package management
 
@@ -56,6 +57,14 @@ This is a chat UI interface to interact with a backend hosting LLM/AI Agents wit
 - Layout includes custom content max-width and other design tokens
 - Responsive design using Tailwind's breakpoint system (sm, md, lg, xl, 2xl)
 - Use `clsx` and `tailwind-merge` utilities for conditional and merged class names
+
+### Icons
+
+- Use Tabler Icons (`@tabler/icons-react`) for all icon needs
+- Default icon size should be 16px for inline icons, 20-24px for standalone buttons
+- Use consistent stroke width (typically 2) across the application
+- Do not create custom wrapper components for icons unless absolutely necessary
+- The `/src/components/icons/` folder should remain minimal and only contain custom icons that don't exist in Tabler
 
 ## Chat UI Components
 
@@ -114,7 +123,7 @@ When implementing chat UI features, prefer to create:
     - `types.gen.ts` - Generated TypeScript types for API
   - `/components/` - Reusable React components
     - `/chat/` - Components specific to the chat interface (e.g., `ChatContainer`, `Message`)
-    - `/icons/` - SVG icon components
+    - `/icons/` - Custom SVG icon components (minimal - prefer Tabler icons)
     - `/layout/` - Layout components like `Sidebar`
     - `/ui/` - Base UI components (e.g., `Button`, `Input`, `Avatar`)
   - `/constants/` - Application-wide constants (e.g., `path_routes.ts`)
