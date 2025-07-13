@@ -61,12 +61,12 @@ const useAuth = () => {
         typeof error.body === 'object' &&
         'detail' in (error.body as Record<string, unknown>)
           ? (error.body as Record<string, unknown>).detail
-          : 'Login failed. Please check your credentials.';
+          : 'Incorrect username or password';
 
       let message =
         typeof errorMessage === 'string'
           ? errorMessage
-          : 'Login failed. Please check your credentials.';
+          : 'Incorrect username or password';
       if (Array.isArray(errorMessage) && errorMessage.length > 0) {
         message = String(errorMessage[0]);
       }

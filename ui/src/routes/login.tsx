@@ -25,7 +25,7 @@ function Login() {
   });
 
   const onSubmit: SubmitHandler<AccessToken> = async (data: AccessToken) => {
-    if (isSubmitting) return;
+    if (isSubmitting || loginMutation.isPending) return;
 
     resetError();
     try {
