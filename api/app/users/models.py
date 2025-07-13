@@ -24,7 +24,7 @@ class User(Base):
     )
     password: Mapped[str] = mapped_column(String())
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
+        DateTime(timezone=True), default=lambda: datetime.now(tz=timezone_vi)
     )
 
     def __repr__(self) -> str:

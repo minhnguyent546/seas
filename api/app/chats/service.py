@@ -8,6 +8,7 @@ from app.chats.models import ChatMessage, ChatSession
 from app.chats.schemas import (
     ChatMessageCreate,
     ChatSessionCreate,
+    ChatSessionUpdate,
 )
 from app.core.config import timezone_vi
 from app.core.database import AsyncSession
@@ -46,6 +47,42 @@ async def create_chat_session(
         user_id=current_user.id,
         **chat_session_create.model_dump(),
     )
+    session.add(chat_session)
+    await session.commit()
+    await session.refresh(chat_session)
+    return chat_session
+
+
+async def update_chat_session(
+    session: AsyncSession,
+    chat_session_id: str,
+    chat_session_update: ChatSessionUpdate,
+    current_user: User,
+) -> ChatSession:
+    chat_session_result = await session.execute(
+        select(ChatSession).where(ChatSession.id == chat_session_id)
+    )
+    chat_session = chat_session_result.scalars().first()
+    if chat_session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat session not found.",
+        )
+    if chat_session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to update this chat session.",
+        )
+    chat_session_data = chat_session_update.model_dump(exclude_unset=True)
+    chat_session.is_favorite = chat_session_data.get(
+        "is_favorite", chat_session.is_favorite
+    )
+    if "session_metadata" in chat_session_data:
+        # Create a new dictionary to ensure SQLAlchemy detects the change
+        new_session_metadata = chat_session.session_metadata.copy()
+        new_session_metadata.update(chat_session_data["session_metadata"])
+        chat_session.session_metadata = new_session_metadata
+
     session.add(chat_session)
     await session.commit()
     await session.refresh(chat_session)

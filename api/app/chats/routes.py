@@ -8,6 +8,7 @@ from app.chats.schemas import (
     ChatMessagePublic,
     ChatSessionCreate,
     ChatSessionPublic,
+    ChatSessionUpdate,
 )
 from app.deps import (
     AsyncSessionDep,
@@ -76,6 +77,25 @@ async def get_chat_session(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this chat session",
         )
+    return chat_session
+
+
+@router.patch(
+    "/chat_sessions/{chat_session_id}", response_model=ChatSessionPublic
+)
+async def update_chat_session(
+    chat_session_id: uuid.UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+    chat_session_update: ChatSessionUpdate,
+):
+    """Update a chat session by ID."""
+    chat_session = await chats_service.update_chat_session(
+        session=session,
+        chat_session_id=str(chat_session_id),
+        chat_session_update=chat_session_update,
+        current_user=current_user,
+    )
     return chat_session
 
 
