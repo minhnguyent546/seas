@@ -10,6 +10,7 @@ from app.utils import serialize_datetime
 class ChatSessionPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: str
+    is_favorite: bool
     user_id: str
     created_at: datetime
     updated_at: datetime
@@ -26,6 +27,11 @@ class ChatSessionPublic(BaseModel):
 
 class ChatSessionCreate(BaseModel):
     session_metadata: dict[str, Any] = {}
+
+
+class ChatSessionUpdate(BaseModel):
+    is_favorite: bool | None = None
+    session_metadata: dict[str, Any] | None = None
 
 
 class ChatMessageCreate(BaseModel):
