@@ -2,6 +2,7 @@ import { type Body_auth_login_for_access_token as AccessToken } from '@/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useAuth from '@/hooks/useAuth';
+import { IconSparkles } from '@tabler/icons-react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
@@ -46,7 +47,10 @@ function Login() {
     >
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-xl">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-blue-600 mb-2">CTU SEAS</h1>
+          <h1 className="mb-5 flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">
+            <IconSparkles className="h-12 w-12" />
+            <span>CTU SEAS</span>
+          </h1>
           <h2 className="text-3xl font-bold text-gray-900">Sign in</h2>
           <p className="mt-2 text-sm text-gray-600">
             Sign in to your account to continue
