@@ -164,13 +164,19 @@ const ChatItemComponent: React.FC<ChatItemProps> = ({
           className="text-gray-500 dark:text-gray-400 flex-shrink-0"
         />
       )}
-      <button className="truncate text-left cursor-pointer min-w-0">
+      <button
+        type="button"
+        className="truncate text-left cursor-pointer min-w-0"
+      >
         {item.label}
       </button>
     </div>
     <Dropdown
       trigger={
-        <button className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer flex-shrink-0">
+        <button
+          type="button"
+          className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer flex-shrink-0"
+        >
           <IconDots size={16} />
         </button>
       }

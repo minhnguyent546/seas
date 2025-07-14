@@ -47,6 +47,7 @@ export const RecommendedQuestions: React.FC<RecommendedQuestionsProps> = ({
       {questions.map((question) => (
         <button
           key={question.text}
+          type="button"
           className="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 bg-white p-3 text-left transition-all duration-200 ease-in-out hover:scale-[1.02] hover:bg-gray-50 hover:shadow-md dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-gray-600 dark:hover:bg-gray-800"
           onClick={() => onQuestionClick(question.text)}
         >
