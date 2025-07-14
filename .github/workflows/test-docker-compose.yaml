@@ -14,9 +14,6 @@ on:
 jobs:
   test-docker-compose:
     runs-on: ubuntu-latest
-    env:
-      GOOGLE_OAUTH2_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH2_CLIENT_ID }}
-      GOOGLE_OAUTH2_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH2_CLIENT_SECRET }}
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
@@ -27,6 +24,8 @@ jobs:
           POSTGRES_USER=postgres
           POSTGRES_PASSWORD=$(openssl rand -hex 16)
           FIRST_USER_PASSWORD=$(openssl rand -base64 16)
+          GOOGLE_OAUTH2_CLIENT_ID=${{ secrets.GOOGLE_OAUTH2_CLIENT_ID }}
+          GOOGLE_OAUTH2_CLIENT_SECRET=${{ secrets.GOOGLE_OAUTH2_CLIENT_SECRET }}
           EOF
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
