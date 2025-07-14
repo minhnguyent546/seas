@@ -53,6 +53,16 @@ const historyItems: ChatItem[] = [
   { id: 'design-brief', label: 'Design Brief' },
   { id: 'marketing', label: 'Marketing' },
   { id: 'long-title', label: 'A very long title and it should be clipped' },
+  { id: 'new-project', label: 'New Project' },
+  { id: 'pricing-section', label: 'Pricing Section' },
+  { id: 'design-guidelines', label: 'Design Guidelines' },
+  { id: 'design-brief', label: 'Design Brief' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'long-title', label: 'A very long title and it should be clipped' },
+  { id: 'new-project', label: 'New Project' },
+  { id: 'pricing-section', label: 'Pricing Section' },
+  { id: 'design-guidelines', label: 'Design Guidelines' },
+  { id: 'design-brief', label: 'Design Brief' },
 ];
 
 const pinnedItems: ChatItem[] = [
@@ -212,7 +222,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
       <ActionButtons isCollapsed={isCollapsed} onNewChat={onNewChat} />
 
       {!isCollapsed && (
-        <>
+        <div className="flex-1 overflow-y-auto min-h-0">
           {/* Pinned Section */}
           {pinnedItems.length > 0 && (
             <ChatSection title="Pinned" items={pinnedItems} isPinned={true} />
@@ -220,11 +230,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
 
           {/* History Section */}
           <ChatSection title="History" items={historyItems} isPinned={false} />
-        </>
-      )}
 
-      {/* Bottom padding space */}
-      <div className="mt-auto p-4"></div>
+          {/* Bottom padding space */}
+          <div className="p-1"></div>
+        </div>
+      )}
     </div>
   );
 };
