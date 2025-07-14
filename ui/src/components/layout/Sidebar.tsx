@@ -175,7 +175,7 @@ const ChatItemComponent: React.FC<ChatItemProps> = ({
       }
       align="left"
       width="w-40"
-      offsetX={0}
+      offsetX={-128}
     >
       <DropdownItem icon={<IconEdit size={16} />}>Rename</DropdownItem>
       <DropdownItem icon={<IconPin size={16} />}>
