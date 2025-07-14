@@ -200,7 +200,6 @@ async def create_user(session: AsyncSession, user_create: UserCreate) -> User:
 async def get_distinct_username(
     session: AsyncSession, base_username: str
 ) -> str:
-    ...
     user = await get_user_by_username(session=session, username=base_username)
     if user is None:
         return base_username
