@@ -1,9 +1,10 @@
-import { ChatFeatures } from '@/components/chat/ChatFeatures';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
+import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
 import { generateId } from '@/lib/utils';
-import type { ChatFeature, Message as MessageType } from '@/types/chat';
+import type { Message as MessageType } from '@/types/chat';
 import { Box, CircularProgress } from '@mui/material';
+import { IconSparkles } from '@tabler/icons-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatContainerProps {
@@ -53,16 +54,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
     await simulateResponse(content);
   };
 
-  const handleFeatureClick = (feature: ChatFeature) => {
-    // Handle feature selection
-    const systemMessage: MessageType = {
-      id: generateId(),
-      role: 'system',
-      content: `You selected the ${feature.title} feature`,
-      timestamp: new Date(),
-    };
-
-    setMessages((prevMessages) => [...prevMessages, systemMessage]);
+  const handleQuestionClick = (question: string) => {
+    handleSendMessage(question);
   };
 
   return (
@@ -70,15 +63,18 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
       <div className="flex-1 overflow-y-auto p-4 min-h-0">
         <div className="mx-auto w-full max-w-[var(--content-max-width)] h-full">
           {messages.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center">
-              <h1 className="mb-2 text-3xl font-semibold text-gray-800 dark:text-white">
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <IconSparkles className="h-10 w-10 text-primary" />
+              </div>
+              <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-800 dark:text-white sm:text-4xl">
                 Hi, {userName}!
               </h1>
-              <p className="mb-8 text-lg text-gray-600 dark:text-gray-300">
-                How can I assist you today?
+              <p className="mb-8 text-lg text-gray-500 dark:text-gray-400">
+                Ask me anything about CTU Enrollment Program
               </p>
-              <div className="w-full">
-                <ChatFeatures onFeatureClick={handleFeatureClick} />
+              <div className="w-full max-w-2xl">
+                <RecommendedQuestions onQuestionClick={handleQuestionClick} />
               </div>
             </div>
           ) : (

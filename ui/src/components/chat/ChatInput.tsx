@@ -17,7 +17,7 @@ interface ChatInputProps {
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
   isLoading = false,
-  placeholder = 'Ask me anything...',
+  placeholder = 'Ask me anything about CTU Enrollment Program...',
 }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
