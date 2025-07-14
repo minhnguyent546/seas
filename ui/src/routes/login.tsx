@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useAuth from '@/hooks/useAuth';
 import { IconSparkles } from '@tabler/icons-react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 export const Route = createFileRoute('/login')({
@@ -121,11 +121,12 @@ function Login() {
               : 'Sign in'}
           </Button>
         </form>
-        {/* Example: Add a signup link if needed */}
-        {/* <div className="text-center text-sm mt-4">
+        <div className="text-center text-sm mt-4">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-primary hover:underline">Sign up</Link>
-        </div> */}
+          <Link to="/signup" className="text-primary hover:underline">
+            Sign up
+          </Link>
+        </div>
       </div>
     </div>
   );

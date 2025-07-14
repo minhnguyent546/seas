@@ -9,18 +9,18 @@ import {
 import { useEffect } from 'react';
 
 export const Route = createRootRoute({
-  // This is executed before the route is even loaded
   beforeLoad: ({ location }) => {
-    // Redirect unauthenticated users to login page if they're trying to access protected routes
-    const isAuthRoute = location.pathname !== ROUTE_PATHS.AUTH.LOGIN;
-    if (isAuthRoute && !isLoggedIn()) {
+    const isAuthPage =
+      location.pathname === ROUTE_PATHS.AUTH.LOGIN ||
+      location.pathname === ROUTE_PATHS.AUTH.SIGNUP;
+
+    if (!isAuthPage && !isLoggedIn()) {
       throw redirect({
         to: ROUTE_PATHS.AUTH.LOGIN,
       });
     }
 
-    // Redirect authenticated users to home if they try to access login
-    if (location.pathname === ROUTE_PATHS.AUTH.LOGIN && isLoggedIn()) {
+    if (isAuthPage && isLoggedIn()) {
       throw redirect({
         to: ROUTE_PATHS.HOME,
       });
@@ -37,9 +37,12 @@ function RootComponent() {
     const checkAuth = (event: StorageEvent) => {
       // Only invalidate router if the access_token was removed/added
       if (event.key === 'access_token') {
-        // Only trigger router invalidation if we're not already on the login page
+        // Only trigger router invalidation if we're not already on the login/signup page
         // to avoid interfering with the login process
-        if (window.location.pathname !== ROUTE_PATHS.AUTH.LOGIN) {
+        if (
+          window.location.pathname !== ROUTE_PATHS.AUTH.LOGIN &&
+          window.location.pathname !== ROUTE_PATHS.AUTH.SIGNUP
+        ) {
           router.invalidate();
         }
       }
