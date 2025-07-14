@@ -75,13 +75,6 @@ async def redirect_to_docs():
     return RedirectResponse(url="/docs", status_code=status.HTTP_302_FOUND)
 
 
-@app.get("/oauth-test", response_class=HTMLResponse, tags=["utils"])
-async def oauth_test():
-    """Serve OAuth2 test page"""
-    with open("static/oauth_test.html", "r") as f:
-        return HTMLResponse(content=f.read(), status_code=200)
-
-
 @app.get(
     f"{settings.API_PREFIX}/html", response_class=HTMLResponse, tags=["utils"]
 )
