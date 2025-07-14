@@ -73,11 +73,18 @@ async def google_oauth2_callback(
     if not userinfo:
         # Fetch user info if not included in the token
         async with httpx.AsyncClient() as client:
-            headers = {"Authorization": f"Bearer {access_token}"}
-            response = await client.get(
-                str(settings.GOOGLE_OAUTH2_USERINFO_URL), headers=headers
-            )
-            userinfo = response.json()
+            try:
+                headers = {"Authorization": f"Bearer {access_token}"}
+                response = await client.get(
+                    str(settings.GOOGLE_OAUTH2_USERINFO_URL), headers=headers
+                )
+                response.raise_for_status()
+                userinfo = response.json()
+            except httpx.HTTPStatusError as err:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Failed to fetch user information from Google: {str(err)}",
+                ) from err
 
     email = userinfo.get("email")
     full_name = userinfo.get("name")
@@ -99,23 +106,22 @@ async def google_oauth2_callback(
             )
 
         # Update existing user information if needed
-        existing_user.full_name = full_name
-        await session.commit()
+        if existing_user.full_name != full_name:
+            existing_user.full_name = full_name
+            await session.commit()
         user = existing_user
     else:
-        # Generate username from email, handling potential conflicts
-        base_username = email.split("@")[0]
-        username = base_username
-        counter = 1
-        while await users_service.get_user_by_username(
-            session=session, username=username
-        ):
-            username = f"{base_username}_{counter}"
-            counter += 1
-
+        # create a new user
+        if "@" in email:
+            base_username = email.split("@")[0]
+        else:
+            base_username = email
+        distinct_username = await users_service.get_distinct_username(
+            session=session, base_username=base_username
+        )
         random_password = secrets.token_urlsafe(32)
         user_create = UserCreate(
-            username=username,
+            username=distinct_username,
             email=email,
             full_name=full_name,
             is_active=True,
