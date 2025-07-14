@@ -1,6 +1,7 @@
 import { type UserRegister } from '@/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import useAuth from '@/hooks/useAuth';
 import { IconSparkles } from '@tabler/icons-react';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -140,9 +141,8 @@ function SignupComponent() {
               >
                 Password
               </label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="new-password"
                 required
                 placeholder="Enter your password"
@@ -163,9 +163,8 @@ function SignupComponent() {
               >
                 Confirm Password
               </label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 autoComplete="new-password"
                 required
                 placeholder="Confirm your password"

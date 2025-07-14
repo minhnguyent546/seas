@@ -1,6 +1,7 @@
 import { type Body_auth_login_for_access_token as AccessToken } from '@/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import useAuth from '@/hooks/useAuth';
 import { IconSparkles } from '@tabler/icons-react';
 import { createFileRoute, Link } from '@tanstack/react-router';
@@ -88,9 +89,8 @@ function Login() {
               >
                 Password
               </label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="current-password"
                 required
                 placeholder="Enter your password"
