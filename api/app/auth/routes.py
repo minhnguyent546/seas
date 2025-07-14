@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from authlib.integrations.starlette_client import OAuth
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
@@ -10,6 +11,7 @@ import app.users.service as users_service
 import app.utils as app_utils
 from app.auth.schemas import NewPassword, Token
 from app.auth.utils import hash_password
+from app.core.config import settings
 from app.deps import (
     AsyncSessionDep,
     CurrentActiveUserDep,
@@ -17,6 +19,17 @@ from app.deps import (
 )
 from app.schemas import MessageResponse
 from app.users.schemas import UserPublic, UserRegister
+
+oauth_client = OAuth()
+oauth_client.register(
+    name="google",
+    client_id=settings.GOOGLE_OAUTH2_CLIENT_ID,
+    client_secret=settings.GOOGLE_OAUTH2_CLIENT_SECRET,
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={
+        "scope": "openid profile email",
+    },
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -31,6 +44,33 @@ async def login_for_access_token(
         session=session, form_data=form_data
     )
     return token
+
+
+@router.get("/login/google-oauth2")
+async def login_via_google_oauth2(request: Request):
+    """Login with Google OAuth2."""
+    redirect_uri = request.url_for("google_oauth2_callback")
+    return await oauth_client.google.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
+
+
+@router.get("/login/google-oauth2/callback", response_model=Token)
+async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
+    """Callback to handle redirect from Google OAuth2."""
+    try:
+        # Let Authlib handle the state validation automatically
+        auth_access_token = await oauth_client.google.authorize_access_token(  # pyright: ignore[reportOptionalMemberAccess]
+            request
+        )
+
+        token = await auth_service.google_oauth2_callback(
+            session=session, auth_access_token=auth_access_token
+        )
+        return token
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error during Google OAuth2 authorization: {str(err)}",
+        ) from err
 
 
 @router.post(

@@ -24,6 +24,8 @@ dependencies = [
     "httpx>=0.28.1",
     "psutil>=7.0.0",
     "emails>=0.6",
+    "authlib>=1.6.0",
+    "starlette[full]>=0.46.2",
 ]
 
 [dependency-groups]

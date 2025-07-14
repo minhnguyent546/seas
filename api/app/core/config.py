@@ -3,10 +3,12 @@ from typing import Annotated, Any, Literal, Self
 
 import pytz
 from pydantic import (
+    AnyHttpUrl,
     AnyUrl,
     BeforeValidator,
     EmailStr,
     PostgresDsn,
+    TypeAdapter,
     computed_field,
     model_validator,
 )
@@ -46,6 +48,13 @@ class Settings(BaseSettings):
     # general
     API_PREFIX: str = "/api/v1"
     API_PORT: int = 8444
+
+    # google oauth2
+    GOOGLE_OAUTH2_CLIENT_ID: str
+    GOOGLE_OAUTH2_CLIENT_SECRET: str
+    GOOGLE_OAUTH2_USERINFO_URL: AnyHttpUrl = TypeAdapter(
+        AnyHttpUrl
+    ).validate_python("https://www.googleapis.com/oauth2/v3/userinfo")
 
     # cors
     BACKEND_CORS_ORIGINS: Annotated[

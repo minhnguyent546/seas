@@ -24,6 +24,8 @@ jobs:
           POSTGRES_USER=postgres
           POSTGRES_PASSWORD=$(openssl rand -hex 16)
           FIRST_USER_PASSWORD=$(openssl rand -base64 16)
+          GOOGLE_OAUTH2_CLIENT_ID=test-client-id
+          GOOGLE_OAUTH2_CLIENT_SECRET=test-client-secret
           EOF
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

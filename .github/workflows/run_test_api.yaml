@@ -26,6 +26,8 @@ jobs:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: seas
       FIRST_USER_USERNAME: root
+      GOOGLE_OAUTH2_CLIENT_ID: test-client-id
+      GOOGLE_OAUTH2_CLIENT_SECRET: test-client-secret
     defaults:
       run:
         working-directory: ./api
