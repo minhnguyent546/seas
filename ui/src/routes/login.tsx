@@ -1,4 +1,5 @@
 import { type Body_auth_login_for_access_token as AccessToken } from '@/client';
+import { GitHubIcon, GoogleIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
@@ -35,6 +36,16 @@ function Login() {
     } catch {
       // Error handling is done in the mutation's onError callback
     }
+  };
+
+  const handleGoogleLogin = () => {
+    // TODO: Implement Google OAuth login
+    console.log('Google login clicked - backend integration pending');
+  };
+
+  const handleGitHubLogin = () => {
+    // TODO: Implement GitHub OAuth login
+    console.log('GitHub login clicked - backend integration pending');
   };
 
   return (
@@ -119,6 +130,34 @@ function Login() {
             {isSubmitting || loginMutation.isPending
               ? 'Signing in...'
               : 'Sign in'}
+          </Button>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-gray-500">Or</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            onClick={handleGoogleLogin}
+          >
+            <GoogleIcon className="mr-2" size={20} />
+            Continue with Google
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            onClick={handleGitHubLogin}
+          >
+            <GitHubIcon className="mr-2" size={20} />
+            Continue with GitHub
           </Button>
         </form>
         <div className="text-center text-sm mt-4">
