@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 from pydantic import EmailStr
+from starlette.middleware.sessions import SessionMiddleware
 
 import app.utils as app_utils
 from app.api import api_router
@@ -60,6 +61,9 @@ app.add_middleware(
     allow_credentials=True,
 )
 
+# session middleware (for OAuth2)
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+
 
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["utils"])
 async def health_check():
@@ -69,6 +73,13 @@ async def health_check():
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs", status_code=status.HTTP_302_FOUND)
+
+
+@app.get("/oauth-test", response_class=HTMLResponse, tags=["utils"])
+async def oauth_test():
+    """Serve OAuth2 test page"""
+    with open("static/oauth_test.html", "r") as f:
+        return HTMLResponse(content=f.read(), status_code=200)
 
 
 @app.get(

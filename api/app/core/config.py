@@ -47,6 +47,13 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api/v1"
     API_PORT: int = 8444
 
+    # google oauth2
+    GOOGLE_OAUTH2_CLIENT_ID: str
+    GOOGLE_OAUTH2_CLIENT_SECRET: str
+    GOOGLE_OAUTH2_USERINFO_URL: str = (
+        "https://www.googleapis.com/oauth2/v3/userinfo"
+    )
+
     # cors
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors_origins)
