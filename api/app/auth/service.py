@@ -7,7 +7,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 import app.auth.service as auth_service
-import app.users.service as user_service
 import app.users.service as users_service
 from app.auth.schemas import Token
 from app.auth.utils import create_access_token, hash_password, verify_password
@@ -20,7 +19,7 @@ from app.users.schemas import UserCreate, UserRegister, UserRole
 async def authenticate_user(
     session: AsyncSession, username: str, password: str
 ) -> User | None:
-    db_user = await user_service.get_user_by_username(
+    db_user = await users_service.get_user_by_username(
         session=session, username=username
     )
     if db_user is None:
@@ -76,17 +75,16 @@ async def google_oauth2_callback(
         async with httpx.AsyncClient() as client:
             headers = {"Authorization": f"Bearer {access_token}"}
             response = await client.get(
-                settings.GOOGLE_OAUTH2_USERINFO_URL, headers=headers
+                str(settings.GOOGLE_OAUTH2_USERINFO_URL), headers=headers
             )
-            response.raise_for_status()
             userinfo = response.json()
 
     email = userinfo.get("email")
     full_name = userinfo.get("name")
     if not email or not full_name:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Unable to get user information from Google OAuth2",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incomplete user information received from Google OAuth2",
         )
 
     existing_user = await users_service.get_user_by_email(
@@ -105,8 +103,16 @@ async def google_oauth2_callback(
         await session.commit()
         user = existing_user
     else:
-        # create new user account
-        username = email
+        # Generate username from email, handling potential conflicts
+        base_username = email.split("@")[0]
+        username = base_username
+        counter = 1
+        while await users_service.get_user_by_username(
+            session=session, username=username
+        ):
+            username = f"{base_username}_{counter}"
+            counter += 1
+
         random_password = secrets.token_urlsafe(32)
         user_create = UserCreate(
             username=username,
@@ -138,7 +144,7 @@ async def google_oauth2_callback(
 async def signup_user(
     session: AsyncSession, user_register: UserRegister
 ) -> User:
-    db_user = await user_service.get_user_by_username(
+    db_user = await users_service.get_user_by_username(
         session=session, username=user_register.username
     )
     if db_user is not None:
@@ -146,7 +152,7 @@ async def signup_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already exists",
         )
-    db_user = await user_service.get_user_by_email(
+    db_user = await users_service.get_user_by_email(
         session=session, email=user_register.email
     )
     if db_user is not None:
