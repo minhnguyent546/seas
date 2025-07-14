@@ -1,6 +1,6 @@
-import React from 'react';
-import { ImageIcon, FileIcon, MicrophoneIcon } from '@/components/icons';
 import type { ChatFeature } from '@/types/chat';
+import { IconFile, IconMicrophone, IconPhoto } from '@tabler/icons-react';
+import React from 'react';
 
 interface ChatFeaturesProps {
   onFeatureClick: (feature: ChatFeature) => void;
@@ -11,25 +11,25 @@ const features: ChatFeature[] = [
     id: 'upload-images',
     title: 'Upload Images',
     description: 'Upload images for quick processing',
-    icon: <ImageIcon className="h-10 w-10 text-primary" />,
+    icon: <IconPhoto className="h-10 w-10 text-primary" />,
   },
   {
     id: 'generate-images',
     title: 'Generate Images',
     description: 'Create custom AI generated images from your ideas',
-    icon: <ImageIcon className="h-10 w-10 text-tertiary" />,
+    icon: <IconPhoto className="h-10 w-10 text-tertiary" />,
   },
   {
     id: 'upload-files',
     title: 'Upload files',
     description: 'Easily manage and process various file types',
-    icon: <FileIcon className="h-10 w-10 text-primary" />,
+    icon: <IconFile className="h-10 w-10 text-primary" />,
   },
   {
     id: 'voice-memo',
     title: 'Voice Memo',
     description: 'Upload or record voice memo to generate ideas',
-    icon: <MicrophoneIcon className="h-10 w-10 text-tertiary" />,
+    icon: <IconMicrophone className="h-10 w-10 text-tertiary" />,
   },
 ];
 

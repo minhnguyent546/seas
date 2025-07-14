@@ -1,12 +1,15 @@
 ---
 applyTo: '**'
 ---
+
 # UI Development Instructions for GitHub Copilot
 
 ## Project Overview
-This is a chat UI interface to interact with a backend hosting LLM/AI Agents with RAG, built with React 19 using TypeScript 5.x and TailwindCSS 4.x.
+
+This is a chat UI to interact with a backend hosting LLM/AI Agents with RAG, built with React 19 using TypeScript 5.x and TailwindCSS 4.x.
 
 ## Tech Stack
+
 - React 19.x
 - TypeScript 5.x
 - TailwindCSS 4.x (Oxide engine)
@@ -18,31 +21,35 @@ This is a chat UI interface to interact with a backend hosting LLM/AI Agents wit
 - `rehype-raw` 7.x for raw HTML support in markdown
 - `remark-gfm` 4.x for GitHub Flavored Markdown support
 - `react-syntax-highlighter` 15.x for code syntax highlighting
-- Material UI 7.x for UI components (primarily CircularProgress)
+- Material UI 7.x for UI components
 - Radix UI for primitive components (Avatar, Dialog, Dropdown, Tooltip)
 - Axios 1.x for HTTP requests
 - Framer Motion 12.x for animations
 - React Hook Form 7.x for form management
 - Sonner 2.x for notifications
 - `@hey-api/openapi-ts` 0.x for API client generation
+- `@tabler/icons-react` 3.x for consistent icon library
 - `clsx` and `tailwind-merge` for conditional styling
 - Use `yarn berry` instead of npm for package management
 
 ## Coding Standards
 
 ### React Components
+
 - Prefer functional components with hooks over class components
 - Use React hooks appropriately (useState, useEffect, useContext, useMemo, useCallback)
 - Implement proper state management for chat history, messages, and user input
 - Component folder structure should follow feature-based organization
 
 ### TypeScript
+
 - Always define proper interfaces or types for props, state, and API responses
 - Use explicit return types for functions and components
 - Leverage TypeScript's type inference when appropriate
 - Use discriminated unions for complex state management
 
 ### TailwindCSS Usage
+
 - Use TailwindCSS 4.x with the Oxide engine via `@tailwindcss/vite` plugin
 - Custom theme variables are defined in `src/index.css` using the `@theme` directive
 - Color scheme includes custom primary, secondary, tertiary colors with full shade ranges
@@ -50,6 +57,14 @@ This is a chat UI interface to interact with a backend hosting LLM/AI Agents wit
 - Layout includes custom content max-width and other design tokens
 - Responsive design using Tailwind's breakpoint system (sm, md, lg, xl, 2xl)
 - Use `clsx` and `tailwind-merge` utilities for conditional and merged class names
+
+### Icons
+
+- Use Tabler Icons (`@tabler/icons-react`) for all icon needs
+- Default icon size should be 16px for inline icons, 20-24px for standalone buttons
+- Use consistent stroke width (typically 2) across the application
+- Do not create custom wrapper components for icons unless absolutely necessary
+- The `/src/components/icons/` folder should remain minimal and only contain custom icons that don't exist in Tabler
 
 ## Chat UI Components
 
@@ -82,12 +97,14 @@ When implementing chat UI features, prefer to create:
    - Accessibility features (proper ARIA attributes, keyboard navigation)
 
 ## State Management
+
 - For simple components, use useState and useReducer
 - For complex state, consider using React Context or a state management library
 - Implement optimistic UI updates for better user experience
 - Handle error states gracefully with user-friendly messages
 
 ## Best Practices
+
 - Implement proper error boundaries
 - Add appropriate loading states and feedback
 - Ensure responsive design across different device sizes
@@ -97,6 +114,7 @@ When implementing chat UI features, prefer to create:
 - Handle edge cases like network errors, long messages, code blocks, etc.
 
 ## Project Structure
+
 - `/src/`
   - `/assets/` - Static assets like images and SVGs
   - `/client/` - Generated API client and types
@@ -105,7 +123,7 @@ When implementing chat UI features, prefer to create:
     - `types.gen.ts` - Generated TypeScript types for API
   - `/components/` - Reusable React components
     - `/chat/` - Components specific to the chat interface (e.g., `ChatContainer`, `Message`)
-    - `/icons/` - SVG icon components
+    - `/icons/` - Custom SVG icon components (minimal - prefer Tabler icons)
     - `/layout/` - Layout components like `Sidebar`
     - `/ui/` - Base UI components (e.g., `Button`, `Input`, `Avatar`)
   - `/constants/` - Application-wide constants (e.g., `path_routes.ts`)
@@ -118,6 +136,7 @@ When implementing chat UI features, prefer to create:
   - `/types/` - Custom TypeScript type definitions for the application
 
 ## Performance Considerations
+
 - Use React.memo for expensive renders
 - Implement proper list virtualization for chat history
 - Optimize re-renders with useMemo and useCallback
@@ -125,6 +144,7 @@ When implementing chat UI features, prefer to create:
 - Implement proper code-splitting
 
 ## API Integration
+
 - API client is auto-generated using `@hey-api/openapi-ts` from OpenAPI specifications
 - Use TanStack Query for data fetching, caching, and synchronization
 - Authentication is handled via JWT tokens stored in localStorage

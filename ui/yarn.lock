@@ -2244,6 +2244,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tabler/icons-react@npm:^3.34.0":
+  version: 3.34.0
+  resolution: "@tabler/icons-react@npm:3.34.0"
+  dependencies:
+    "@tabler/icons": "npm:3.34.0"
+  peerDependencies:
+    react: ">= 16"
+  checksum: 10c0/b2d094c6ae02fc157d9a059e06c65b1dd49a96c7fc77a57bc9acf289899df66504bcab533e7a22d9ec3ca7c3952176c6c916e84aff827b24d2c69ecc7bfc737d
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:3.34.0":
+  version: 3.34.0
+  resolution: "@tabler/icons@npm:3.34.0"
+  checksum: 10c0/7b4bb937e051ece9258ab4321363f284a4c1d53fbe0211c6976bff41d0ca031e8196156595bb30fa2bfb963f1771814d1438aa01a4422df9a6e21a46ebe6cc9b
+  languageName: node
+  linkType: hard
+
 "@tailwindcss/node@npm:4.1.7":
   version: 4.1.7
   resolution: "@tailwindcss/node@npm:4.1.7"
@@ -6599,6 +6617,7 @@ __metadata:
     "@radix-ui/react-dialog": "npm:^1.1.14"
     "@radix-ui/react-dropdown-menu": "npm:^2.1.15"
     "@radix-ui/react-tooltip": "npm:^1.2.7"
+    "@tabler/icons-react": "npm:^3.34.0"
     "@tailwindcss/vite": "npm:^4.1.7"
     "@tanstack/react-query": "npm:^5.83.0"
     "@tanstack/react-router": "npm:^1.127.3"

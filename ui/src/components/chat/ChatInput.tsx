@@ -1,11 +1,11 @@
-import {
-  FileIcon,
-  ImageIcon,
-  MicrophoneIcon,
-  SendIcon,
-} from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { CircularProgress } from '@mui/material';
+import {
+  IconFile,
+  IconMicrophone,
+  IconPhoto,
+  IconSend,
+} from '@tabler/icons-react';
 import React, { useRef, useState } from 'react';
 
 interface ChatInputProps {
@@ -75,7 +75,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             aria-label="Upload image"
           >
-            <ImageIcon size={20} />
+            <IconPhoto size={20} />
           </Button>
           <Button
             variant="ghost"
@@ -84,7 +84,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             aria-label="Upload file"
           >
-            <FileIcon size={20} />
+            <IconFile size={20} />
           </Button>
           <Button
             variant="ghost"
@@ -93,7 +93,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             aria-label="Voice input"
           >
-            <MicrophoneIcon size={20} />
+            <IconMicrophone size={20} />
           </Button>
           <Button
             onClick={handleSendMessage}
@@ -105,7 +105,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             {isLoading ? (
               <CircularProgress size={16} color="inherit" />
             ) : (
-              <SendIcon size={16} />
+              <IconSend size={16} />
             )}
           </Button>
         </div>
