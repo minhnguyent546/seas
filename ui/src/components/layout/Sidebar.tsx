@@ -12,6 +12,7 @@ import {
   IconPin,
   IconPlus,
   IconSearch,
+  IconSparkles,
   IconTrash,
 } from '@tabler/icons-react';
 import React, { useState } from 'react';
@@ -63,7 +64,7 @@ const historyItems: ChatItem[] = [
   { id: 'pricing-section-3', label: 'Pricing Section' },
   { id: 'design-guidelines-3', label: 'Design Guidelines' },
   { id: 'design-brief-3', label: 'Design Brief' },
-]
+];
 
 const pinnedItems: ChatItem[] = [
   { id: 'important-meeting', label: 'Important Meeting Notes' },
@@ -83,7 +84,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
         className={`h-6 w-6 rounded-md text-primary hover:text-primary/80 ${isCollapsed ? 'cursor-pointer' : 'cursor-default'}`}
         title={isCollapsed ? 'Open Sidebar' : 'SEAS'}
       >
-        <IconMessage className="h-5 w-5" />
+        <IconSparkles className="h-5 w-5" />
       </Button>
       {!isCollapsed && (
         <span className="text-lg font-semibold text-primary">SEAS</span>
