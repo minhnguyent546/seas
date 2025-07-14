@@ -6,7 +6,7 @@ applyTo: '**'
 
 ## Project Overview
 
-This is a chat UI interface to interact with a backend hosting LLM/AI Agents with RAG, built with React 19 using TypeScript 5.x and TailwindCSS 4.x.
+This is a chat UI to interact with a backend hosting LLM/AI Agents with RAG, built with React 19 using TypeScript 5.x and TailwindCSS 4.x.
 
 ## Tech Stack
 

@@ -47,23 +47,23 @@ interface ChatSectionProps {
 }
 
 const historyItems: ChatItem[] = [
-  { id: 'new-project', label: 'New Project' },
-  { id: 'pricing-section', label: 'Pricing Section' },
-  { id: 'design-guidelines', label: 'Design Guidelines' },
-  { id: 'design-brief', label: 'Design Brief' },
-  { id: 'marketing', label: 'Marketing' },
-  { id: 'long-title', label: 'A very long title and it should be clipped' },
-  { id: 'new-project', label: 'New Project' },
-  { id: 'pricing-section', label: 'Pricing Section' },
-  { id: 'design-guidelines', label: 'Design Guidelines' },
-  { id: 'design-brief', label: 'Design Brief' },
-  { id: 'marketing', label: 'Marketing' },
-  { id: 'long-title', label: 'A very long title and it should be clipped' },
-  { id: 'new-project', label: 'New Project' },
-  { id: 'pricing-section', label: 'Pricing Section' },
-  { id: 'design-guidelines', label: 'Design Guidelines' },
-  { id: 'design-brief', label: 'Design Brief' },
-];
+  { id: 'new-project-1', label: 'New Project' },
+  { id: 'pricing-section-1', label: 'Pricing Section' },
+  { id: 'design-guidelines-1', label: 'Design Guidelines' },
+  { id: 'design-brief-1', label: 'Design Brief' },
+  { id: 'marketing-1', label: 'Marketing' },
+  { id: 'long-title-1', label: 'A very long title and it should be clipped' },
+  { id: 'new-project-2', label: 'New Project' },
+  { id: 'pricing-section-2', label: 'Pricing Section' },
+  { id: 'design-guidelines-2', label: 'Design Guidelines' },
+  { id: 'design-brief-2', label: 'Design Brief' },
+  { id: 'marketing-2', label: 'Marketing' },
+  { id: 'long-title-2', label: 'A very long title and it should be clipped' },
+  { id: 'new-project-3', label: 'New Project' },
+  { id: 'pricing-section-3', label: 'Pricing Section' },
+  { id: 'design-guidelines-3', label: 'Design Guidelines' },
+  { id: 'design-brief-3', label: 'Design Brief' },
+]
 
 const pinnedItems: ChatItem[] = [
   { id: 'important-meeting', label: 'Important Meeting Notes' },
