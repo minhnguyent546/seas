@@ -3,21 +3,21 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthLoginForAccessTokenData, AuthLoginForAccessTokenResponse, AuthLoginViaGoogleOauth2Response, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsHtmlResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
+import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsHtmlResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
 
 export class AuthService {
     /**
-     * Login For Access Token
-     * Login with username and password to get an access token for future requests.
+     * Login
+     * Login with username and password.
      * @param data The data for the request.
      * @param data.formData
      * @returns LoginResponse Successful Response
      * @throws ApiError
      */
-    public static loginForAccessToken(data: AuthLoginForAccessTokenData): CancelablePromise<AuthLoginForAccessTokenResponse> {
+    public static login(data: AuthLoginData): CancelablePromise<AuthLoginResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/auth/login/access-token',
+            url: '/api/v1/auth/login',
             formData: data.formData,
             mediaType: 'application/x-www-form-urlencoded',
             errors: {
@@ -29,13 +29,21 @@ export class AuthService {
     /**
      * Login Via Google Oauth2
      * Login with Google OAuth2.
-     * @returns unknown Successful Response
+     * @param data The data for the request.
+     * @param data.responseClass
      * @throws ApiError
      */
-    public static loginViaGoogleOauth2(): CancelablePromise<AuthLoginViaGoogleOauth2Response> {
+    public static loginViaGoogleOauth2(data: AuthLoginViaGoogleOauth2Data = {}): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/auth/login/google-oauth2'
+            url: '/api/v1/auth/login/google-oauth2',
+            query: {
+                response_class: data.responseClass
+            },
+            errors: {
+                303: 'Successful Response',
+                422: 'Validation Error'
+            }
         });
     }
     

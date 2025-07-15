@@ -18,8 +18,9 @@ const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
     // Only redirect if we're not already on auth pages
     const currentPath = window.location.pathname;
-    const isOnAuthPage = currentPath === ROUTE_PATHS.AUTH.LOGIN ||
-                        currentPath === ROUTE_PATHS.AUTH.SIGNUP;
+    const isOnAuthPage =
+      currentPath === ROUTE_PATHS.AUTH.LOGIN ||
+      currentPath === ROUTE_PATHS.AUTH.SIGNUP;
 
     if (!isOnAuthPage) {
       window.location.href = ROUTE_PATHS.AUTH.LOGIN;

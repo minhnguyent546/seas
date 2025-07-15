@@ -1,7 +1,7 @@
 import {
-  type Body_auth_login_for_access_token as AccessToken,
   ApiError,
   AuthService,
+  type Body_auth_login as BodyAuthLogin,
   type UserPublic,
   type UserRegister,
   UsersService,
@@ -18,7 +18,10 @@ export const AUTH_QUERY_KEYS = {
 } as const;
 
 // Helper function to extract error message from API error
-const extractErrorMessage = (error: ApiError, fallback = 'Something went wrong'): string => {
+const extractErrorMessage = (
+  error: ApiError,
+  fallback = 'Something went wrong',
+): string => {
   if (!error.body || typeof error.body !== 'object') {
     return fallback;
   }
@@ -89,8 +92,8 @@ const useAuth = () => {
 
   // Login mutation
   const loginMutation = useMutation({
-    mutationFn: async (data: AccessToken) => {
-      await AuthService.loginForAccessToken({ formData: data });
+    mutationFn: async (data: BodyAuthLogin) => {
+      await AuthService.login({ formData: data });
     },
     onSuccess: () => {
       setAuthError(null);
@@ -99,7 +102,10 @@ const useAuth = () => {
       navigate({ to: ROUTE_PATHS.HOME });
     },
     onError: (error: ApiError) => {
-      const message = extractErrorMessage(error, 'Incorrect username or password');
+      const message = extractErrorMessage(
+        error,
+        'Incorrect username or password',
+      );
       setAuthError(message);
       console.error('Login error:', error);
     },

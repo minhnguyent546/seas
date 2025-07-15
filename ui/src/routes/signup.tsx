@@ -6,7 +6,12 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
 import { IconSparkles } from '@tabler/icons-react';
-import { Link, Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
+import {
+  Link,
+  Navigate,
+  createFileRoute,
+  useNavigate,
+} from '@tanstack/react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 export const Route = createFileRoute('/signup')({
@@ -14,7 +19,8 @@ export const Route = createFileRoute('/signup')({
 });
 
 function SignupComponent() {
-  const { signupMutation, error, resetError, isAuthenticated, isLoading } = useAuth();
+  const { signupMutation, error, resetError, isAuthenticated, isLoading } =
+    useAuth();
   const navigate = useNavigate();
   const {
     register,

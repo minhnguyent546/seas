@@ -1,4 +1,4 @@
-import { type Body_auth_login_for_access_token as AccessToken } from '@/client';
+import { OpenAPI, type Body_auth_login as BodyAuthLogin } from '@/client';
 import { GitHubIcon, GoogleIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,8 +6,10 @@ import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
+import { CircularProgress } from '@mui/material';
 import { IconSparkles } from '@tabler/icons-react';
 import { createFileRoute, Link, Navigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 export const Route = createFileRoute('/login')({
@@ -15,12 +17,15 @@ export const Route = createFileRoute('/login')({
 });
 
 function Login() {
-  const { loginMutation, error, resetError, isAuthenticated, isLoading } = useAuth();
+  const { loginMutation, error, resetError, isAuthenticated, isLoading } =
+    useAuth();
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AccessToken>({
+  } = useForm<BodyAuthLogin>({
     mode: 'onBlur',
     criteriaMode: 'all',
     defaultValues: {
@@ -28,6 +33,23 @@ function Login() {
       password: '',
     },
   });
+
+  // Check for OAuth errors in URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const oauthError = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+
+    if (oauthError) {
+      const errorMessage =
+        errorDescription || 'Google login failed. Please try again.';
+      setGoogleError(decodeURIComponent(errorMessage));
+
+      // Clean up URL parameters
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
 
   // Show loading while checking authentication
   if (isLoading) {
@@ -39,10 +61,13 @@ function Login() {
     return <Navigate to={ROUTE_PATHS.HOME} />;
   }
 
-  const onSubmit: SubmitHandler<AccessToken> = async (data: AccessToken) => {
+  const onSubmit: SubmitHandler<BodyAuthLogin> = async (
+    data: BodyAuthLogin,
+  ) => {
     if (isSubmitting || loginMutation.isPending) return;
 
     resetError();
+    setGoogleError(null); // Clear Google error when attempting regular login
     try {
       await loginMutation.mutateAsync(data);
     } catch {
@@ -50,9 +75,36 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth login
-    console.log('Google login clicked - backend integration pending');
+  const handleGoogleLogin = async () => {
+    if (isGoogleLoading) return;
+
+    setIsGoogleLoading(true);
+    setGoogleError(null); // Clear previous Google errors
+    resetError(); // Clear regular login errors
+
+    try {
+      // await AuthService.loginViaGoogleOauth2();
+
+      // TODO: currently hardcoded as redirect response probably not working with http
+      const baseUrl = OpenAPI.BASE;
+      const googleOAuthUrl = `${baseUrl}/api/v1/auth/login/google-oauth2`;
+      window.location.href = googleOAuthUrl;
+    } catch (error) {
+      console.error('Google OAuth login failed:', error);
+
+      // Extract error message
+      let errorMessage = 'Google login failed. Please try again.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = String(error.message);
+      }
+
+      setGoogleError(errorMessage);
+      setIsGoogleLoading(false);
+    }
   };
 
   const handleGitHubLogin = () => {
@@ -128,9 +180,9 @@ function Login() {
               />
             </div>
           </div>
-          {error && (
+          {(error || googleError) && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
+              {error || googleError}
             </div>
           )}
           <Button
@@ -158,9 +210,17 @@ function Login() {
             variant="outline"
             className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             onClick={handleGoogleLogin}
+            disabled={isGoogleLoading}
           >
             <GoogleIcon className="mr-2" size={20} />
-            Continue with Google
+            {isGoogleLoading ? (
+              <>
+                Signing in with Google
+                <CircularProgress size={16} className="ml-2" />
+              </>
+            ) : (
+              'Continue with Google'
+            )}
           </Button>
           <Button
             type="button"
