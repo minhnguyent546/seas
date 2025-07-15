@@ -2,10 +2,12 @@ import { type Body_auth_login_for_access_token as AccessToken } from '@/client';
 import { GitHubIcon, GoogleIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
+import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
 import { IconSparkles } from '@tabler/icons-react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, Navigate } from '@tanstack/react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 export const Route = createFileRoute('/login')({
@@ -13,7 +15,7 @@ export const Route = createFileRoute('/login')({
 });
 
 function Login() {
-  const { loginMutation, error, resetError } = useAuth();
+  const { loginMutation, error, resetError, isAuthenticated, isLoading } = useAuth();
   const {
     register,
     handleSubmit,
@@ -26,6 +28,16 @@ function Login() {
       password: '',
     },
   });
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return <Loading message="Checking authentication..." />;
+  }
+
+  // Redirect to home if already authenticated
+  if (isAuthenticated) {
+    return <Navigate to={ROUTE_PATHS.HOME} />;
+  }
 
   const onSubmit: SubmitHandler<AccessToken> = async (data: AccessToken) => {
     if (isSubmitting || loginMutation.isPending) return;

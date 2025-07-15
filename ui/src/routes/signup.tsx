@@ -1,10 +1,12 @@
 import { type UserRegister } from '@/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
+import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
 import { IconSparkles } from '@tabler/icons-react';
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Link, Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 export const Route = createFileRoute('/signup')({
@@ -12,7 +14,7 @@ export const Route = createFileRoute('/signup')({
 });
 
 function SignupComponent() {
-  const { signupMutation, error, resetError } = useAuth();
+  const { signupMutation, error, resetError, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const {
     register,
@@ -32,6 +34,16 @@ function SignupComponent() {
   });
 
   const password = watch('password');
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return <Loading message="Checking authentication..." />;
+  }
+
+  // Redirect to home if already authenticated
+  if (isAuthenticated) {
+    return <Navigate to={ROUTE_PATHS.HOME} />;
+  }
 
   const onSubmit: SubmitHandler<UserRegister> = async (data: UserRegister) => {
     if (isSubmitting || signupMutation.isPending) return;
