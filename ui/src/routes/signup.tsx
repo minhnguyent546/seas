@@ -85,6 +85,10 @@ function SignupComponent() {
                 error={errors.full_name?.message}
                 {...register('full_name', {
                   required: 'Full name is required',
+                  minLength: {
+                    value: 3,
+                    message: 'Full name must be at least 3 characters',
+                  },
                 })}
               />
             </div>
@@ -128,7 +132,8 @@ function SignupComponent() {
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
-                    value: /^\S+@\S+$/i,
+                    value:
+                      /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
                     message: 'Invalid email address',
                   },
                 })}
