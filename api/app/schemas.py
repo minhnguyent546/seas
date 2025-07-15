@@ -24,3 +24,9 @@ class MessageResponse(BaseModel):
 class EmailData(BaseModel):
     html_content: str
     subject: str
+
+
+class LoginResponse(BaseModel):
+    message: str
+    token_type: str = "bearer"
+    expires_in: float  # in seconds

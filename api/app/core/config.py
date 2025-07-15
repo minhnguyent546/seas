@@ -148,5 +148,14 @@ class Settings(BaseSettings):
 
         return options
 
+    @property
+    def cookie_common_options(self) -> dict[str, Any]:
+        return {
+            "path": "/",
+            "secure": False,  # TODO: should be set to True in production
+            "httponly": True,
+            "samesite": "lax",
+        }
+
 
 settings = Settings()  # pyright: ignore[reportCallIssue]

@@ -2,7 +2,7 @@ from typing import Annotated
 
 import jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import APIKeyCookie
 from pydantic import ValidationError
 
 import app.users.service as user_service
@@ -11,22 +11,32 @@ from app.core.database import AsyncSessionDep
 from app.users.models import User
 from app.users.schemas import UserRole
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_PREFIX}/auth/login/access-token"
-)
-
-TokenDep = Annotated[str, Depends(oauth2_scheme)]
+cookie_scheme = APIKeyCookie(name="access_token", auto_error=False)
 
 
-async def get_current_user(session: AsyncSessionDep, token: TokenDep) -> User:
+async def get_current_user(
+    session: AsyncSessionDep,
+    access_token: Annotated[str | None, Depends(cookie_scheme)] = None,
+) -> User:
+    if access_token is None:
+        detail = "Not authenticated"
+        if settings.ENVIRONMENT == "development":
+            detail += " (No access token provided in cookie)"
+
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=detail,
+            headers={"WWW-Authenticate": "Cookie"},
+        )
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={"WWW-Authenticate": "Cookie"},
     )
     try:
         payload = jwt.decode(
-            jwt=token,
+            jwt=access_token,
             key=settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM],
         )
