@@ -105,6 +105,13 @@ class Settings(BaseSettings):
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 24  # 24 hours
     EMAIL_TEST_USER: str = "testuser@test.com"
 
+    # llm
+    MODEL_PROVIDER: str = "google"
+    MODEL_NAME: str = "gemini-2.5-flash"
+    GOOGLE_API_KEY: str = ""
+    OPENAI_API_KEY: str = ""
+    ANTHROPIC_API_KEY: str = ""
+
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
         if self.EMAILS_FROM_NAME is None:
