@@ -1,15 +1,22 @@
 from typing import Annotated
 
 from authlib.integrations.starlette_client import OAuth
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.responses import HTMLResponse
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Request,
+    Response,
+    status,
+)
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 import app.auth.service as auth_service
 import app.users.service as users_service
 import app.utils as app_utils
-from app.auth.schemas import NewPassword, Token
+from app.auth.schemas import NewPassword
 from app.auth.utils import hash_password
 from app.core.config import settings
 from app.deps import (
@@ -17,7 +24,7 @@ from app.deps import (
     CurrentActiveUserDep,
     get_current_superuser,
 )
-from app.schemas import MessageResponse
+from app.schemas import LoginResponse, MessageResponse
 from app.users.schemas import UserPublic, UserRegister
 
 oauth_client = OAuth()
@@ -34,16 +41,27 @@ oauth_client.register(
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login/access-token", response_model=Token)
+@router.post("/login/access-token", response_model=LoginResponse)
 async def login_for_access_token(
     session: AsyncSessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    response: Response,
 ):
     """Login with username and password to get an access token for future requests."""
     token = await auth_service.login_for_access_token(
         session=session, form_data=form_data
     )
-    return token
+    response.set_cookie(
+        key="access_token",
+        value=token.access_token,
+        max_age=int(token.expires_in),
+        **settings.cookie_common_options,
+    )
+    return LoginResponse(
+        message="Login successful",
+        token_type="bearer",
+        expires_in=token.expires_in,
+    )
 
 
 @router.get("/login/google-oauth2")
@@ -53,8 +71,10 @@ async def login_via_google_oauth2(request: Request):
     return await oauth_client.google.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
 
 
-@router.get("/login/google-oauth2/callback", response_model=Token)
-async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
+@router.get("/login/google-oauth2/callback", response_class=RedirectResponse)
+async def google_oauth2_callback(
+    session: AsyncSessionDep, request: Request, response: Response
+):
     """Callback to handle redirect from Google OAuth2."""
     try:
         # Let Authlib handle the state validation automatically
@@ -65,7 +85,15 @@ async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
         token = await auth_service.google_oauth2_callback(
             session=session, auth_access_token=auth_access_token
         )
-        return token
+        response.set_cookie(
+            key="access_token",
+            value=token.access_token,
+            max_age=int(token.expires_in),
+            **settings.cookie_common_options,
+        )
+        return RedirectResponse(
+            url=settings.FRONTEND_HOST, status_code=status.HTTP_303_SEE_OTHER
+        )
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -93,6 +121,13 @@ async def signup(
 async def test_token(current_user: CurrentActiveUserDep):
     """Test if your access token is valid."""
     return current_user
+
+
+@router.post("/signout", response_model=MessageResponse)
+async def signout(response: Response):
+    """Signout the user"""
+    response.delete_cookie("access_token", **settings.cookie_common_options)
+    return MessageResponse(message="Sign out successful")
 
 
 @router.post("/password-recovery/{email}", response_model=MessageResponse)
