@@ -4,6 +4,7 @@ from loguru import logger
 from app.core.config import settings
 
 
+# TODO: migrate to cooke-based authentication
 async def get_superuser_token_headers(client: AsyncClient) -> dict[str, str]:
     form_data = {
         "username": settings.FIRST_USER_USERNAME,
