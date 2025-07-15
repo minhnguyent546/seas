@@ -1,7 +1,7 @@
-import pytest
-from httpx import AsyncClient
+import pytest  # noqa: F401
+from httpx import AsyncClient  # noqa: F401
 
-from app.core.config import settings
+from app.core.config import settings  # noqa: F401
 
 
 # @pytest.mark.asyncio(loop_scope="session")
