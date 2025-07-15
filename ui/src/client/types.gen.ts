@@ -50,6 +50,12 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type LoginResponse = {
+    message: string;
+    token_type?: string;
+    expires_in: number;
+};
+
 export type MessageResponse = {
     status?: MessageStatus;
     message: string;
@@ -63,12 +69,6 @@ export type NewPassword = {
 };
 
 export type Sender = 'USER' | 'BOT' | 'SYSTEM';
-
-export type Token = {
-    access_token: string;
-    token_type?: string;
-    expires_in: number;
-};
 
 export type UpdatePassword = {
     current_password: string;
@@ -131,11 +131,9 @@ export type AuthLoginForAccessTokenData = {
     formData: Body_auth_login_for_access_token;
 };
 
-export type AuthLoginForAccessTokenResponse = (Token);
+export type AuthLoginForAccessTokenResponse = (LoginResponse);
 
 export type AuthLoginViaGoogleOauth2Response = (unknown);
-
-export type AuthGoogleOauth2CallbackResponse = (Token);
 
 export type AuthSignupData = {
     requestBody: UserRegister;
@@ -144,6 +142,8 @@ export type AuthSignupData = {
 export type AuthSignupResponse = (UserPublic);
 
 export type AuthTestTokenResponse = (UserPublic);
+
+export type AuthSignoutResponse = (MessageResponse);
 
 export type AuthRecoverPasswordData = {
     email: string;

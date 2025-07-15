@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthLoginForAccessTokenData, AuthLoginForAccessTokenResponse, AuthLoginViaGoogleOauth2Response, AuthGoogleOauth2CallbackResponse, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsHtmlResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
+import type { AuthLoginForAccessTokenData, AuthLoginForAccessTokenResponse, AuthLoginViaGoogleOauth2Response, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsHtmlResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
 
 export class AuthService {
     /**
@@ -11,7 +11,7 @@ export class AuthService {
      * Login with username and password to get an access token for future requests.
      * @param data The data for the request.
      * @param data.formData
-     * @returns Token Successful Response
+     * @returns LoginResponse Successful Response
      * @throws ApiError
      */
     public static loginForAccessToken(data: AuthLoginForAccessTokenData): CancelablePromise<AuthLoginForAccessTokenResponse> {
@@ -42,13 +42,15 @@ export class AuthService {
     /**
      * Google Oauth2 Callback
      * Callback to handle redirect from Google OAuth2.
-     * @returns Token Successful Response
      * @throws ApiError
      */
-    public static googleOauth2Callback(): CancelablePromise<AuthGoogleOauth2CallbackResponse> {
+    public static googleOauth2Callback(): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/auth/login/google-oauth2/callback'
+            url: '/api/v1/auth/login/google-oauth2/callback',
+            errors: {
+                307: 'Successful Response'
+            }
         });
     }
     
@@ -82,6 +84,19 @@ export class AuthService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/auth/login/test-token'
+        });
+    }
+    
+    /**
+     * Signout
+     * Signout the user
+     * @returns MessageResponse Successful Response
+     * @throws ApiError
+     */
+    public static signout(): CancelablePromise<AuthSignoutResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/auth/signout'
         });
     }
     
