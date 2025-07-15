@@ -5,7 +5,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.core.database import AsyncSession, AsyncSessionLocal, init_db
 from app.main import app
-from tests.utils.users import get_superuser_token_headers
+from tests.utils.users import get_superuser_cookies
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
@@ -26,6 +26,6 @@ async def client() -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest_asyncio.fixture(scope="session")
-async def superuser_token_headers(client: AsyncClient) -> dict[str, str]:
-    headers = await get_superuser_token_headers(client=client)
-    return headers
+async def superuser_cookies(client: AsyncClient) -> dict[str, str]:
+    cookies = await get_superuser_cookies(client=client)
+    return cookies

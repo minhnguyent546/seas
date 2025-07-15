@@ -41,13 +41,13 @@ oauth_client.register(
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login/access-token", response_model=LoginResponse)
-async def login_for_access_token(
+@router.post("/login", response_model=LoginResponse)
+async def login(
     session: AsyncSessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     response: Response,
 ):
-    """Login with username and password to get an access token for future requests."""
+    """Login with username and password."""
     token = await auth_service.login_for_access_token(
         session=session, form_data=form_data
     )
