@@ -64,17 +64,17 @@ async def login_for_access_token(
     )
 
 
-@router.get("/login/google-oauth2")
-async def login_via_google_oauth2(request: Request):
+@router.get("/login/google-oauth2", status_code=status.HTTP_303_SEE_OTHER)
+async def login_via_google_oauth2(
+    request: Request, response_class=RedirectResponse
+):
     """Login with Google OAuth2."""
     redirect_uri = request.url_for("google_oauth2_callback")
     return await oauth_client.google.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @router.get("/login/google-oauth2/callback", response_class=RedirectResponse)
-async def google_oauth2_callback(
-    session: AsyncSessionDep, request: Request, response: Response
-):
+async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
     """Callback to handle redirect from Google OAuth2."""
     try:
         # Let Authlib handle the state validation automatically
@@ -85,15 +85,16 @@ async def google_oauth2_callback(
         token = await auth_service.google_oauth2_callback(
             session=session, auth_access_token=auth_access_token
         )
+        response = RedirectResponse(
+            url=settings.FRONTEND_HOST, status_code=status.HTTP_303_SEE_OTHER
+        )
         response.set_cookie(
             key="access_token",
             value=token.access_token,
             max_age=int(token.expires_in),
             **settings.cookie_common_options,
         )
-        return RedirectResponse(
-            url=settings.FRONTEND_HOST, status_code=status.HTTP_303_SEE_OTHER
-        )
+        return response
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
