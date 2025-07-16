@@ -8,4 +8,7 @@ node_modules
 .yarn
 
 # auto-generated files by tanstack router
-routeTree.gen.ts
+src/routeTree.gen.ts
+
+# auto-generated files by openapi-ts
+src/client/
