@@ -1,6 +1,6 @@
 from typing import Annotated
+from urllib.parse import quote
 
-from authlib.integrations.starlette_client import OAuth
 from fastapi import (
     APIRouter,
     Depends,
@@ -16,6 +16,7 @@ from pydantic import EmailStr
 import app.auth.service as auth_service
 import app.users.service as users_service
 import app.utils as app_utils
+from app.auth.oauth_client import oauth_client
 from app.auth.schemas import NewPassword
 from app.auth.utils import hash_password
 from app.core.config import settings
@@ -25,18 +26,7 @@ from app.deps import (
     get_current_superuser,
 )
 from app.schemas import LoginResponse, MessageResponse
-from app.users.schemas import UserPublic, UserRegister
-
-oauth_client = OAuth()
-oauth_client.register(
-    name="google",
-    client_id=settings.GOOGLE_OAUTH2_CLIENT_ID,
-    client_secret=settings.GOOGLE_OAUTH2_CLIENT_SECRET,
-    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    client_kwargs={
-        "scope": "openid profile email",
-    },
-)
+from app.users.schemas import OAuthProvider, UserPublic, UserRegister
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -95,11 +85,67 @@ async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
             **settings.cookie_common_options,
         )
         return response
+    except HTTPException as http_err:
+        # Handle specific OAuth provider conflicts and other HTTP errors
+        error_message = http_err.detail
+        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        return RedirectResponse(
+            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
+        )
     except Exception as err:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Error during Google OAuth2 authorization: {str(err)}",
-        ) from err
+        # Handle any other unexpected errors
+        error_message = f"Error during Google OAuth2 authorization: {str(err)}"
+        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        return RedirectResponse(
+            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
+        )
+
+
+@router.get("/login/github-oauth2", status_code=status.HTTP_303_SEE_OTHER)
+async def login_via_github_oauth2(
+    request: Request, response_class=RedirectResponse
+):
+    """Login with Github OAuth2."""
+    redirect_uri = request.url_for("github_oauth2_callback")
+    return await oauth_client.github.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
+
+
+@router.get("/login/github-oauth2/callback", response_class=RedirectResponse)
+async def github_oauth2_callback(session: AsyncSessionDep, request: Request):
+    """Callback to handle redirect from Github OAuth2."""
+    try:
+        # Let Authlib handle the state validation automatically
+        auth_access_token = await oauth_client.github.authorize_access_token(  # pyright: ignore[reportOptionalMemberAccess]
+            request
+        )
+
+        token = await auth_service.github_oauth2_callback(
+            session=session, auth_access_token=auth_access_token
+        )
+        response = RedirectResponse(
+            url=settings.FRONTEND_HOST, status_code=status.HTTP_303_SEE_OTHER
+        )
+        response.set_cookie(
+            key="access_token",
+            value=token.access_token,
+            max_age=int(token.expires_in),
+            **settings.cookie_common_options,
+        )
+        return response
+    except HTTPException as http_err:
+        # Handle specific OAuth provider conflicts and other HTTP errors
+        error_message = http_err.detail
+        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        return RedirectResponse(
+            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
+        )
+    except Exception as err:
+        # Handle any other unexpected errors
+        error_message = f"Error during Github OAuth2 authorization: {str(err)}"
+        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        return RedirectResponse(
+            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
+        )
 
 
 @router.post(
@@ -140,6 +186,15 @@ async def recover_password(session: AsyncSessionDep, email: EmailStr):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No user found with this email.",
         )
+
+    # Check if user was created with OAuth provider
+    if user.oauth_provider != OAuthProvider.LOCAL:
+        provider_name = user.oauth_provider.value.title()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"This account was created using {provider_name}. Please sign in with {provider_name} instead. Password reset is not available for OAuth accounts.",
+        )
+
     password_reset_token = app_utils.generate_password_reset_token(
         email=user.email
     )
@@ -171,6 +226,15 @@ async def reset_password(session: AsyncSessionDep, new_password: NewPassword):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No user found with this email.",
         )
+
+    # Check if user was created with OAuth provider
+    if user.oauth_provider != OAuthProvider.LOCAL:
+        provider_name = user.oauth_provider.value.title()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"This account was created using {provider_name}. Password reset is not available for OAuth accounts. Please sign in with {provider_name} instead.",
+        )
+
     hashed_password = hash_password(new_password.new_password)
     user.password = hashed_password
     session.add(user)
