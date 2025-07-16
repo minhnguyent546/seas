@@ -1,5 +1,5 @@
 from typing import Annotated
-from urllib.parse import quote
+from urllib.parse import urlencode
 
 from fastapi import (
     APIRouter,
@@ -87,15 +87,25 @@ async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
         return response
     except HTTPException as http_err:
         # Handle specific OAuth provider conflicts and other HTTP errors
-        error_message = http_err.detail
-        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        query_params = {
+            "oauth2-provider": OAuthProvider.GOOGLE.value,
+            "oauth2-error": http_err.detail,
+        }
+        frontend_url = (
+            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
+        )
         return RedirectResponse(
             url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
         )
     except Exception as err:
         # Handle any other unexpected errors
-        error_message = f"Error during Google OAuth2 authorization: {str(err)}"
-        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        query_params = {
+            "oauth2-provider": OAuthProvider.GOOGLE.value,
+            "oauth2-error": f"Error during Google OAuth2 authorization: {str(err)}",
+        }
+        frontend_url = (
+            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
+        )
         return RedirectResponse(
             url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
         )
@@ -134,15 +144,25 @@ async def github_oauth2_callback(session: AsyncSessionDep, request: Request):
         return response
     except HTTPException as http_err:
         # Handle specific OAuth provider conflicts and other HTTP errors
-        error_message = http_err.detail
-        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        query_params = {
+            "oauth2-provider": OAuthProvider.GITHUB.value,
+            "oauth2-error": http_err.detail,
+        }
+        frontend_url = (
+            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
+        )
         return RedirectResponse(
             url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
         )
     except Exception as err:
         # Handle any other unexpected errors
-        error_message = f"Error during Github OAuth2 authorization: {str(err)}"
-        frontend_url = f"{settings.FRONTEND_HOST}/login?oauth2-error={quote(error_message)}"
+        query_params = {
+            "oauth2-provider": OAuthProvider.GITHUB.value,
+            "oauth2-error": f"Error during Github OAuth2 authorization: {str(err)}",
+        }
+        frontend_url = (
+            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
+        )
         return RedirectResponse(
             url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
         )

@@ -71,6 +71,7 @@ class UserPublic(BaseModel):
     full_name: Annotated[str, Field(min_length=3, max_length=100)]
     is_active: bool
     role: UserRole
+    oauth_provider: OAuthProvider
     created_at: datetime
 
     @field_serializer("created_at")
