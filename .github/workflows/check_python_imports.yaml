@@ -22,6 +22,8 @@ jobs:
       PYTHONPATH: "${{ github.workspace }}/api"
       GOOGLE_OAUTH2_CLIENT_ID: test-client-id
       GOOGLE_OAUTH2_CLIENT_SECRET: test-client-secret
+      GITHUB_OAUTH2_CLIENT_ID: test-client-id
+      GITHUB_OAUTH2_CLIENT_SECRET: test-client-secret
     defaults:
       run:
         working-directory: ./api
