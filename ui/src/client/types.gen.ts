@@ -68,6 +68,8 @@ export type NewPassword = {
     new_password: string;
 };
 
+export type OAuthProvider = 'GOOGLE' | 'GITHUB' | 'LOCAL';
+
 export type Sender = 'USER' | 'BOT' | 'SYSTEM';
 
 export type UpdatePassword = {
@@ -82,6 +84,7 @@ export type UserCreate = {
     is_active?: boolean;
     password: string;
     role?: UserRole;
+    oauth_provider?: OAuthProvider;
 };
 
 export type UserPublic = {
@@ -91,6 +94,7 @@ export type UserPublic = {
     full_name: string;
     is_active: boolean;
     role: UserRole;
+    oauth_provider: OAuthProvider;
     created_at: string;
 };
 
@@ -134,6 +138,10 @@ export type AuthLoginData = {
 export type AuthLoginResponse = (LoginResponse);
 
 export type AuthLoginViaGoogleOauth2Data = {
+    responseClass?: unknown;
+};
+
+export type AuthLoginViaGithubOauth2Data = {
     responseClass?: unknown;
 };
 
