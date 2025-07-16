@@ -1,5 +1,4 @@
 from typing import Annotated
-from urllib.parse import urlencode
 
 from fastapi import (
     APIRouter,
@@ -18,7 +17,7 @@ import app.users.service as users_service
 import app.utils as app_utils
 from app.auth.oauth_client import oauth_client
 from app.auth.schemas import NewPassword
-from app.auth.utils import hash_password
+from app.auth.utils import handle_oauth_error, hash_password
 from app.core.config import settings
 from app.deps import (
     AsyncSessionDep,
@@ -85,44 +84,22 @@ async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
             **settings.cookie_common_options,
         )
         return response
-    except HTTPException as http_err:
-        # Handle specific OAuth provider conflicts and other HTTP errors
-        query_params = {
-            "oauth2-provider": OAuthProvider.GOOGLE.value,
-            "oauth2-error": http_err.detail,
-        }
-        frontend_url = (
-            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
-        )
-        return RedirectResponse(
-            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
-        )
-    except Exception as err:
-        # Handle any other unexpected errors
-        query_params = {
-            "oauth2-provider": OAuthProvider.GOOGLE.value,
-            "oauth2-error": f"Error during Google OAuth2 authorization: {str(err)}",
-        }
-        frontend_url = (
-            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
-        )
-        return RedirectResponse(
-            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
-        )
+    except (HTTPException, Exception) as err:
+        return handle_oauth_error(provider=OAuthProvider.GOOGLE, error=err)
 
 
 @router.get("/login/github-oauth2", status_code=status.HTTP_303_SEE_OTHER)
 async def login_via_github_oauth2(
     request: Request, response_class=RedirectResponse
 ):
-    """Login with Github OAuth2."""
+    """Login with GitHub OAuth2."""
     redirect_uri = request.url_for("github_oauth2_callback")
     return await oauth_client.github.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @router.get("/login/github-oauth2/callback", response_class=RedirectResponse)
 async def github_oauth2_callback(session: AsyncSessionDep, request: Request):
-    """Callback to handle redirect from Github OAuth2."""
+    """Callback to handle redirect from GitHub OAuth2."""
     try:
         # Let Authlib handle the state validation automatically
         auth_access_token = await oauth_client.github.authorize_access_token(  # pyright: ignore[reportOptionalMemberAccess]
@@ -142,30 +119,8 @@ async def github_oauth2_callback(session: AsyncSessionDep, request: Request):
             **settings.cookie_common_options,
         )
         return response
-    except HTTPException as http_err:
-        # Handle specific OAuth provider conflicts and other HTTP errors
-        query_params = {
-            "oauth2-provider": OAuthProvider.GITHUB.value,
-            "oauth2-error": http_err.detail,
-        }
-        frontend_url = (
-            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
-        )
-        return RedirectResponse(
-            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
-        )
-    except Exception as err:
-        # Handle any other unexpected errors
-        query_params = {
-            "oauth2-provider": OAuthProvider.GITHUB.value,
-            "oauth2-error": f"Error during Github OAuth2 authorization: {str(err)}",
-        }
-        frontend_url = (
-            f"{settings.FRONTEND_HOST}/login?{urlencode(query_params)}"
-        )
-        return RedirectResponse(
-            url=frontend_url, status_code=status.HTTP_303_SEE_OTHER
-        )
+    except (HTTPException, Exception) as err:
+        return handle_oauth_error(provider=OAuthProvider.GITHUB, error=err)
 
 
 @router.post(
