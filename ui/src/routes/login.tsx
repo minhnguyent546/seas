@@ -1,4 +1,8 @@
-import { OpenAPI, type Body_auth_login as BodyAuthLogin } from '@/client';
+import {
+  OpenAPI,
+  type Body_auth_login as BodyAuthLogin,
+  type OAuthProvider,
+} from '@/client';
 import { GitHubIcon, GoogleIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +25,9 @@ function Login() {
     useAuth();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
+  const [isGitHubLoading, setIsGitHubLoading] = useState(false);
+  const [gitHubError, setGitHubError] = useState<string | null>(null);
+  const [oauthError, setOauthError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -37,13 +44,21 @@ function Login() {
   // Check for OAuth errors in URL parameters
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const oauthError = urlParams.get('error');
-    const errorDescription = urlParams.get('error_description');
+    const errorParam = urlParams.get('oauth2-error');
+    const providerParam = urlParams.get('oauth2-provider') as OAuthProvider;
+    const errorDescription = urlParams.get('error-description');
 
-    if (oauthError) {
-      const errorMessage =
-        errorDescription || 'Google login failed. Please try again.';
-      setGoogleError(decodeURIComponent(errorMessage));
+    if (errorParam) {
+      const errorMessage = decodeURIComponent(errorDescription || errorParam);
+
+      // Set provider-specific error based on the oauth2-provider parameter
+      if (providerParam === 'GOOGLE') {
+        setGoogleError(errorMessage);
+      } else if (providerParam === 'GITHUB') {
+        setGitHubError(errorMessage);
+      } else {
+        setOauthError(errorMessage);
+      }
 
       // Clean up URL parameters
       const newUrl = window.location.pathname;
@@ -68,6 +83,8 @@ function Login() {
 
     resetError();
     setGoogleError(null); // Clear Google error when attempting regular login
+    setGitHubError(null); // Clear GitHub error when attempting regular login
+    setOauthError(null); // Clear OAuth error when attempting regular login
     try {
       await loginMutation.mutateAsync(data);
     } catch {
@@ -80,6 +97,8 @@ function Login() {
 
     setIsGoogleLoading(true);
     setGoogleError(null); // Clear previous Google errors
+    setGitHubError(null); // Clear GitHub errors
+    setOauthError(null); // Clear OAuth errors
     resetError(); // Clear regular login errors
 
     try {
@@ -107,9 +126,36 @@ function Login() {
     }
   };
 
-  const handleGitHubLogin = () => {
-    // TODO: Implement GitHub OAuth login
-    console.log('GitHub login clicked - backend integration pending');
+  const handleGitHubLogin = async () => {
+    if (isGitHubLoading) return;
+
+    setIsGitHubLoading(true);
+    setGitHubError(null); // Clear previous GitHub errors
+    setGoogleError(null); // Clear Google errors
+    setOauthError(null); // Clear OAuth errors
+    resetError(); // Clear regular login errors
+
+    try {
+      // TODO: currently hardcoded as redirect response probably not working with http
+      const baseUrl = OpenAPI.BASE;
+      const gitHubOAuthUrl = `${baseUrl}/api/v1/auth/login/github-oauth2`;
+      window.location.href = gitHubOAuthUrl;
+    } catch (error) {
+      console.error('GitHub OAuth login failed:', error);
+
+      // Extract error message
+      let errorMessage = 'GitHub login failed. Please try again.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = String(error.message);
+      }
+
+      setGitHubError(errorMessage);
+      setIsGitHubLoading(false);
+    }
   };
 
   return (
@@ -180,9 +226,9 @@ function Login() {
               />
             </div>
           </div>
-          {(error || googleError) && (
+          {(error || googleError || gitHubError || oauthError) && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error || googleError}
+              {error || googleError || gitHubError || oauthError}
             </div>
           )}
           <Button
@@ -227,9 +273,17 @@ function Login() {
             variant="outline"
             className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             onClick={handleGitHubLogin}
+            disabled={isGitHubLoading}
           >
             <GitHubIcon className="mr-2" size={20} />
-            Continue with GitHub
+            {isGitHubLoading ? (
+              <>
+                Signing in with GitHub
+                <CircularProgress size={16} className="ml-2" />
+              </>
+            ) : (
+              'Continue with GitHub'
+            )}
           </Button>
         </form>
         <div className="text-center text-sm mt-4">
