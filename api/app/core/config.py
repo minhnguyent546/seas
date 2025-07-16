@@ -56,6 +56,13 @@ class Settings(BaseSettings):
         AnyHttpUrl
     ).validate_python("https://www.googleapis.com/oauth2/v3/userinfo")
 
+    # github oauth2
+    GITHUB_OAUTH2_CLIENT_ID: str
+    GITHUB_OAUTH2_CLIENT_SECRET: str
+    GITHUB_OAUTH2_USERINFO_URL: AnyHttpUrl = TypeAdapter(
+        AnyHttpUrl
+    ).validate_python("https://api.github.com/user")
+
     # cors
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors_origins)
