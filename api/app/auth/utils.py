@@ -42,9 +42,13 @@ def handle_oauth_error(
 ) -> RedirectResponse:
     """Handle OAuth errors by redirecting to frontend with error details."""
     if isinstance(error, HTTPException):
-        error_detail = error.detail
+        error_detail = (
+            error.detail
+            if error.status_code in [400, 401, 403]
+            else "Authentication failed"
+        )
     else:
-        error_detail = f"Error during {provider.value.title()} OAuth2 authorization: {str(error)}"
+        error_detail = f"Error during {provider.value.title()} OAuth2 authorization"
 
     query_params = {
         "oauth2-provider": provider.value,
