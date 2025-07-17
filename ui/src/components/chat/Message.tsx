@@ -1,4 +1,7 @@
 import { Button } from '@/components/ui/button';
+import { useMarkdownRenderer } from '@/hooks/useMarkdownRenderer';
+import { useMessageActions } from '@/hooks/useMessageActions';
+import { useTypingEffect } from '@/hooks/useTypingEffect';
 import { formatDate } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
 import {
@@ -7,65 +10,13 @@ import {
   IconThumbDown,
   IconThumbUp,
 } from '@tabler/icons-react';
-import DOMPurify from 'dompurify';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github-dark.min.css';
-import MarkdownIt from 'markdown-it';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
 
 interface MessageProps {
   message: MessageType;
   isLastMessage?: boolean;
   isLoading?: boolean;
 }
-
-const md: MarkdownIt = new MarkdownIt({
-  html: true, // Enable HTML tags in source
-  xhtmlOut: false, // Use HTML5 output
-  breaks: true, // Convert '\n' in paragraphs into <br>
-  linkify: true, // Auto-convert URL-like text to links
-  typographer: true, // Enable quotes beautification and other typography
-  highlight: function (str: string, lang: string): string {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(str, {
-          language: lang,
-          ignoreIllegals: true,
-        }).value;
-      } catch (__) {}
-    }
-    return md.utils.escapeHtml(str);
-  },
-});
-
-// Custom hook for rendering markdown with markdown-it (simplified)
-const useMarkdownRenderer = (content: string) => {
-  return useMemo(() => {
-    const rendered = md.render(content);
-    const sanitized = DOMPurify.sanitize(rendered);
-    return sanitized;
-  }, [content]);
-};
-
-// Message action handlers
-const handleCopyMessage = async (content: string) => {
-  try {
-    await navigator.clipboard.writeText(content);
-    // TODO: add toast notification here
-  } catch (error) {
-    console.error('Failed to copy message:', error);
-  }
-};
-
-const handleLikeMessage = (messageId: string) => {
-  // TODO: implement like functionality
-  console.log('Liked message:', messageId);
-};
-
-const handleDislikeMessage = (messageId: string) => {
-  // TODO: implement dislike functionality
-  console.log('Disliked message:', messageId);
-};
 
 export const UserMessage: React.FC<MessageProps> = ({ message }) => {
   return (
@@ -89,53 +40,12 @@ export const BotMessage: React.FC<MessageProps> = ({
   isLoading = false,
   isLastMessage = false,
 }) => {
-  const [displayText, setDisplayText] = useState('');
-  const timeoutRef = useRef<number | undefined>(undefined);
+  const displayText = useTypingEffect(message.content, isLastMessage);
+  const renderedMarkdown = useMarkdownRenderer(displayText);
+  const { handleCopyMessage, handleLikeMessage, handleDislikeMessage } =
+    useMessageActions();
 
   const isEmptyAndLoading = !message.content && isLoading;
-  const renderedMarkdown = useMarkdownRenderer(displayText);
-
-  // Typing effect
-  useEffect(() => {
-    if (!message.content) {
-      setDisplayText('');
-      return;
-    }
-
-    // Only apply typing effect to the last message
-    if (isLastMessage && message.content.length > displayText.length) {
-      const typeText = () => {
-        setDisplayText((prev) => {
-          if (prev.length < message.content.length) {
-            // Type multiple characters at once for faster effect
-            const charsToAdd = Math.min(
-              10,
-              message.content.length - prev.length,
-            );
-            return message.content.slice(0, prev.length + charsToAdd);
-          } else {
-            return prev;
-          }
-        });
-      };
-
-      // Clear existing timeout
-      if (timeoutRef.current !== undefined) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = window.setTimeout(typeText, 5);
-    } else {
-      // For non-last messages or when content is shorter, show immediately
-      setDisplayText(message.content);
-    }
-
-    return () => {
-      if (timeoutRef.current !== undefined) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [message.content, isLastMessage, displayText.length]);
 
   return (
     <div className="group relative flex items-start pb-4">
