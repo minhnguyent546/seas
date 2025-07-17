@@ -1,3 +1,4 @@
+import enum
 from datetime import datetime
 from typing import Any
 
@@ -45,6 +46,35 @@ class ChatMessagePublic(BaseModel):
     chat_session_id: str
     sender: Sender
     content: str
+    created_at: datetime
+
+    @field_serializer("created_at")
+    def serialize_created_at(self, value: datetime, _info):
+        return serialize_datetime(value)
+
+
+class ChatMessageFeedbackType(str, enum.Enum):
+    ACCURATE_INFORMATION = "accurate_information"
+    HELPFUL_ANSWER = "helpful_answer"
+
+    NOT_RELEVANT = "not_relevant"
+    INCORRECT_INFORMATION = "incorrect_information"
+    INCOMPLETE_ANSWER = "incomplete_answer"
+    OTHER = "other"
+
+
+class ChatMessageFeedbackCreate(BaseModel):
+    chat_message_id: str
+    feedback: ChatMessageFeedbackType
+    detail: str | None = None
+
+
+class ChatMessageFeedbackPublic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: str
+    chat_message_id: str
+    feedback: ChatMessageFeedbackType
+    detail: str | None = None
     created_at: datetime
 
     @field_serializer("created_at")

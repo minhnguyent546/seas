@@ -5,6 +5,8 @@ from fastapi import APIRouter, HTTPException, status
 import app.chats.service as chats_service
 from app.chats.schemas import (
     ChatMessageCreate,
+    ChatMessageFeedbackCreate,
+    ChatMessageFeedbackPublic,
     ChatMessagePublic,
     ChatSessionCreate,
     ChatSessionPublic,
@@ -133,3 +135,22 @@ async def create_new_message(
         user_id=str(current_user.id),
     )
     return chat_message
+
+
+@router.post(
+    "/message_feedback",
+    response_model=ChatMessageFeedbackPublic,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_message_feedback(
+    chat_message_feedback_create: ChatMessageFeedbackCreate,
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+):
+    """Create a message feedback."""
+    message_feedback = await chats_service.create_message_feedback(
+        session=session,
+        chat_message_feedback_create=chat_message_feedback_create,
+        current_user=current_user,
+    )
+    return message_feedback

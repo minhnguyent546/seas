@@ -2,11 +2,16 @@ from datetime import datetime
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import load_only
+from sqlalchemy.orm import load_only, selectinload
 
-from app.chats.models import ChatMessage, ChatSession
+from app.chats.models import (
+    ChatMessage,
+    ChatMessageFeedback,
+    ChatSession,
+)
 from app.chats.schemas import (
     ChatMessageCreate,
+    ChatMessageFeedbackCreate,
     ChatSessionCreate,
     ChatSessionUpdate,
 )
@@ -156,3 +161,54 @@ async def create_new_message(
     await session.commit()
     await session.refresh(chat_message)
     return chat_message
+
+
+async def create_message_feedback(
+    session: AsyncSession,
+    chat_message_feedback_create: ChatMessageFeedbackCreate,
+    current_user: User,
+) -> ChatMessageFeedback:
+    chat_message_result = await session.execute(
+        select(ChatMessage)
+        .where(ChatMessage.id == chat_message_feedback_create.chat_message_id)
+        .options(
+            selectinload(ChatMessage.chat_session),
+            load_only(
+                ChatMessage.id,
+                ChatMessage.chat_session_id,
+            ),
+        )
+    )
+    chat_message = chat_message_result.scalars().first()
+    if chat_message is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat message not found.",
+        )
+
+    chat_session = chat_message.chat_session
+    if chat_session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to access this chat session.",
+        )
+
+    existing_feedback_result = await session.execute(
+        select(ChatMessageFeedback).where(
+            ChatMessageFeedback.chat_message_id == chat_message.id,
+        )
+    )
+    existing_feedback = existing_feedback_result.scalars().first()
+    if existing_feedback is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Feedback already exists",
+        )
+
+    message_feedback = ChatMessageFeedback(
+        **chat_message_feedback_create.model_dump()
+    )
+    session.add(message_feedback)
+    await session.commit()
+    await session.refresh(message_feedback)
+    return message_feedback
