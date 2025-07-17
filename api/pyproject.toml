@@ -26,6 +26,8 @@ dependencies = [
     "emails>=0.6",
     "authlib>=1.6.0",
     "starlette[full]>=0.46.2",
+    "langchain>=0.3.26",
+    "langchain-google-genai>=2.1.8",
 ]
 
 [dependency-groups]

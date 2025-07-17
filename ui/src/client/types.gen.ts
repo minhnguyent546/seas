@@ -22,6 +22,10 @@ export type ChatMessagePublic = {
     created_at: string;
 };
 
+export type ChatQuery = {
+    query: string;
+};
+
 export type ChatSessionCreate = {
     session_metadata?: {
         [key: string]: unknown;
@@ -172,6 +176,12 @@ export type AuthRecoverPasswordHtmlContentData = {
 };
 
 export type AuthRecoverPasswordHtmlContentResponse = (string);
+
+export type ChatbotQueryData = {
+    requestBody: ChatQuery;
+};
+
+export type ChatbotQueryResponse = (unknown);
 
 export type ChatsGetChatSessionsResponse = (Array<ChatSessionPublic>);
 

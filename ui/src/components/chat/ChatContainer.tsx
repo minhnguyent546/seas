@@ -1,58 +1,18 @@
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
 import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
-import { generateId } from '@/lib/utils';
-import type { Message as MessageType } from '@/types/chat';
-import { Box, CircularProgress } from '@mui/material';
+import { useAutoScroll } from '@/hooks/useAutoScroll';
+import { useChat } from '@/hooks/useChat';
 import { IconSparkles } from '@tabler/icons-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 interface ChatContainerProps {
   userName: string;
 }
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Mock function to simulate AI response
-  const simulateResponse = async (userMessage: string) => {
-    setIsLoading(true);
-
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const botResponse: MessageType = {
-      id: generateId(),
-      role: 'assistant',
-      content: `Hello ${userName}, I received your message: "${userMessage}". How can I help you further?`,
-      timestamp: new Date(),
-    };
-
-    setMessages((prevMessages) => [...prevMessages, botResponse]);
-    setIsLoading(false);
-  };
-
-  const handleSendMessage = async (content: string) => {
-    const userMessage: MessageType = {
-      id: generateId(),
-      role: 'user',
-      content,
-      timestamp: new Date(),
-    };
-
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-    await simulateResponse(content);
-  };
+  const { messages, isLoading, handleSendMessage } = useChat();
+  const { scrollRef } = useAutoScroll(messages);
 
   const handleQuestionClick = (question: string) => {
     handleSendMessage(question);
@@ -78,22 +38,21 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
-              {messages.map((message) => (
+            <div className="space-y-4 pb-8">
+              {messages.map((message, index) => (
                 <Message
                   key={message.id}
                   message={message}
-                  isLastMessage={
-                    message.id === messages[messages.length - 1].id
-                  }
+                  isLastMessage={index === messages.length - 1}
+                  isLoading={isLoading && index === messages.length - 1}
                 />
               ))}
-              {isLoading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
-                  <CircularProgress size={30} />
-                </Box>
-              )}
-              <div ref={messagesEndRef} />
+              <div
+                ref={scrollRef}
+                className="h-0 w-0 overflow-hidden"
+                aria-hidden="true"
+                role="presentation"
+              />
             </div>
           )}
         </div>
