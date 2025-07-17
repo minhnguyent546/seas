@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
-import '@/styles/prism-theme.css';
 import type { Message as MessageType } from '@/types/chat';
 import {
   IconCopy,
@@ -8,17 +7,45 @@ import {
   IconThumbDown,
   IconThumbUp,
 } from '@tabler/icons-react';
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw';
-import rehypeSanitize from 'rehype-sanitize';
-import remarkGfm from 'remark-gfm';
+import DOMPurify from 'dompurify';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.min.css';
+import MarkdownIt from 'markdown-it';
+import React, { useMemo } from 'react';
 
 interface MessageProps {
   message: MessageType;
   isLastMessage?: boolean;
   isLoading?: boolean;
 }
+
+const md: MarkdownIt = new MarkdownIt({
+  html: true, // Enable HTML tags in source
+  xhtmlOut: false, // Use HTML5 output
+  breaks: true, // Convert '\n' in paragraphs into <br>
+  linkify: true, // Auto-convert URL-like text to links
+  typographer: true, // Enable quotes beautification and other typography
+  highlight: function (str: string, lang: string): string {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(str, {
+          language: lang,
+          ignoreIllegals: true,
+        }).value;
+      } catch (__) {}
+    }
+    return md.utils.escapeHtml(str);
+  },
+});
+
+// Custom hook for rendering markdown with markdown-it (simplified)
+const useMarkdownRenderer = (content: string) => {
+  return useMemo(() => {
+    const rendered = md.render(content);
+    const sanitized = DOMPurify.sanitize(rendered);
+    return sanitized;
+  }, [content]);
+};
 
 // Message action handlers
 const handleCopyMessage = async (content: string) => {
@@ -62,31 +89,28 @@ export const BotMessage: React.FC<MessageProps> = ({
   isLoading = false,
 }) => {
   const isEmptyAndLoading = !message.content && isLoading;
+  const renderedMarkdown = useMarkdownRenderer(message.content);
 
   return (
     <div className="group relative flex items-start pb-4">
       <div className="flex-1 space-y-2">
         <div className="p-4 pl-0 pb-0 rounded-xl bg-white dark:bg-gray-900">
-          <div className="prose prose-sm max-w-none dark:prose-invert">
-            {isEmptyAndLoading ? (
-              <div className="flex items-center py-4">
-                <IconSparkles className="h-3 w-3 text-primary animate-ping" />
-              </div>
-            ) : (
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, rehypeSanitize]}
-              >
-                {message.content}
-              </ReactMarkdown>
-            )}
-          </div>
+          {isEmptyAndLoading ? (
+            <div className="flex items-center py-4">
+              <IconSparkles className="h-3 w-3 text-primary animate-ping" />
+            </div>
+          ) : (
+            <div
+              className="prose prose-sm max-w-none dark:prose-invert break-words"
+              dangerouslySetInnerHTML={{ __html: renderedMarkdown }}
+            />
+          )}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="text-xs text-gray-500">
-            {formatDate(message.timestamp)}
-          </div>
-          {!isEmptyAndLoading && (
+        {!isEmptyAndLoading && (
+          <div className="flex items-center gap-2">
+            <div className="text-xs text-gray-500">
+              {formatDate(message.timestamp)}
+            </div>
             <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
@@ -116,8 +140,8 @@ export const BotMessage: React.FC<MessageProps> = ({
                 <IconThumbDown className="h-4 w-4" />
               </Button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

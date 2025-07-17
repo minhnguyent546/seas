@@ -75,7 +75,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
         throw new Error('No reader available');
       }
 
-      let buffer = '';
       let accumulatedContent = '';
 
       while (true) {
@@ -87,71 +86,20 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
 
         // Decode the chunk
         const chunk = decoder.decode(value, { stream: true });
-        buffer += chunk;
 
-        // Process complete lines
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+        accumulatedContent += chunk;
 
-        for (const line of lines) {
-          if (line.trim() === '') continue;
-
-          let contentToAdd = '';
-
-          try {
-            // Try to parse as JSON (for structured streaming)
-            const data = JSON.parse(line);
-            if (data.content) {
-              contentToAdd = data.content;
-            }
-          } catch (jsonError) {
-            // If not JSON, treat as plain text
-            if (line.trim()) {
-              contentToAdd = line;
-            }
-          }
-
-          if (contentToAdd) {
-            accumulatedContent += contentToAdd;
-
-            // Update the message with the processed content
-            setMessages((prevMessages) =>
-              prevMessages.map((msg) =>
-                msg.id === botResponse.id
-                  ? { ...msg, content: accumulatedContent }
-                  : msg,
-              ),
-            );
-          }
-        }
+        // Update the message with the processed content
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === botResponse.id
+              ? { ...msg, content: accumulatedContent }
+              : msg,
+          ),
+        );
       }
 
-      // Process any remaining buffer content
-      if (buffer.trim()) {
-        let contentToAdd = '';
-
-        try {
-          const data = JSON.parse(buffer);
-          if (data.content) {
-            contentToAdd = data.content;
-          }
-        } catch {
-          contentToAdd = buffer;
-        }
-
-        if (contentToAdd) {
-          accumulatedContent += contentToAdd;
-        }
-      }
-
-      // Final update with the complete, unprocessed content
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          msg.id === botResponse.id
-            ? { ...msg, content: accumulatedContent }
-            : msg,
-        ),
-      );
+      // Final update is already handled in the streaming loop above
     } catch (error) {
       console.error('Streaming error:', error);
 
