@@ -30,6 +30,10 @@ jobs:
       GOOGLE_OAUTH2_CLIENT_SECRET: test-client-secret
       GITHUB_OAUTH2_CLIENT_ID: test-client-id
       GITHUB_OAUTH2_CLIENT_SECRET: test-client-secret
+      GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
+      OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
+      ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
+
     defaults:
       run:
         working-directory: ./api
