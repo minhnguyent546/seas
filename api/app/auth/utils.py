@@ -48,7 +48,9 @@ def handle_oauth_error(
             else "Authentication failed"
         )
     else:
-        error_detail = f"Error during {provider.value.title()} OAuth2 authorization"
+        error_detail = (
+            f"Error during {provider.value.title()} OAuth2 authorization"
+        )
 
     query_params = {
         "oauth2-provider": provider.value,
