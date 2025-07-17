@@ -220,6 +220,9 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
                   isLastMessage={
                     message.id === messages[messages.length - 1].id
                   }
+                  isLoading={
+                    isLoading && message.id === messages[messages.length - 1].id
+                  }
                 />
               ))}
               <div ref={messagesEndRef} />
