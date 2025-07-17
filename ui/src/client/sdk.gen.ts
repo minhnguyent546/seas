@@ -211,6 +211,7 @@ export class AuthService {
 export class ChatbotService {
     /**
      * Query
+     * Process a chat query and return a streaming response.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns unknown Successful Response

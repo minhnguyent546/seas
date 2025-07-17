@@ -18,15 +18,6 @@ on:
 jobs:
   check_python_imports:
     runs-on: ubuntu-latest
-    env:
-      PYTHONPATH: "${{ github.workspace }}/api"
-      GOOGLE_OAUTH2_CLIENT_ID: test-client-id
-      GOOGLE_OAUTH2_CLIENT_SECRET: test-client-secret
-      GITHUB_OAUTH2_CLIENT_ID: test-client-id
-      GITHUB_OAUTH2_CLIENT_SECRET: test-client-secret
-      GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
-      OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
-      ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
     defaults:
       run:
         working-directory: ./api
@@ -44,5 +35,14 @@ jobs:
           echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)" >> $GITHUB_ENV
           echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
       - name: Check python imports
+        env:
+          PYTHONPATH: "${{ github.workspace }}/api"
+          GOOGLE_OAUTH2_CLIENT_ID: test-client-id
+          GOOGLE_OAUTH2_CLIENT_SECRET: test-client-secret
+          GITHUB_OAUTH2_CLIENT_ID: test-client-id
+          GITHUB_OAUTH2_CLIENT_SECRET: test-client-secret
+          GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
+          OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
+          ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
         run: |
           uv run python ../.github/workflows/check_python_imports.py --src_path app tests

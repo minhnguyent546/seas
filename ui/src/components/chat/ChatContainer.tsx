@@ -4,20 +4,15 @@ import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 import { useChat } from '@/hooks/useChat';
 import { IconSparkles } from '@tabler/icons-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface ChatContainerProps {
   userName: string;
 }
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
-  const { messages, isLoading, handleSendMessage, cleanup } = useChat();
+  const { messages, isLoading, handleSendMessage } = useChat();
   const { scrollRef } = useAutoScroll(messages);
-
-  // Cleanup function to abort ongoing requests
-  useEffect(() => {
-    return cleanup;
-  }, [cleanup]);
 
   const handleQuestionClick = (question: string) => {
     handleSendMessage(question);

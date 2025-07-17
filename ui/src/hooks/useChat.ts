@@ -1,12 +1,24 @@
 import { OpenAPI } from '@/client';
-import { generateId } from '@/lib/utils';
+import { generateId, getErrorMessage } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useChat = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Cleanup function to abort ongoing requests
+  const cleanup = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  }, []);
+
+  // Auto-cleanup on unmount
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   const streamResponse = useCallback(async (userMessage: string) => {
     setIsLoading(true);
@@ -24,8 +36,10 @@ export const useChat = () => {
     // Add the initial empty bot message
     setMessages((prevMessages) => [...prevMessages, botResponse]);
 
+    let response: Response | undefined;
+
     try {
-      const response = await fetch(`${OpenAPI.BASE}/api/v1/chatbot/query`, {
+      response = await fetch(`${OpenAPI.BASE}/api/v1/chatbot/query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,13 +91,16 @@ export const useChat = () => {
     } catch (error) {
       console.error('Streaming error:', error);
 
-      // Update the bot message with error content
-      const errorMessage =
-        error instanceof Error ? error.message : 'An error occurred';
+      // Get user-friendly error message
+      const errorMessage = await getErrorMessage(error, response);
+
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === botResponse.id
-            ? { ...msg, content: `Error: ${errorMessage}` }
+            ? {
+                ...msg,
+                content: `❌ **Error**: ${errorMessage}${error instanceof Error && error.name === 'AbortError' ? '' : '\n\nPlease try again.'}`,
+              }
             : msg,
         ),
       );
@@ -113,17 +130,9 @@ export const useChat = () => {
     [streamResponse],
   );
 
-  // Cleanup function to abort ongoing requests
-  const cleanup = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-  }, []);
-
   return {
     messages,
     isLoading,
     handleSendMessage,
-    cleanup,
   };
 };
