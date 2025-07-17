@@ -11,7 +11,7 @@ import DOMPurify from 'dompurify';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.min.css';
 import MarkdownIt from 'markdown-it';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 interface MessageProps {
   message: MessageType;
@@ -87,9 +87,55 @@ export const UserMessage: React.FC<MessageProps> = ({ message }) => {
 export const BotMessage: React.FC<MessageProps> = ({
   message,
   isLoading = false,
+  isLastMessage = false,
 }) => {
+  const [displayText, setDisplayText] = useState('');
+  const timeoutRef = useRef<number | undefined>(undefined);
+
   const isEmptyAndLoading = !message.content && isLoading;
-  const renderedMarkdown = useMarkdownRenderer(message.content);
+  const renderedMarkdown = useMarkdownRenderer(displayText);
+
+  // Typing effect
+  useEffect(() => {
+    if (!message.content) {
+      setDisplayText('');
+      return;
+    }
+
+    // Only apply typing effect to the last message
+    if (isLastMessage && message.content.length > displayText.length) {
+      const typeText = () => {
+        setDisplayText((prev) => {
+          if (prev.length < message.content.length) {
+            // Type multiple characters at once for faster effect
+            const charsToAdd = Math.min(
+              10,
+              message.content.length - prev.length,
+            );
+            return message.content.slice(0, prev.length + charsToAdd);
+          } else {
+            return prev;
+          }
+        });
+      };
+
+      // Clear existing timeout
+      if (timeoutRef.current !== undefined) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = window.setTimeout(typeText, 5);
+    } else {
+      // For non-last messages or when content is shorter, show immediately
+      setDisplayText(message.content);
+    }
+
+    return () => {
+      if (timeoutRef.current !== undefined) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [message.content, isLastMessage, displayText.length]);
 
   return (
     <div className="group relative flex items-start pb-4">
@@ -157,12 +203,22 @@ export const SystemMessage: React.FC<MessageProps> = ({ message }) => {
   );
 };
 
-export const Message: React.FC<MessageProps> = ({ message, isLoading }) => {
+export const Message: React.FC<MessageProps> = ({
+  message,
+  isLoading,
+  isLastMessage,
+}) => {
   switch (message.role) {
     case 'user':
       return <UserMessage message={message} />;
     case 'assistant':
-      return <BotMessage message={message} isLoading={isLoading} />;
+      return (
+        <BotMessage
+          message={message}
+          isLoading={isLoading}
+          isLastMessage={isLastMessage}
+        />
+      );
     case 'system':
       return <SystemMessage message={message} />;
     default:

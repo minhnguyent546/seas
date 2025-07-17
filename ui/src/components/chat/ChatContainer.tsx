@@ -161,16 +161,12 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {messages.map((message) => (
+              {messages.map((message, index) => (
                 <Message
                   key={message.id}
                   message={message}
-                  isLastMessage={
-                    message.id === messages[messages.length - 1].id
-                  }
-                  isLoading={
-                    isLoading && message.id === messages[messages.length - 1].id
-                  }
+                  isLastMessage={index === messages.length - 1}
+                  isLoading={isLoading && index === messages.length - 1}
                 />
               ))}
               <div ref={messagesEndRef} />
