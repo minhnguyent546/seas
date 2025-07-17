@@ -1,9 +1,9 @@
+import { OpenAPI } from '@/client';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
 import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
 import { generateId } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
-import { Box, CircularProgress } from '@mui/material';
 import { IconSparkles } from '@tabler/icons-react';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -15,6 +15,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -24,25 +25,158 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Mock function to simulate AI response
-  const simulateResponse = async (userMessage: string) => {
+  // Cleanup function to abort ongoing requests
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  const streamResponse = async (userMessage: string) => {
     setIsLoading(true);
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Create abort controller for this request
+    abortControllerRef.current = new AbortController();
 
     const botResponse: MessageType = {
       id: generateId(),
       role: 'assistant',
-      content: `Hello ${userName}, I received your message: "${userMessage}". How can I help you further?`,
+      content: '',
       timestamp: new Date(),
     };
 
+    // Add the initial empty bot message
     setMessages((prevMessages) => [...prevMessages, botResponse]);
-    setIsLoading(false);
+
+    try {
+      const response = await fetch(`${OpenAPI.BASE}/api/v1/chatbot/query`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/stream',
+        },
+        body: JSON.stringify({
+          query: userMessage,
+        }),
+        signal: abortControllerRef.current.signal,
+        credentials: OpenAPI.CREDENTIALS,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) {
+        throw new Error('No reader available');
+      }
+
+      let buffer = '';
+      let accumulatedContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        // Decode the chunk
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+
+        // Process complete lines
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // Keep the last incomplete line in buffer
+
+        for (const line of lines) {
+          if (line.trim() === '') continue;
+
+          let contentToAdd = '';
+
+          try {
+            // Try to parse as JSON (for structured streaming)
+            const data = JSON.parse(line);
+            if (data.content) {
+              contentToAdd = data.content;
+            }
+          } catch (jsonError) {
+            // If not JSON, treat as plain text
+            if (line.trim()) {
+              contentToAdd = line;
+            }
+          }
+
+          if (contentToAdd) {
+            accumulatedContent += contentToAdd;
+
+            // Update the message with the processed content
+            setMessages((prevMessages) =>
+              prevMessages.map((msg) =>
+                msg.id === botResponse.id
+                  ? { ...msg, content: accumulatedContent }
+                  : msg,
+              ),
+            );
+          }
+        }
+      }
+
+      // Process any remaining buffer content
+      if (buffer.trim()) {
+        let contentToAdd = '';
+
+        try {
+          const data = JSON.parse(buffer);
+          if (data.content) {
+            contentToAdd = data.content;
+          }
+        } catch {
+          contentToAdd = buffer;
+        }
+
+        if (contentToAdd) {
+          accumulatedContent += contentToAdd;
+        }
+      }
+
+      // Final update with the complete, unprocessed content
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botResponse.id
+            ? { ...msg, content: accumulatedContent }
+            : msg,
+        ),
+      );
+    } catch (error) {
+      console.error('Streaming error:', error);
+
+      // Update the bot message with error content
+      const errorMessage =
+        error instanceof Error ? error.message : 'An error occurred';
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botResponse.id
+            ? { ...msg, content: `Error: ${errorMessage}` }
+            : msg,
+        ),
+      );
+    } finally {
+      setIsLoading(false);
+      abortControllerRef.current = null;
+    }
   };
 
   const handleSendMessage = async (content: string) => {
+    // Cancel any ongoing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
     const userMessage: MessageType = {
       id: generateId(),
       role: 'user',
@@ -51,7 +185,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
     };
 
     setMessages((prevMessages) => [...prevMessages, userMessage]);
-    await simulateResponse(content);
+    await streamResponse(content);
   };
 
   const handleQuestionClick = (question: string) => {
@@ -88,11 +222,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
                   }
                 />
               ))}
-              {isLoading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
-                  <CircularProgress size={30} />
-                </Box>
-              )}
               <div ref={messagesEndRef} />
             </div>
           )}
