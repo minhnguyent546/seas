@@ -1,20 +1,20 @@
-name: Deploy UI to Vercel - Preview environment
+name: Deploy UI to Vercel
 
 on:
   push:
     branches:
-      - dev
-  pull_request:
-    branches:
-      - dev
+      - main
   workflow_dispatch:
 
 jobs:
-  deploy-ui-to-vercel-preview:
+  deploy-ui-to-vercel:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./ui
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
@@ -26,9 +26,8 @@ jobs:
           cache-dependency-path: "./ui/yarn.lock"
       - name: Install dependencies
         run: yarn install
-      - name: Build project
-        env:
-          VITE_API_URL: "${{ secrets.VITE_API_URL }}"
-        run: yarn build
+      - name: build
+      - name: Pull Vercel Environment Information
+        run: yarn dlx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: yarn dlx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: yarn dlx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
