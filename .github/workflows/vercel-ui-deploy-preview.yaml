@@ -35,4 +35,4 @@ jobs:
           VITE_API_URL: "${{ secrets.VITE_API_URL }}"
         run: yarn build
       - name: Deploy Project Artifacts to Vercel
-        run: yarn dlx vercel deploy --prebuilt --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: yarn dlx vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }}
