@@ -207,7 +207,7 @@ function SignupComponent() {
           )}
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:cursor-not-allowed"
             isLoading={isSubmitting || signupMutation.isPending}
             disabled={isSubmitting || signupMutation.isPending}
           >

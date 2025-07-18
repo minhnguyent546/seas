@@ -233,7 +233,7 @@ function Login() {
           )}
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:cursor-not-allowed"
             isLoading={isSubmitting || loginMutation.isPending}
             disabled={isSubmitting || loginMutation.isPending}
           >
@@ -254,7 +254,7 @@ function Login() {
           <Button
             type="button"
             variant="outline"
-            className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50 cursor-pointer disabled:cursor-not-allowed"
             onClick={handleGoogleLogin}
             disabled={isGoogleLoading}
           >
@@ -271,7 +271,7 @@ function Login() {
           <Button
             type="button"
             variant="outline"
-            className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50 cursor-pointer disabled:cursor-not-allowed"
             onClick={handleGitHubLogin}
             disabled={isGitHubLoading}
           >
