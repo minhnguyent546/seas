@@ -1,9 +1,9 @@
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
 import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
+import { SeasLogo } from '@/components/icons';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 import { useChat } from '@/hooks/useChat';
-import { IconSparkles } from '@tabler/icons-react';
 import React from 'react';
 
 interface ChatContainerProps {
@@ -24,8 +24,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
         <div className="mx-auto w-full max-w-[var(--content-max-width)] h-full">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <IconSparkles className="h-10 w-10 text-primary" />
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+                <SeasLogo size={80} className="text-primary" />
               </div>
               <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-800 dark:text-white sm:text-4xl">
                 Hi, {userName}!

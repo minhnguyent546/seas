@@ -1,15 +1,11 @@
+import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useMarkdownRenderer } from '@/hooks/useMarkdownRenderer';
 import { useMessageActions } from '@/hooks/useMessageActions';
 import { useTypingEffect } from '@/hooks/useTypingEffect';
 import { formatDate } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
-import {
-  IconCopy,
-  IconSparkles,
-  IconThumbDown,
-  IconThumbUp,
-} from '@tabler/icons-react';
+import { IconCopy, IconThumbDown, IconThumbUp } from '@tabler/icons-react';
 import React from 'react';
 
 interface MessageProps {
@@ -53,7 +49,7 @@ export const BotMessage: React.FC<MessageProps> = ({
         <div className="p-4 pl-0 pb-0 rounded-xl bg-white dark:bg-gray-900">
           {isEmptyAndLoading ? (
             <div className="flex items-center py-4">
-              <IconSparkles className="h-3 w-3 text-primary animate-ping" />
+              <SeasLogo size={12} className="animate-ping text-primary" />
             </div>
           ) : (
             <div

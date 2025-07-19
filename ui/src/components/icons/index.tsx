@@ -59,3 +59,5 @@ export const GitHubIcon: React.FC<IconProps> = ({
     </svg>
   );
 };
+
+export { SeasLogo } from './SeasLogo';
