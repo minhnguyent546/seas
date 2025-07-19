@@ -1,3 +1,4 @@
+import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
   Dropdown,
@@ -12,7 +13,6 @@ import {
   IconPin,
   IconPlus,
   IconSearch,
-  IconSparkles,
   IconTrash,
 } from '@tabler/icons-react';
 import React, { useState } from 'react';
@@ -84,7 +84,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
         className={`h-6 w-6 rounded-md text-primary hover:text-primary/80 ${isCollapsed ? 'cursor-pointer' : 'cursor-default'}`}
         title={isCollapsed ? 'Open Sidebar' : 'SEAS'}
       >
-        <IconSparkles className="h-5 w-5" />
+        <SeasLogo size={32} className="text-primary" />
       </Button>
       {!isCollapsed && (
         <span className="text-lg font-semibold text-primary">SEAS</span>

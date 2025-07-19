@@ -1,11 +1,11 @@
 import { type UserRegister } from '@/client';
+import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
-import { IconSparkles } from '@tabler/icons-react';
 import {
   Link,
   Navigate,
@@ -75,7 +75,7 @@ function SignupComponent() {
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-xl">
         <div className="text-center">
           <h1 className="mb-5 flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">
-            <IconSparkles className="h-12 w-12" />
+            <SeasLogo size={48} className="text-primary" />
             <span>CTU SEAS</span>
           </h1>
           <h2 className="text-3xl font-bold text-gray-900">
