@@ -6,11 +6,6 @@ on:
       - dev
     paths:
       - "ui/**"
-  pull_request:
-    branches:
-      - dev
-    paths:
-      - "ui/**"
   workflow_dispatch:
 
 jobs:
