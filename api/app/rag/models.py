@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
     DateTime,
@@ -45,7 +46,7 @@ class DocumentSectionChunk(Base):
     )
     content: Mapped[str] = mapped_column(Text)
     chunk_index: Mapped[int] = mapped_column(Integer)  # Order within document
-    chunk_metadata: Mapped[dict] = mapped_column(JSONB, default=dict)
+    chunk_metadata: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
 
     document_section_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("document_sections.id", ondelete="CASCADE"), index=True

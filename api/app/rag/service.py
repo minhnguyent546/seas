@@ -7,14 +7,15 @@ from fastapi import HTTPException, UploadFile, status
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_qdrant import QdrantVectorStore, RetrievalMode
+from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
     RecursiveCharacterTextSplitter,
 )
 from loguru import logger
-from qdrant_client import QdrantClient
+from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
+from sqlalchemy import select
 
 from app.core.config import settings
 from app.core.database import AsyncSession
@@ -22,6 +23,7 @@ from app.rag.models import (
     DocumentSection,
     DocumentSectionChunk,
 )
+from app.rag.schemas import DocumentSectionChunkPublic, SimilaritySearchParams
 from app.schemas import MessageResponse
 from app.utils import save_uploaded_file
 
@@ -29,14 +31,14 @@ from app.utils import save_uploaded_file
 class RagService:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-        self.__qdrant_client: QdrantClient | None = None
+        self.__qdrant_client: AsyncQdrantClient | None = None
         self.__embeddings: Embeddings | None = None
         self.__vector_store: QdrantVectorStore | None = None
 
     @property
-    def _qdrant_client(self) -> QdrantClient:
+    def _qdrant_client(self) -> AsyncQdrantClient:
         if self.__qdrant_client is None:
-            self.__qdrant_client = QdrantClient(
+            self.__qdrant_client = AsyncQdrantClient(
                 host=settings.QDRANT_HOST,
                 port=settings.QDRANT_PORT,
                 api_key=settings.QDRANT_API_KEY,
@@ -48,32 +50,21 @@ class RagService:
         if self.__embeddings is None:
             self.__embeddings = GoogleGenerativeAIEmbeddings(
                 model=settings.EMBEDDING_MODEL,
-                google_api_key=settings.GOOGLE_API_KEY,
+                google_api_key=settings.GOOGLE_API_KEY,  # pyright: ignore[reportArgumentType]
             )
         return self.__embeddings
 
-    @property
-    def _vector_store(self) -> QdrantVectorStore:
-        if self.__vector_store is None:
-            self.__vector_store = QdrantVectorStore(
-                client=self._qdrant_client,
-                collection_name=settings.QDRANT_COLLECTION_NAME,
-                retrieval_model=RetrievalMode.DENSE,  # TODO: change me
-                embedding=self._embeddings,
-            )
-        return self.__vector_store
-
-    def _initialize_qdrant_collection(self) -> bool:
+    async def _initialize_qdrant_collection(self) -> bool:
         try:
-            collections = self._qdrant_client.get_collections()
+            collections = await self._qdrant_client.get_collections()
             collection_names = [c.name for c in collections.collections]
 
             if settings.QDRANT_COLLECTION_NAME not in collection_names:
-                self._qdrant_client.create_collection(
+                await self._qdrant_client.create_collection(
                     collection_name=settings.QDRANT_COLLECTION_NAME,
                     vectors_config=VectorParams(
                         size=settings.QDRANT_VECTOR_SIZE,
-                        distance=Distance.DOT,
+                        distance=Distance.COSINE,
                     ),
                 )
                 logger.info(
@@ -135,15 +126,65 @@ class RagService:
         )
         return docs
 
+    async def similarity_search(
+        self, search_params: SimilaritySearchParams
+    ) -> list[DocumentSectionChunkPublic]:
+        try:
+            # search in Qdrant
+            query_vector = await self._embeddings.aembed_query(
+                search_params.query
+            )
+            search_results = await self._qdrant_client.search(
+                collection_name=settings.QDRANT_COLLECTION_NAME,
+                query_vector=query_vector,
+                limit=search_params.limit,
+                score_threshold=search_params.threshold,
+            )
+
+            # get chunk
+            chunk_ids = [result.id for result in search_results]
+            if not chunk_ids:
+                return []
+
+            document_section_chunks_result = await self.session.execute(
+                select(DocumentSectionChunk).where(
+                    DocumentSectionChunk.qdrant_point_id.in_(chunk_ids)
+                )
+            )
+            document_section_chunks = (
+                document_section_chunks_result.scalars().all()
+            )
+            document_section_chunks_public = [
+                DocumentSectionChunkPublic.model_validate(chunk)
+                for chunk in document_section_chunks
+            ]
+            for i, chunk in enumerate(document_section_chunks_public):
+                chunk.similarity_score = search_results[i].score
+
+            return document_section_chunks_public
+
+        except Exception as err:
+            logger.debug("Error during performing similarity search: {err}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error during performing similarity search: {err}",
+            ) from err
+
     async def add_document_to_database(
         self, upload_file: UploadFile
     ) -> MessageResponse:
+        if upload_file.filename is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Missing fielname in the uploaded file",
+            )
         if not upload_file.filename.endswith((".md", ".markdown")):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="File must be a markdown file",
             )
 
+        saved_file_path = None
         try:
             saved_file_path = save_uploaded_file(file=upload_file)
             doc_sections = self._split_markdown_on_header(
@@ -151,7 +192,7 @@ class RagService:
             )
 
             # initialize Qdrant collection if not exists
-            is_collection_created = self._initialize_qdrant_collection()
+            is_collection_created = await self._initialize_qdrant_collection()
             if not is_collection_created:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -198,7 +239,7 @@ class RagService:
             # batch upsert to Qdrant
             if qdrant_points:
                 logger.debug("Adding points to Qdrant...")
-                self._qdrant_client.upsert(
+                await self._qdrant_client.upsert(
                     collection_name=settings.QDRANT_COLLECTION_NAME,
                     points=qdrant_points,
                 )
@@ -207,7 +248,6 @@ class RagService:
 
             self.session.add_all(doc_section_chunk_dbs)
             await self.session.commit()
-            await self.session.refresh(document_section_db)
 
             return MessageResponse(
                 message=f"Document {upload_file.filename} added to the databases",
@@ -222,7 +262,8 @@ class RagService:
                 },
             )
         except Exception as err:
-            os.remove(saved_file_path)
+            if saved_file_path is not None and os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
             logger.error(f"Failed to add document: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

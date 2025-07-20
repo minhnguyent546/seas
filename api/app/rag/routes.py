@@ -7,7 +7,16 @@ from fastapi import (
     UploadFile,
 )
 
-from app.deps import AsyncSessionDep, CurrentSuperuserDep
+from app.deps import (
+    AsyncSessionDep,
+    CurrentSuperuserDep,
+    get_current_superuser,
+)
+from app.rag.schemas import (
+    DocumentSectionChunkPublic,
+    SimilaritySearchParams,
+    SimilaritySearchResult,
+)
 from app.rag.service import RagService
 from app.schemas import MessageResponse
 
@@ -31,3 +40,22 @@ async def add_document_to_database(
 ):
     """Add a document to the database(s). Requires superuser permissions."""
     return await rag_service.add_document_to_database(file)
+
+
+@router.post(
+    "/similarity-search",
+    dependencies=[Depends(get_current_superuser)],
+    response_model=SimilaritySearchResult,
+)
+async def similarity_search(
+    search_params: SimilaritySearchParams, rag_service: RagServiceDep
+):
+    """Similarity search for a query. Requires superuser permissions."""
+    result = await rag_service.similarity_search(search_params)
+    return SimilaritySearchResult(
+        chunks=[
+            DocumentSectionChunkPublic.model_validate(chunk)
+            for chunk in result
+        ],
+        query=search_params.query,
+    )

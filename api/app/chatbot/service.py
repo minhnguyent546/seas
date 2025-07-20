@@ -27,10 +27,10 @@ async def process_query(
     )
 
     human_message = chat_query.query.strip()
-    if len(human_message) < 3:
+    if not human_message:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Query must be at least 3 characters long.",
+            detail="Query cannot be empty.",
         )
     messages = [
         SystemMessage(content="You are a helpful assistant."),
