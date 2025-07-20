@@ -1,23 +1,11 @@
-import asyncio
-from collections.abc import AsyncGenerator
-
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
-from loguru import logger
 
+import app.chatbot.service as chatbot_service
 from app.chatbot.schemas import ChatQuery
-from app.core.config import settings
 from app.deps import AsyncSessionDep, CurrentActiveUserDep
 
 router = APIRouter(prefix="/chatbot", tags=["chatbot"])
-
-llm = ChatGoogleGenerativeAI(
-    model=settings.MODEL_NAME,
-    google_api_key=settings.GOOGLE_API_KEY,
-    temperature=0,
-)
 
 
 @router.post("/query", response_class=StreamingResponse)
@@ -29,68 +17,7 @@ async def query(
     """Process a chat query and return a streaming response."""
 
     # streaming response with custom callback handler: https://gist.github.com/ninely/88485b2e265d852d3feb8bd115065b1a
-    human_message = chat_query.query.strip()
-    if len(human_message) < 3:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Query must be at least 3 characters long.",
-        )
-    messages = [
-        SystemMessage(content="You are a helpful assistant."),
-        HumanMessage(content=human_message),
-    ]
-    logger.debug(f"Processing query: {human_message = }")
-
-    async def stream_generator() -> AsyncGenerator[str, None]:
-        accum_text = ""
-        try:
-            async with asyncio.timeout(120):  # 2 minutes timeout
-                async for chunk in llm.astream(input=messages):
-                    if not hasattr(chunk, "content") or not chunk.content:
-                        continue
-
-                    if isinstance(chunk.content, str):
-                        if settings.ENVIRONMENT == "development":
-                            accum_text += chunk.content
-                        yield chunk.content
-                    elif isinstance(chunk.content, list):  # pyright: ignore[reportUnnecessaryIsInstance]
-                        for item in chunk.content:
-                            if isinstance(item, str):
-                                if settings.ENVIRONMENT == "development":
-                                    accum_text += item
-                                yield item
-                            elif isinstance(item, dict) and "text" in item:  # pyright: ignore[reportUnnecessaryIsInstance]
-                                if settings.ENVIRONMENT == "development":
-                                    accum_text += item["text"]
-                                yield item["text"]
-                            else:
-                                raise AssertionError(
-                                    f"Unexpected item type in chunk.content: {type(item)}. Expected str or dict with 'text' key."
-                                )
-                    else:
-                        raise AssertionError(
-                            f"Unexpected chunk type: {type(chunk.content)}. Expected str or list of str/dict."
-                        )
-        except asyncio.TimeoutError as timeout_err:
-            logger.error("Streaming timeout")
-            raise HTTPException(
-                status_code=504,
-                detail="Request timeout. Please try again.",
-            ) from timeout_err
-        except Exception as err:
-            logger.error(f"Error in streaming: {err}")
-            # More specific error handling
-            if "quota" in str(err).lower():
-                raise HTTPException(
-                    status_code=429,
-                    detail="API quota exceeded. Please try again later.",
-                ) from err
-            raise HTTPException(
-                status_code=500,
-                detail="An error occurred while processing your request.",
-            ) from err
-        finally:
-            if settings.ENVIRONMENT == "development":
-                logger.debug(f"Response: {accum_text}")
-
-    return StreamingResponse(stream_generator(), media_type="text/plain")
+    streaming_response = await chatbot_service.process_query(
+        chat_query=chat_query, session=session, current_user=current_user
+    )
+    return streaming_response

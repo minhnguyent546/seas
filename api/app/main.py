@@ -1,3 +1,4 @@
+import os
 import time
 from contextlib import asynccontextmanager
 
@@ -27,6 +28,10 @@ async def lifespan(app: FastAPI):
     logger.info('"Starting application...')
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
     _start_time = time.time()
+
+    if not os.path.isdir(settings.DOC_UPLOAD_DIR):
+        os.makedirs(settings.DOC_UPLOAD_DIR)
+
     try:
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
             await init_db(session)

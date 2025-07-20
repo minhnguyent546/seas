@@ -112,6 +112,21 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
 
+    # embeddings model
+    EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
+    CHUNK_SIZE: int = 4096
+    CHUNK_OVERLAP: int = 512
+
+    # doc upload dir
+    DOC_UPLOAD_DIR: str = "uploaded-docs"
+
+    # qdrant
+    QDRANT_HOST: str = "localhost"
+    QDRANT_PORT: int = 6333
+    QDRANT_API_KEY: str | None = None
+    QDRANT_COLLECTION_NAME: str = "documents"
+    QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
+
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
         if self.EMAILS_FROM_NAME is None:

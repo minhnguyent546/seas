@@ -1,9 +1,12 @@
+import os
+import shutil
+import uuid
 from datetime import datetime, timedelta
 from typing import Any
 
 import emails
 import jwt
-from fastapi import BackgroundTasks, HTTPException, status
+from fastapi import BackgroundTasks, HTTPException, UploadFile, status
 from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
 from loguru import logger
@@ -148,3 +151,12 @@ def custom_generate_unique_id(route: APIRoute) -> str:
     if route.tags:
         return f"{route.tags[0]}-{route.name}"
     return f"default-{route.name}"
+
+
+def save_uploaded_file(file: UploadFile) -> str:
+    unique_name = f"{uuid.uuid4()}.md"
+    file_path = os.path.join(settings.DOC_UPLOAD_DIR, unique_name)
+    with open(file_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    return file_path
