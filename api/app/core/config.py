@@ -127,6 +127,10 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION_NAME: str = "documents"
     QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
 
+    # similarity search
+    SIMILARITY_SEARCH_TOP_K: int = 3
+    SIMILARITY_SEARCH_THRESHOLD: float = 0.6
+
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
         if self.EMAILS_FROM_NAME is None:

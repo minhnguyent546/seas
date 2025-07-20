@@ -18,6 +18,8 @@ async def query(
 
     # streaming response with custom callback handler: https://gist.github.com/ninely/88485b2e265d852d3feb8bd115065b1a
     streaming_response = await chatbot_service.process_query(
-        chat_query=chat_query, session=session, current_user=current_user
+        chat_query=chat_query,
+        session=session,
+        current_user=current_user,
     )
     return streaming_response

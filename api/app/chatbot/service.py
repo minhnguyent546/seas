@@ -1,8 +1,10 @@
 import asyncio
 from collections.abc import AsyncGenerator
+from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
+from fastapi.templating import Jinja2Templates
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from loguru import logger
@@ -10,9 +12,13 @@ from loguru import logger
 from app.chatbot.schemas import ChatQuery
 from app.core.config import settings
 from app.core.database import AsyncSession
+from app.rag.schemas import SimilaritySearchParams
+from app.rag.service import RagService
 from app.users.models import User
 
 router = APIRouter(prefix="/chatbot", tags=["chatbot"])
+
+prompt_templates = Jinja2Templates(directory="app/prompts")
 
 
 async def process_query(
@@ -32,9 +38,36 @@ async def process_query(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
         )
+
+    # get prompt templates
+    system_prompt_template = prompt_templates.get_template(
+        "system_prompt_vi.prompt"
+    )
+    chat_prompt_template = prompt_templates.get_template("chat_prompt.prompt")
+    system_prompt = system_prompt_template.render(
+        currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
+        currentYear=datetime.now().year,
+    )
+
+    # similarity search
+    rag_service = RagService(session=session)
+    context = await rag_service.similarity_search(
+        search_params=SimilaritySearchParams(
+            query=human_message,
+            limit=settings.SIMILARITY_SEARCH_TOP_K,
+            threshold=settings.SIMILARITY_SEARCH_THRESHOLD,
+        )
+    )
+    context_str = "\n".join([
+        f"{i + 1}. {chunk.content}\n" for i, chunk in enumerate(context)
+    ])
+    chat_prompt = chat_prompt_template.render(
+        context=context_str,
+        query=human_message,
+    )
     messages = [
-        SystemMessage(content="You are a helpful assistant."),
-        HumanMessage(content=human_message),
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=chat_prompt),
     ]
     logger.debug(f"Processing query: {human_message = }")
 
