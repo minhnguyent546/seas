@@ -9,7 +9,7 @@ node_modules/
 __pycache__/
 *.py[oc]
 build/
-!/api/app/templates/build/
+!/api/app/templates/emails/build/
 dist/
 wheels/
 *.egg-info
