@@ -8,7 +8,6 @@ from fastapi.responses import JSONResponse
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
     RecursiveCharacterTextSplitter,
@@ -35,8 +34,9 @@ class RagService:
         self.session = session
         self.__qdrant_client: AsyncQdrantClient | None = None
         self.__embeddings: Embeddings | None = None
-        self.__vector_store: QdrantVectorStore | None = None
 
+        self.TABLE_TOK = "<table_title>"
+        self.TABLE_HEADER_SYMBOL = "#######"
         self.header_mapping = [
             ("#", "<header_1>"),
             ("##", "<header_2>"),
@@ -44,7 +44,7 @@ class RagService:
             ("####", "<header_4>"),
             ("#####", "<header_5>"),
             ("######", "<header_6>"),
-            ("#######", "<table_title>"),
+            (self.TABLE_HEADER_SYMBOL, self.TABLE_TOK),
         ]
         self.header_to_symbol = {
             header[1]: header[0] for header in self.header_mapping
@@ -193,9 +193,9 @@ class RagService:
 
     def _extract_table_title(self, summarized_table: str) -> tuple[str, str]:
         lines = summarized_table.strip().split("\n")
-        if lines and lines[0].startswith("#######"):
+        if lines and lines[0].startswith(self.TABLE_HEADER_SYMBOL):
             # Remove the ####### prefix and strip whitespace
-            title = lines[0].replace("#######", "").strip()
+            title = lines[0].replace(self.TABLE_HEADER_SYMBOL, "").strip()
             return title, "\n".join(lines[1:])
         return "", summarized_table
 
@@ -224,7 +224,7 @@ class RagService:
                     )
                     table_mdatadata = section_metadata
                     if table_title:
-                        table_mdatadata["table_title"] = table_title
+                        table_mdatadata[self.TABLE_TOK] = table_title
                     new_document_sections.append(
                         LangchainDocument(
                             page_content=summarized_table,
