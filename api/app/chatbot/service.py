@@ -4,21 +4,19 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
-from fastapi.templating import Jinja2Templates
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from loguru import logger
 
+import app.utils as app_utils
 from app.chatbot.schemas import ChatQuery
 from app.core.config import settings
 from app.core.database import AsyncSession
 from app.rag.schemas import SimilaritySearchParams
 from app.rag.service import RagService
+from app.templates import prompt_templates
 from app.users.models import User
 
 router = APIRouter(prefix="/chatbot", tags=["chatbot"])
-
-prompt_templates = Jinja2Templates(directory="app/prompts")
 
 
 async def process_query(
@@ -26,9 +24,8 @@ async def process_query(
     session: AsyncSession,
     current_user: User,
 ) -> StreamingResponse:
-    llm = ChatGoogleGenerativeAI(
-        model=settings.MODEL_NAME,
-        google_api_key=settings.GOOGLE_API_KEY,
+    llm = app_utils.get_langchain_llm(
+        model_name=settings.CHAT_MODEL,
         temperature=0,
     )
 
@@ -75,6 +72,10 @@ async def process_query(
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
                 async for chunk in llm.astream(input=messages):
+                    if isinstance(chunk, str):
+                        yield chunk
+                        continue
+
                     if not hasattr(chunk, "content") or not chunk.content:
                         continue
 

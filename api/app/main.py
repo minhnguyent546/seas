@@ -3,9 +3,9 @@ import time
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, status
+from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 from pydantic import EmailStr
@@ -17,7 +17,7 @@ from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
 from app.core.health import check_health
 from app.schemas import MessageResponse
-from app.utils import custom_generate_unique_id, templates
+from app.utils import custom_generate_unique_id
 
 _start_time = 0
 
@@ -78,17 +78,6 @@ async def health_check():
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs", status_code=status.HTTP_302_FOUND)
-
-
-@app.get(
-    f"{settings.API_PREFIX}/html", response_class=HTMLResponse, tags=["utils"]
-)
-async def html(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="example.html",
-        context={"title": "SEAS"},
-    )
 
 
 @app.get(

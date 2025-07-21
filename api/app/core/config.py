@@ -106,8 +106,8 @@ class Settings(BaseSettings):
     EMAIL_TEST_USER: str = "testuser@test.com"
 
     # llm
-    MODEL_PROVIDER: str = "google"
-    MODEL_NAME: str = "gemini-2.5-flash"
+    CHAT_MODEL: str = "google/gemini-2.5-flash"
+    TABLE_SUMMARY_MODEL: str = "openai/gpt-4o"
     GOOGLE_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""

@@ -18,6 +18,7 @@ from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 from sqlalchemy import select
 
+import app.utils as app_utils
 from app.core.config import settings
 from app.core.database import AsyncSession
 from app.rag.models import (
@@ -26,7 +27,7 @@ from app.rag.models import (
 )
 from app.rag.schemas import DocumentSectionChunkPublic, SimilaritySearchParams
 from app.schemas import MessageResponse
-from app.utils import save_uploaded_file
+from app.templates import prompt_templates
 
 
 class RagService:
@@ -43,8 +44,11 @@ class RagService:
             ("####", "<header_4>"),
             ("#####", "<header_5>"),
             ("######", "<header_6>"),
+            ("#######", "<table_title>"),
         ]
-        self.header_to_symbol = {header[1]: header[0] for header in self.header_mapping}
+        self.header_to_symbol = {
+            header[1]: header[0] for header in self.header_mapping
+        }
 
     @property
     def _qdrant_client(self) -> AsyncQdrantClient:
@@ -89,12 +93,11 @@ class RagService:
     def _split_markdown_on_header(
         self, md_file_path: str
     ) -> list[LangchainDocument]:
-        """Split document based on markdown headers."""
+        """Split document based on markdown headers. Return list of document sections."""
 
         md_header_splitter = MarkdownHeaderTextSplitter(
             headers_to_split_on=self.header_mapping
         )
-        # TODO: consider prepend all headers to the content
 
         with open(md_file_path, "r", encoding="utf-8") as f:
             md_content = frontmatter.load(f)
@@ -108,14 +111,21 @@ class RagService:
         }
         content = md_content.content
 
-        docs = md_header_splitter.split_text(content)
-        for doc in docs:
-            doc.metadata.update(metadata)
+        # process table in each document sections, treat table as separate document sections
+        sections = md_header_splitter.split_text(content)
+        return_sections: list[LangchainDocument] = []
+        for section in sections:
+            section.metadata.update(metadata)
+            new_sections = self._process_table_in_document_section(section)
+            return_sections.extend(new_sections)
 
-        return docs
+        return return_sections
 
     def _split_document_recursive(
-        self, content: str, metadata: dict[str, Any], prepend_headers: bool = True,
+        self,
+        content: str,
+        metadata: dict[str, Any],
+        prepend_headers: bool = True,
     ) -> list[LangchainDocument]:
         """Split document using recursive character text splitter."""
         text_splitter = RecursiveCharacterTextSplitter(
@@ -134,13 +144,90 @@ class RagService:
             for doc in docs:
                 header_content: list[str] = []
                 for header_key, header_value in doc.metadata.items():
-                    header_value = header_value.strip()[:256]  # incase the header value is too long
+                    header_value = header_value.strip()[
+                        :256
+                    ]  # incase the header value is too long
                     if header_key in self.header_to_symbol:
-                        header_content.append(f"{self.header_to_symbol[header_key]} {header_value}")
+                        header_content.append(
+                            f"{self.header_to_symbol[header_key]} {header_value}"
+                        )
 
-                doc.page_content = '\n\n'.join(header_content) + '\n\n' + doc.page_content
+                if header_content:
+                    doc.page_content = (
+                        "\n\n".join(header_content) + "\n\n" + doc.page_content
+                    )
 
         return docs
+
+    def _summarize_table(
+        self, table_md_content: str, retries: int = 3
+    ) -> str:
+        table_summary_llm = app_utils.get_langchain_llm(model_name=settings.TABLE_SUMMARY_MODEL, api_key=settings.OPENAI_API_KEY)
+
+        retry_remaining = retries
+        prompt_template = prompt_templates.get_template(
+            "table_description.prompt"
+        )
+        prompt = prompt_template.render(tableContent=table_md_content)
+        while True:
+            try:
+                response = table_summary_llm.invoke(prompt)
+                if isinstance(response, str):
+                    return response
+                elif hasattr(response, 'content') and isinstance(response.content, str):
+                    return response.content
+                else:
+                    raise RuntimeError(f"Unable to infer response content from {response}")
+            except Exception as err:
+                if retry_remaining > 0:
+                    retry_remaining -= 1
+                    continue
+                else:
+                    logger.error(
+                        f"Failed to get table description after {retries} retries"
+                    )
+                    raise err
+
+    def _extract_table_title(self, summarized_table: str) -> tuple[str, str]:
+        lines = summarized_table.strip().split('\n')
+        if lines and lines[0].startswith('#######'):
+            # Remove the ####### prefix and strip whitespace
+            title = lines[0].replace('#######', '').strip()
+            return title, '\n'.join(lines[1:])
+        return '', summarized_table
+
+    def _process_table_in_document_section(
+        self, document_section: LangchainDocument
+    ) -> list[LangchainDocument]:
+        """Treat table in document section as a new document section. Return list of new document sections."""
+        try:
+            section_metadata = document_section.metadata
+            new_document_sections: list[LangchainDocument] = []
+            new_content, table_contents = app_utils.extract_markdown_tables(
+                document_section.page_content, remove_tables=True
+            )
+            new_document_sections.append(LangchainDocument(page_content=new_content, metadata=section_metadata))
+
+            if table_contents:
+                for table_content in table_contents:
+                    summarized_table = self._summarize_table(
+                        table_content
+                    )
+
+                    table_title, summarized_table = self._extract_table_title(summarized_table)
+                    table_mdatadata = section_metadata
+                    if table_title:
+                        table_mdatadata['table_title'] = table_title
+                    new_document_sections.append(LangchainDocument(page_content=summarized_table, metadata=table_mdatadata))
+
+            return new_document_sections
+
+        except Exception as err:
+            logger.error(f"Failed to process table in document section: {err}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to process table in document section: {err}",
+            ) from err
 
     async def split_markdown_on_headers(self, upload_file: UploadFile):
         if upload_file.filename is None:
@@ -156,7 +243,7 @@ class RagService:
 
         saved_file_path = None
         try:
-            saved_file_path = save_uploaded_file(file=upload_file)
+            saved_file_path = app_utils.save_uploaded_file(file=upload_file)
             docs = self._split_markdown_on_header(md_file_path=saved_file_path)
 
             return_docs = []
@@ -242,7 +329,7 @@ class RagService:
 
         saved_file_path = None
         try:
-            saved_file_path = save_uploaded_file(file=upload_file)
+            saved_file_path = app_utils.save_uploaded_file(file=upload_file)
             doc_sections = self._split_markdown_on_header(
                 md_file_path=saved_file_path
             )
