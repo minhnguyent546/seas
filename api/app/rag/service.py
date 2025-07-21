@@ -4,6 +4,7 @@ from typing import Any
 
 import frontmatter
 from fastapi import HTTPException, UploadFile, status
+from fastapi.responses import JSONResponse
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -80,15 +81,15 @@ class RagService:
     ) -> list[LangchainDocument]:
         """Split document based on markdown headers."""
         headers = [
-            ("#", "header_1"),
-            ("##", "header_2"),
-            ("###", "header_3"),
-            ("####", "header_4"),
-            ("#####", "header_5"),
-            ("######", "header_6"),
+            ("#", "<header_1>"),
+            ("##", "<header_2>"),
+            ("###", "<header_3>"),
+            ("####", "<header_4>"),
+            ("#####", "<header_5>"),
+            ("######", "<header_6>"),
         ]
         md_header_splitter = MarkdownHeaderTextSplitter(
-            headers_to_split_on=headers, strip_headers=False
+            headers_to_split_on=headers
         )
         # TODO: consider prepend all headers to the content
 
@@ -125,6 +126,46 @@ class RagService:
             texts=[content], metadatas=[metadata]
         )
         return docs
+
+    async def split_markdown_on_headers(self, upload_file: UploadFile):
+        if upload_file.filename is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Missing filename in the uploaded file",
+            )
+        if not upload_file.filename.endswith((".md", ".markdown")):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="File must be a markdown file",
+            )
+
+        saved_file_path = None
+        try:
+            saved_file_path = save_uploaded_file(file=upload_file)
+            docs = self._split_markdown_on_header(md_file_path=saved_file_path)
+
+            return_docs = []
+            for doc in docs:
+                return_docs.append({
+                    "page_content": doc.page_content,
+                    "metadata": doc.metadata,
+                })
+
+            return JSONResponse(
+                content={
+                    "num_docs": len(docs),
+                    "docs": return_docs,
+                }
+            )
+        except Exception as err:
+            logger.error(f"Failed to split markdown on headers: {err}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to split markdown on headers: {err}",
+            ) from err
+        finally:
+            if saved_file_path is not None and os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
 
     async def similarity_search(
         self, search_params: SimilaritySearchParams
@@ -176,7 +217,7 @@ class RagService:
         if upload_file.filename is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Missing fielname in the uploaded file",
+                detail="Missing filename in the uploaded file",
             )
         if not upload_file.filename.endswith((".md", ".markdown")):
             raise HTTPException(

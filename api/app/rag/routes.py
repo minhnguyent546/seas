@@ -6,6 +6,7 @@ from fastapi import (
     File,
     UploadFile,
 )
+from fastapi.responses import JSONResponse
 
 from app.deps import (
     AsyncSessionDep,
@@ -43,7 +44,7 @@ async def add_document_to_database(
 
 
 @router.post(
-    "/similarity-search",
+    "/private/similarity-search",
     dependencies=[Depends(get_current_superuser)],
     response_model=SimilaritySearchResult,
 )
@@ -59,3 +60,18 @@ async def similarity_search(
         ],
         query=search_params.query,
     )
+
+
+@router.post(
+    "/private/split-markdown-on-headers",
+    dependencies=[Depends(get_current_superuser)],
+    response_class=JSONResponse,
+)
+async def split_markdown_on_headers(
+    file: Annotated[
+        UploadFile, File(description="The document to split on headers")
+    ],
+    rag_service: RagServiceDep,
+):
+    """Split a document on headers. Requires superuser permissions."""
+    return await rag_service.split_markdown_on_headers(file)
