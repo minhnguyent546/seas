@@ -524,6 +524,23 @@ wheels = [
 ]
 
 [[package]]
+name = "firecrawl"
+version = "2.16.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "nest-asyncio" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "requests" },
+    { name = "websockets" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/41/27/a9621852b948e39a2d9a7297fcb8077915296eeef305b650ccf1af9c26de/firecrawl-2.16.1.tar.gz", hash = "sha256:450dcf0b6d7b2d894b4688c6e60eb5c4a78a54768c8457f0407fda222c8c9b26", size = 39867, upload-time = "2025-07-15T18:19:55.568Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/79/85/a3051f737b3e1409e45649940e7a26206ec6b3dd28f34755a1946f44efcd/firecrawl-2.16.1-py3-none-any.whl", hash = "sha256:5d5fcf6089cc12edb1cc99e10d2a37c98646b892c45847de47a3aa416c806c7f", size = 39840, upload-time = "2025-07-15T18:19:54.484Z" },
+]
+
+[[package]]
 name = "flake8"
 version = "7.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1326,6 +1343,15 @@ wheels = [
 ]
 
 [[package]]
+name = "nest-asyncio"
+version = "1.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/f8/51569ac65d696c8ecbee95938f89d4abf00f47d58d48f6fbabfe8f0baefe/nest_asyncio-1.6.0.tar.gz", hash = "sha256:6f172d5449aca15afd6c646851f4e31e02c598d553a667e38cafa997cfec55fe", size = 7418, upload-time = "2024-01-21T14:25:19.227Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/c4/c2971a3ba4c6103a3d10c4b0f24f461ddc027f0f09763220cf35ca1401b3/nest_asyncio-1.6.0-py3-none-any.whl", hash = "sha256:87af6efd6b5e897c81050477ef65c62e2b2f35d51703cae01aff2905b1852e1c", size = 5195, upload-time = "2024-01-21T14:25:17.223Z" },
+]
+
+[[package]]
 name = "numpy"
 version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2045,6 +2071,7 @@ dependencies = [
 dev = [
     { name = "autoflake" },
     { name = "colorama" },
+    { name = "firecrawl" },
     { name = "flake8" },
     { name = "isort" },
     { name = "pytest" },
@@ -2090,6 +2117,7 @@ requires-dist = [
 dev = [
     { name = "autoflake", specifier = ">=2.3.1,<3.0.0" },
     { name = "colorama", specifier = ">=0.4.6" },
+    { name = "firecrawl", specifier = ">=2.16.1" },
     { name = "flake8", specifier = ">=7.2.0,<8.0.0" },
     { name = "isort", specifier = ">=6.0.1,<7.0.0" },
     { name = "pytest", specifier = ">=8.4.1" },
