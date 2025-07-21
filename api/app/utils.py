@@ -199,16 +199,21 @@ def extract_markdown_tables(
         logger.error(f"Failed to extract markdown tables: {e}")
         return (md_content, [])
 
-def get_langchain_llm(model_name: str, **kwargs):
-    if '/' not in model_name:
-        raise ValueError(f'Expected model name have the format <provider>/<model_name>, got {model_name}')
 
-    provider, model_name = model_name.split('/')
-    if provider == 'google':
+def get_langchain_llm(model_name: str, **kwargs):
+    if "/" not in model_name:
+        raise ValueError(
+            f"Expected model name have the format <provider>/<model_name>, got {model_name}"
+        )
+
+    provider, model_name = model_name.split("/")
+    if provider == "google":
         from langchain_google_genai import GoogleGenerativeAI
+
         return GoogleGenerativeAI(model=model_name, **kwargs)
-    elif provider == 'openai':
+    elif provider == "openai":
         from langchain_openai import ChatOpenAI
+
         return ChatOpenAI(model=model_name, **kwargs)
     else:
         raise ValueError(f"Unsupported provider: {provider}")

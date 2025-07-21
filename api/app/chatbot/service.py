@@ -38,9 +38,9 @@ async def process_query(
 
     # get prompt templates
     system_prompt_template = prompt_templates.get_template(
-        "system_prompt_vi.prompt"
+        "system_prompt_vi.j2"
     )
-    chat_prompt_template = prompt_templates.get_template("chat_prompt.prompt")
+    chat_prompt_template = prompt_templates.get_template("chat_prompt.j2")
     system_prompt = system_prompt_template.render(
         currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
         currentYear=datetime.now().year,

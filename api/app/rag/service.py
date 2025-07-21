@@ -159,25 +159,28 @@ class RagService:
 
         return docs
 
-    def _summarize_table(
-        self, table_md_content: str, retries: int = 3
-    ) -> str:
-        table_summary_llm = app_utils.get_langchain_llm(model_name=settings.TABLE_SUMMARY_MODEL, api_key=settings.OPENAI_API_KEY)
+    def _summarize_table(self, table_md_content: str, retries: int = 3) -> str:
+        table_summary_llm = app_utils.get_langchain_llm(
+            model_name=settings.TABLE_SUMMARY_MODEL,
+            api_key=settings.OPENAI_API_KEY,
+        )
 
         retry_remaining = retries
-        prompt_template = prompt_templates.get_template(
-            "table_description.prompt"
-        )
+        prompt_template = prompt_templates.get_template("table_description.j2")
         prompt = prompt_template.render(tableContent=table_md_content)
         while True:
             try:
                 response = table_summary_llm.invoke(prompt)
                 if isinstance(response, str):
                     return response
-                elif hasattr(response, 'content') and isinstance(response.content, str):
+                elif hasattr(response, "content") and isinstance(
+                    response.content, str
+                ):
                     return response.content
                 else:
-                    raise RuntimeError(f"Unable to infer response content from {response}")
+                    raise RuntimeError(
+                        f"Unable to infer response content from {response}"
+                    )
             except Exception as err:
                 if retry_remaining > 0:
                     retry_remaining -= 1
@@ -189,12 +192,12 @@ class RagService:
                     raise err
 
     def _extract_table_title(self, summarized_table: str) -> tuple[str, str]:
-        lines = summarized_table.strip().split('\n')
-        if lines and lines[0].startswith('#######'):
+        lines = summarized_table.strip().split("\n")
+        if lines and lines[0].startswith("#######"):
             # Remove the ####### prefix and strip whitespace
-            title = lines[0].replace('#######', '').strip()
-            return title, '\n'.join(lines[1:])
-        return '', summarized_table
+            title = lines[0].replace("#######", "").strip()
+            return title, "\n".join(lines[1:])
+        return "", summarized_table
 
     def _process_table_in_document_section(
         self, document_section: LangchainDocument
@@ -206,19 +209,28 @@ class RagService:
             new_content, table_contents = app_utils.extract_markdown_tables(
                 document_section.page_content, remove_tables=True
             )
-            new_document_sections.append(LangchainDocument(page_content=new_content, metadata=section_metadata))
+            new_document_sections.append(
+                LangchainDocument(
+                    page_content=new_content, metadata=section_metadata
+                )
+            )
 
             if table_contents:
                 for table_content in table_contents:
-                    summarized_table = self._summarize_table(
-                        table_content
-                    )
+                    summarized_table = self._summarize_table(table_content)
 
-                    table_title, summarized_table = self._extract_table_title(summarized_table)
+                    table_title, summarized_table = self._extract_table_title(
+                        summarized_table
+                    )
                     table_mdatadata = section_metadata
                     if table_title:
-                        table_mdatadata['table_title'] = table_title
-                    new_document_sections.append(LangchainDocument(page_content=summarized_table, metadata=table_mdatadata))
+                        table_mdatadata["table_title"] = table_title
+                    new_document_sections.append(
+                        LangchainDocument(
+                            page_content=summarized_table,
+                            metadata=table_mdatadata,
+                        )
+                    )
 
             return new_document_sections
 
