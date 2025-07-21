@@ -36,6 +36,16 @@ class RagService:
         self.__embeddings: Embeddings | None = None
         self.__vector_store: QdrantVectorStore | None = None
 
+        self.header_mapping = [
+            ("#", "<header_1>"),
+            ("##", "<header_2>"),
+            ("###", "<header_3>"),
+            ("####", "<header_4>"),
+            ("#####", "<header_5>"),
+            ("######", "<header_6>"),
+        ]
+        self.header_to_symbol = {header[1]: header[0] for header in self.header_mapping}
+
     @property
     def _qdrant_client(self) -> AsyncQdrantClient:
         if self.__qdrant_client is None:
@@ -80,16 +90,9 @@ class RagService:
         self, md_file_path: str
     ) -> list[LangchainDocument]:
         """Split document based on markdown headers."""
-        headers = [
-            ("#", "<header_1>"),
-            ("##", "<header_2>"),
-            ("###", "<header_3>"),
-            ("####", "<header_4>"),
-            ("#####", "<header_5>"),
-            ("######", "<header_6>"),
-        ]
+
         md_header_splitter = MarkdownHeaderTextSplitter(
-            headers_to_split_on=headers
+            headers_to_split_on=self.header_mapping
         )
         # TODO: consider prepend all headers to the content
 
@@ -112,7 +115,7 @@ class RagService:
         return docs
 
     def _split_document_recursive(
-        self, content: str, metadata: dict[str, Any]
+        self, content: str, metadata: dict[str, Any], prepend_headers: bool = True,
     ) -> list[LangchainDocument]:
         """Split document using recursive character text splitter."""
         text_splitter = RecursiveCharacterTextSplitter(
@@ -125,6 +128,18 @@ class RagService:
         docs = text_splitter.create_documents(
             texts=[content], metadatas=[metadata]
         )
+
+        if prepend_headers:
+            # prepend headers to the content
+            for doc in docs:
+                header_content: list[str] = []
+                for header_key, header_value in doc.metadata.items():
+                    header_value = header_value.strip()[:256]  # incase the header value is too long
+                    if header_key in self.header_to_symbol:
+                        header_content.append(f"{self.header_to_symbol[header_key]} {header_value}")
+
+                doc.page_content = '\n\n'.join(header_content) + '\n\n' + doc.page_content
+
         return docs
 
     async def split_markdown_on_headers(self, upload_file: UploadFile):
@@ -255,6 +270,7 @@ class RagService:
                 doc_section_chunks = self._split_document_recursive(
                     content=doc_section.page_content,
                     metadata=doc_section.metadata,
+                    prepend_headers=True,
                 )
                 for i, doc_section_chunk in enumerate(doc_section_chunks):
                     chunk_id = str(uuid.uuid4())
