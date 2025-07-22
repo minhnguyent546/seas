@@ -48,7 +48,7 @@ async def process_query(
 
     # similarity search
     rag_service = RagService(session=session)
-    context = await rag_service.similarity_search(
+    context_chunks = await rag_service.similarity_search(
         search_params=SimilaritySearchParams(
             query=human_message,
             limit=settings.SIMILARITY_SEARCH_TOP_K,
@@ -56,7 +56,8 @@ async def process_query(
         )
     )
     context_str = "\n".join([
-        f"{i + 1}. {chunk.content}\n" for i, chunk in enumerate(context)
+        f'<Document title="{chunk.chunk_metadata.get("title")}" url="{chunk.chunk_metadata.get("url")}">{chunk.content}</Document>\n'
+        for chunk in context_chunks
     ])
     chat_prompt = chat_prompt_template.render(
         context=context_str,

@@ -16,6 +16,7 @@ from loguru import logger
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 import app.utils as app_utils
 from app.core.config import settings
@@ -302,13 +303,19 @@ class RagService:
                 return []
 
             document_section_chunks_result = await self.session.execute(
-                select(DocumentSectionChunk).where(
-                    DocumentSectionChunk.qdrant_point_id.in_(chunk_ids)
-                )
+                select(DocumentSectionChunk)
+                .where(DocumentSectionChunk.qdrant_point_id.in_(chunk_ids))
+                .options(selectinload(DocumentSectionChunk.document_section))
             )
             document_section_chunks = (
                 document_section_chunks_result.scalars().all()
             )
+            for document_section_chunk in document_section_chunks:
+                document_section_chunk.chunk_metadata.update({
+                    "title": document_section_chunk.document_section.title,
+                    "url": document_section_chunk.document_section.url,
+                    "description": document_section_chunk.document_section.description,
+                })
             document_section_chunks_public = [
                 DocumentSectionChunkPublic.model_validate(chunk)
                 for chunk in document_section_chunks
