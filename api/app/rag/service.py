@@ -101,16 +101,23 @@ class RagService:
         )
 
         with open(md_file_path, "r", encoding="utf-8") as f:
-            md_content = frontmatter.load(f)
-
-        metadata = {
-            "title": md_content.get("title"),
-            "url": md_content.get("url")
-            or md_content.get("source")
-            or md_content.get("sourceURL"),
-            "description": md_content.get("description"),
-        }
-        content = md_content.content
+            try:
+                md_content = frontmatter.load(f)
+                metadata = {
+                    "title": md_content.get("title"),
+                    "url": md_content.get("url")
+                    or md_content.get("source")
+                    or md_content.get("sourceURL"),
+                    "description": md_content.get("description"),
+                }
+                content = md_content.content
+            except Exception as frontmatter_err:
+                logger.error(
+                    f"Failed to parse frontmatter in {md_file_path}: {frontmatter_err}. Treating as plain markdown."
+                )
+                raise RuntimeError(
+                    f"Failed to parse frontmatter in {md_file_path}: {frontmatter_err}."
+                ) from frontmatter_err
 
         # process table in each document sections, treat table as separate document sections
         sections = md_header_splitter.split_text(content)
@@ -145,10 +152,16 @@ class RagService:
             for doc in docs:
                 header_content: list[str] = []
                 for header_key, header_value in doc.metadata.items():
+                    # Skip None values and ensure header_value is a string
+                    if header_value is None:
+                        continue
+                    if not isinstance(header_value, str):
+                        header_value = str(header_value)
+
                     header_value = header_value.strip()[
                         :256
                     ]  # incase the header value is too long
-                    if header_key in self.header_to_symbol:
+                    if header_key in self.header_to_symbol and header_value:
                         header_content.append(
                             f"{self.header_to_symbol[header_key]} {header_value}"
                         )
@@ -193,6 +206,9 @@ class RagService:
                     raise err
 
     def _extract_table_title(self, summarized_table: str) -> tuple[str, str]:
+        if not summarized_table:
+            return "", ""
+
         lines = summarized_table.strip().split("\n")
         if lines and lines[0].startswith(self.TABLE_HEADER_SYMBOL):
             # Remove the ####### prefix and strip whitespace
@@ -432,3 +448,320 @@ class RagService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to add document: {err}",
             ) from err
+
+    async def add_documents_to_database_in_batch(
+        self, upload_files: list[UploadFile]
+    ) -> JSONResponse:
+        """Add multiple documents to the database in batch."""
+        if not upload_files:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No files provided",
+            )
+
+        if len(upload_files) > settings.BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Batch size too large. Maximum {settings.BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE} files allowed per batch.",
+            )
+
+        # Track temporary files for cleanup
+        saved_file_paths: list[str] = []
+        successful_files: list[dict[str, Any]] = []
+        failed_files: list[dict[str, Any]] = []
+
+        try:
+            # Step 1: Validate and save all files first
+            valid_doc_sections: list[tuple[str, list[LangchainDocument]]] = []
+
+            for upload_file in upload_files:
+                file_result = {
+                    "filename": upload_file.filename,
+                    "error": None,
+                    "details": {},
+                }
+
+                try:
+                    # Validate individual file
+                    if upload_file.filename is None:
+                        file_result["error"] = (
+                            "Missing filename in the uploaded file"
+                        )
+                        failed_files.append(file_result)
+                        continue
+
+                    if not upload_file.filename.endswith((".md", ".markdown")):
+                        file_result["error"] = "File must be a markdown file"
+                        failed_files.append(file_result)
+                        continue
+
+                    # Save and process file
+                    saved_file_path = app_utils.save_uploaded_file(
+                        file=upload_file
+                    )
+                    saved_file_paths.append(saved_file_path)
+
+                    doc_sections = self._split_markdown_on_header(
+                        md_file_path=saved_file_path
+                    )
+
+                    if not doc_sections:
+                        file_result["error"] = (
+                            "No document sections found in file"
+                        )
+                        failed_files.append(file_result)
+                        continue
+
+                    valid_doc_sections.append((
+                        upload_file.filename,
+                        doc_sections,
+                    ))
+
+                except Exception as err:
+                    file_result["error"] = (
+                        f"Failed to process file: {str(err)}"
+                    )
+                    failed_files.append(file_result)
+                    logger.error(
+                        f"Failed to process file {upload_file.filename}: {err}"
+                    )
+                    continue
+
+            # If no valid files, return early
+            if not valid_doc_sections:
+                return JSONResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    content={
+                        "message": "No valid files to process",
+                        "successful_files": successful_files,
+                        "failed_files": failed_files,
+                        "summary": {
+                            "total_files": len(upload_files),
+                            "successful_count": 0,
+                            "failed_count": len(failed_files),
+                        },
+                    },
+                )
+
+            # Step 2: Initialize Qdrant collection
+            is_collection_created = await self._initialize_qdrant_collection()
+            if not is_collection_created:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to create Qdrant collection",
+                )
+
+            # Step 3: Process all valid files and prepare data for batch operations
+            all_qdrant_points: list[PointStruct] = []
+            all_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
+            all_document_sections: list[DocumentSection] = []
+
+            # Track total chunks to prevent memory issues
+            total_estimated_chunks = 0
+
+            for filename, doc_sections in valid_doc_sections:
+                # Estimate chunks for memory check
+                for doc_section in doc_sections:
+                    estimated_chunks = max(1, len(doc_section.page_content) // settings.CHUNK_SIZE)
+                    total_estimated_chunks += estimated_chunks
+
+            if total_estimated_chunks > settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Estimated total chunks ({total_estimated_chunks}) exceeds limit ({settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS}). Please reduce batch size.",
+                )
+
+            for filename, doc_sections in valid_doc_sections:
+                file_result: dict[str, Any] = {
+                    "filename": filename,
+                    "error": None,
+                    "details": {
+                        "num_doc_sections": len(doc_sections),
+                        "num_doc_section_chunks": 0,
+                        "num_qdrant_points": 0,
+                    },
+                }
+
+                try:
+                    file_qdrant_points: list[PointStruct] = []
+                    file_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
+                    file_document_sections: list[DocumentSection] = []
+
+                    for doc_section in doc_sections:
+                        doc_section_id = str(uuid.uuid4())
+                        document_section_db = DocumentSection(
+                            id=doc_section_id,
+                            title=doc_section.metadata.get("title"),
+                            url=doc_section.metadata.get("url"),
+                            description=doc_section.metadata.get(
+                                "description"
+                            ),
+                        )
+                        file_document_sections.append(document_section_db)
+
+                        doc_section_chunks = self._split_document_recursive(
+                            content=doc_section.page_content,
+                            metadata=doc_section.metadata,
+                            prepend_headers=True,
+                        )
+
+                        for i, doc_section_chunk in enumerate(
+                            doc_section_chunks
+                        ):
+                            chunk_id = str(uuid.uuid4())
+                            document_section_chunk_db = DocumentSectionChunk(
+                                id=chunk_id,
+                                document_section_id=doc_section_id,
+                                content=doc_section_chunk.page_content,
+                                chunk_index=i,
+                                qdrant_point_id=chunk_id,
+                                metadata={},
+                            )
+                            file_doc_section_chunk_dbs.append(
+                                document_section_chunk_db
+                            )
+
+                            # Generate embedding
+                            embedding = await self._embeddings.aembed_query(
+                                doc_section_chunk.page_content
+                            )
+                            file_qdrant_points.append(
+                                PointStruct(
+                                    id=chunk_id, vector=embedding, payload={}
+                                )
+                            )
+
+                    # Update file results
+                    file_result["details"]["num_doc_section_chunks"] = len(
+                        file_doc_section_chunk_dbs
+                    )
+                    file_result["details"]["num_qdrant_points"] = len(
+                        file_qdrant_points
+                    )
+
+                    # Add to batch collections
+                    all_document_sections.extend(file_document_sections)
+                    all_doc_section_chunk_dbs.extend(
+                        file_doc_section_chunk_dbs
+                    )
+                    all_qdrant_points.extend(file_qdrant_points)
+
+                    successful_files.append(file_result)
+
+                except Exception as err:
+                    file_result["error"] = (
+                        f"Failed to prepare data for file: {str(err)}"
+                    )
+                    failed_files.append(file_result)
+                    logger.error(
+                        f"Failed to prepare data for file {filename}: {err}"
+                    )
+                    continue
+
+            # Step 4: Batch operations (all or nothing for data consistency)
+            try:
+                # Add document sections to session first
+                self.session.add_all(all_document_sections)
+
+                # Add all chunks to session
+                self.session.add_all(all_doc_section_chunk_dbs)
+
+                # Commit database transaction first to ensure data consistency
+                await self.session.commit()
+
+                # Batch upsert to Qdrant after successful database commit
+                if all_qdrant_points:
+                    logger.debug(
+                        f"Adding {len(all_qdrant_points)} points to Qdrant..."
+                    )
+                    try:
+                        await self._qdrant_client.upsert(
+                            collection_name=settings.QDRANT_COLLECTION_NAME,
+                            points=all_qdrant_points,
+                        )
+                        logger.debug(
+                            f"Successfully added {len(all_qdrant_points)} points to Qdrant"
+                        )
+                    except Exception as qdrant_err:
+                        logger.error(f"Qdrant upsert failed after successful database commit: {qdrant_err}")
+                        # Database changes are already committed, but Qdrant failed
+                        # Log this as a warning since data is partially consistent
+                        logger.warning(
+                            "Database records created successfully, but vector search may be incomplete. "
+                            "Manual Qdrant cleanup may be required."
+                        )
+                        # Don't raise the exception - database operations succeeded
+
+                logger.info(
+                    f"Successfully processed {len(successful_files)} files in batch"
+                )
+
+            except Exception as err:
+                logger.error(f"Batch operation failed: {err}")
+
+                # Rollback database transaction
+                await self.session.rollback()
+
+                # Move all successful files to failed
+                for file_result in successful_files:
+                    file_result["error"] = (
+                        f"Batch operation failed: {str(err)}"
+                    )
+                    failed_files.append(file_result)
+                successful_files.clear()
+
+            return JSONResponse(
+                content={
+                    "message": f"Batch processing completed. {len(successful_files)} successful, {len(failed_files)} failed.",
+                    "successful_files": successful_files,
+                    "failed_files": failed_files,
+                    "summary": {
+                        "total_files": len(upload_files),
+                        "successful_count": len(successful_files),
+                        "failed_count": len(failed_files),
+                        "total_doc_sections": sum(
+                            f["details"]["num_doc_sections"]
+                            for f in successful_files
+                        ),
+                        "total_doc_section_chunks": len(
+                            all_doc_section_chunk_dbs
+                        )
+                        if successful_files
+                        else 0,
+                        "total_qdrant_points": len(all_qdrant_points)
+                        if successful_files
+                        else 0,
+                        "config": {
+                            "chunk_size": settings.CHUNK_SIZE,
+                            "chunk_overlap": settings.CHUNK_OVERLAP,
+                        },
+                    },
+                }
+            )
+
+        except Exception as err:
+            logger.error(
+                f"Unexpected error in batch processing: {err}",
+                extra={
+                    "error_type": type(err).__name__,
+                    "total_files": len(upload_files),
+                    "saved_files_count": len(saved_file_paths),
+                    "successful_files_count": len(successful_files),
+                    "failed_files_count": len(failed_files),
+                }
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Unexpected error in batch processing: {err}",
+            ) from err
+
+        finally:
+            # Clean up all temporary files regardless of success/failure
+            for saved_file_path in saved_file_paths:
+                try:
+                    if os.path.exists(saved_file_path):
+                        os.remove(saved_file_path)
+                except Exception as cleanup_err:
+                    logger.warning(
+                        f"Failed to clean up temporary file {saved_file_path}: {cleanup_err}"
+                    )

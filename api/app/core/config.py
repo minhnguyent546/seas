@@ -131,6 +131,10 @@ class Settings(BaseSettings):
     SIMILARITY_SEARCH_TOP_K: int = 3
     SIMILARITY_SEARCH_THRESHOLD: float = 0.6
 
+    # config for adding document in batch
+    BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 10
+    BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS: int = 5_000
+
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
         if self.EMAILS_FROM_NAME is None:

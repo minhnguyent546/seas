@@ -62,4 +62,5 @@ async def get_async_session():
         finally:
             await async_session.close()
 
+
 AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_session)]

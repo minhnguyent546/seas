@@ -22,7 +22,7 @@ class DocumentSection(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    title: Mapped[str] = mapped_column(String(512))
+    title: Mapped[str] = mapped_column(String(512), default="")
     url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 

@@ -10,7 +10,6 @@ from fastapi.responses import JSONResponse
 
 from app.deps import (
     AsyncSessionDep,
-    CurrentSuperuserDep,
     get_current_superuser,
 )
 from app.rag.schemas import (
@@ -31,16 +30,35 @@ def _get_rag_service(session: AsyncSessionDep) -> RagService:
 RagServiceDep = Annotated[RagService, Depends(_get_rag_service)]
 
 
-@router.post("/documents/upload", response_model=MessageResponse)
+@router.post(
+    "/documents/upload",
+    dependencies=[Depends(get_current_superuser)],
+    response_model=MessageResponse,
+)
 async def add_document_to_database(
     file: Annotated[
         UploadFile, File(description="The document to add to the database")
     ],
     rag_service: RagServiceDep,
-    current_user: CurrentSuperuserDep,
 ):
     """Add a document to the database(s). Requires superuser permissions."""
     return await rag_service.add_document_to_database(file)
+
+
+@router.post(
+    "/documents/batch-upload",
+    dependencies=[Depends(get_current_superuser)],
+    response_model=MessageResponse,
+)
+async def add_document_to_database_in_batch(
+    files: Annotated[
+        list[UploadFile],
+        File(description="The documents to add to the database"),
+    ],
+    rag_service: RagServiceDep,
+):
+    """Add a document to the database(s) in batch. Requires superuser permissions."""
+    return await rag_service.add_documents_to_database_in_batch(files)
 
 
 @router.post(
