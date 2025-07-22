@@ -1,8 +1,9 @@
 import asyncio
 from collections.abc import AsyncGenerator
 from datetime import datetime
+from html import escape as html_escape
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage, SystemMessage
 from loguru import logger
@@ -15,8 +16,6 @@ from app.rag.schemas import SimilaritySearchParams
 from app.rag.service import RagService
 from app.templates import prompt_templates
 from app.users.models import User
-
-router = APIRouter(prefix="/chatbot", tags=["chatbot"])
 
 
 async def process_query(
@@ -56,7 +55,7 @@ async def process_query(
         )
     )
     context_str = "\n".join([
-        f'<Document title="{chunk.chunk_metadata.get("title")}" url="{chunk.chunk_metadata.get("url")}">{chunk.content}</Document>\n'
+        f'<Document title="{html_escape(chunk.chunk_metadata.get("title", ""))}" url="{html_escape(chunk.chunk_metadata.get("url", ""))}">{html_escape(chunk.content)}</Document>\n'
         for chunk in context_chunks
     ])
     chat_prompt = chat_prompt_template.render(

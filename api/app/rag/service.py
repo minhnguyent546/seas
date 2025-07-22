@@ -342,7 +342,7 @@ class RagService:
             return document_section_chunks_public
 
         except Exception as err:
-            logger.debug("Error during performing similarity search: {err}")
+            logger.debug(f"Error during performing similarity search: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error during performing similarity search: {err}",
@@ -402,7 +402,7 @@ class RagService:
                         content=doc_section_chunk.page_content,
                         chunk_index=i,
                         qdrant_point_id=chunk_id,
-                        metadata={},  # TODO: where should we store all the metadata? DocumentSection or DocumentSectionChunk?
+                        metadata={},
                     )
                     doc_section_chunk_dbs.append(document_section_chunk_db)
 
@@ -559,13 +559,18 @@ class RagService:
             # Track total chunks to prevent memory issues
             total_estimated_chunks = 0
 
-            for filename, doc_sections in valid_doc_sections:
+            for _, doc_sections in valid_doc_sections:
                 # Estimate chunks for memory check
                 for doc_section in doc_sections:
-                    estimated_chunks = max(1, len(doc_section.page_content) // settings.CHUNK_SIZE)
+                    estimated_chunks = max(
+                        1, len(doc_section.page_content) // settings.CHUNK_SIZE
+                    )
                     total_estimated_chunks += estimated_chunks
 
-            if total_estimated_chunks > settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS:
+            if (
+                total_estimated_chunks
+                > settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Estimated total chunks ({total_estimated_chunks}) exceeds limit ({settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS}). Please reduce batch size.",
@@ -683,7 +688,9 @@ class RagService:
                             f"Successfully added {len(all_qdrant_points)} points to Qdrant"
                         )
                     except Exception as qdrant_err:
-                        logger.error(f"Qdrant upsert failed after successful database commit: {qdrant_err}")
+                        logger.error(
+                            f"Qdrant upsert failed after successful database commit: {qdrant_err}"
+                        )
                         # Database changes are already committed, but Qdrant failed
                         # Log this as a warning since data is partially consistent
                         logger.warning(
@@ -748,7 +755,7 @@ class RagService:
                     "saved_files_count": len(saved_file_paths),
                     "successful_files_count": len(successful_files),
                     "failed_files_count": len(failed_files),
-                }
+                },
             )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

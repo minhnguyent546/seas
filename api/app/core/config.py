@@ -124,7 +124,7 @@ class Settings(BaseSettings):
     QDRANT_HOST: str = "localhost"
     QDRANT_PORT: int = 6333
     QDRANT_API_KEY: str | None = None
-    QDRANT_COLLECTION_NAME: str = "documents"
+    QDRANT_COLLECTION_NAME: str = "seas_documents"
     QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
 
     # similarity search

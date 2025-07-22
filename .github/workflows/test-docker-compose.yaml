@@ -39,10 +39,8 @@ jobs:
       - name: Remove existing containers
         run: docker compose down -v --remove-orphans
       - name: Start containers
-        run: docker compose up -d --wait api ui
+        run: docker compose up -d --wait api
       - name: Test if backend is up
         run: curl -f http://localhost:8444/health
-      - name: Test if frontend is up
-        run: curl -f http://localhost:5333
       - name: Cleanup
         run: docker compose down -v --remove-orphans

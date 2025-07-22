@@ -27,11 +27,6 @@ services:
       retries: 3
     volumes:
       - seas-qdrant-data:/qdrant/storage
-    env_file:
-      - .env
-    environment:
-      - QDRANT_COLLECTION_NAME=${QDRANT_COLLECTION_NAME?Variable not set}
-      - QDRANT_VECTOR_SIZE=${QDRANT_VECTOR_SIZE?Variable not set}
     networks:
       - seas
 
