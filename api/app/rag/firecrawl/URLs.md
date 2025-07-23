@@ -99,16 +99,18 @@ Author: minhnguyent546
   - Thú y - CLC: https://tuyensinh.ctu.edu.vn/gioi-thieu-nganh/1099-thu-y-chuong-trinh-chat-luong-cao
 
 
-## QUYẾT ĐỊNH
+# QUYẾT ĐỊNH
 
-### Quyết định ban hành quy chế tuyển sinh đào tạo trình độ đại học hình thức chính quy của Trường Đại học Cần Thơ
+## Quyết định ban hành quy chế tuyển sinh đào tạo trình độ đại học hình thức chính quy của Trường Đại học Cần Thơ
 
 - PDF: https://www.ctu.edu.vn/images/upload/vbdh/vbct/QD6599_Quy_che_tuyen_sinh_dao_tao_dai_hoc_chinh_quy.pdf
 
-### Về việc phê duyệt và ban hành Đề án tổ chức Kỳ thi đánh giá đầu vào đại học trên máy tính phục vụ cho tuyển sinh đại học (V-SAT) của Trường Đại học Cần Thơ năm 2025
+## Về việc phê duyệt và ban hành Đề án tổ chức Kỳ thi đánh giá đầu vào đại học trên máy tính phục vụ cho tuyển sinh đại học (V-SAT) của Trường Đại học Cần Thơ năm 2025
 
 - PDF: https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/De-an-to-chuc-Ky-thi-danh-gia-dau-vao-dai-hoc-tren-may-tinh-phuc-vu-tuyen-sinh-dai-hoc-V-SAT-cua-Truong-DHCT-nam-2025.pdf
 
-## Khác
+# Khác
 
 - PDF: Thông tin tuyển sinh đại học năm 2025: https://tuyensinh.ctu.edu.vn/images/upload/TTTS-DHCQ-2025.pdf
+- Tổng chỉ tiêu: https://tuyensinh.ctu.edu.vn/chuong-trinh-dai-tra/945-doi-tuong-vung.html
+- Điểm ưu tiên trong tuyển sinh: https://tuyensinh.ctu.edu.vn/chuong-trinh-dai-tra/895-diem-uu-tien.html
