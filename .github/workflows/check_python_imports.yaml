@@ -24,16 +24,19 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
+
       - name: Install the latest version of uv and set the python version
         uses: astral-sh/setup-uv@v6
         with:
           version: ">=0.7.0"
           python-version: "3.12"
           enable-cache: true
+
       - name: Generate random password
         run: |
           echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)" >> $GITHUB_ENV
           echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
+
       - name: Check python imports
         env:
           PYTHONPATH: "${{ github.workspace }}/api"

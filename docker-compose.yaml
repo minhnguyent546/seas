@@ -40,10 +40,9 @@ services:
       - ADMINER_DESIGN=rmsoft
     networks:
       - seas
+
   api:
-    build:
-      context: api
-      dockerfile: Dockerfile
+    image: "${API_IMAGE}:${API_TAG-latest}"
     restart: always
     env_file:
       - .env
