@@ -17,6 +17,7 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
+
       - name: Setup environment variables
         run: |
           cat << EOF > .env
@@ -32,17 +33,24 @@ jobs:
           OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
           ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
           EOF
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Build docker images
         run: docker compose build
+
       - name: Remove existing containers
         run: docker compose down -v --remove-orphans
+
       - name: Start containers
         run: docker compose up -d --wait api ui
+
       - name: Test if backend is up
         run: curl -f http://localhost:8444/health
+
       - name: Test if frontend is up
         run: curl -f http://localhost:5333
+
       - name: Cleanup
         run: docker compose down -v --remove-orphans
