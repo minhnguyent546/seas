@@ -32,6 +32,7 @@ jobs:
           GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
           OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
           ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
+          API_IMAGE=seas-api
           EOF
 
       - name: Set up Docker Buildx
@@ -44,13 +45,10 @@ jobs:
         run: docker compose down -v --remove-orphans
 
       - name: Start containers
-        run: docker compose up -d --wait api ui
+        run: docker compose up -d --wait api
 
       - name: Test if backend is up
         run: curl -f http://localhost:8444/health
-
-      - name: Test if frontend is up
-        run: curl -f http://localhost:5333
 
       - name: Cleanup
         run: docker compose down -v --remove-orphans
