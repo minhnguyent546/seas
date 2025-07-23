@@ -106,11 +106,34 @@ class Settings(BaseSettings):
     EMAIL_TEST_USER: str = "testuser@test.com"
 
     # llm
-    MODEL_PROVIDER: str = "google"
-    MODEL_NAME: str = "gemini-2.5-flash"
+    CHAT_MODEL: str = "google/gemini-2.5-flash"
+    TABLE_SUMMARY_MODEL: str = "openai/gpt-4o"
     GOOGLE_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
+
+    # embeddings model
+    EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
+    CHUNK_SIZE: int = 4096
+    CHUNK_OVERLAP: int = 512
+
+    # doc upload dir
+    DOC_UPLOAD_DIR: str = "uploaded-docs"
+
+    # qdrant
+    QDRANT_HOST: str = "localhost"
+    QDRANT_PORT: int = 6333
+    QDRANT_API_KEY: str | None = None
+    QDRANT_COLLECTION_NAME: str = "seas_documents"
+    QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
+
+    # similarity search
+    SIMILARITY_SEARCH_TOP_K: int = 3
+    SIMILARITY_SEARCH_THRESHOLD: float = 0.6
+
+    # config for adding document in batch
+    BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 10
+    BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS: int = 5_000
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:

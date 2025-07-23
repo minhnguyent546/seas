@@ -1,18 +1,20 @@
+import os
+import shutil
+import uuid
 from datetime import datetime, timedelta
 from typing import Any
 
 import emails
 import jwt
-from fastapi import BackgroundTasks, HTTPException, status
+import markdown_to_data
+from fastapi import BackgroundTasks, HTTPException, UploadFile, status
 from fastapi.routing import APIRoute
-from fastapi.templating import Jinja2Templates
 from loguru import logger
+from markdown_to_data.to_md.to_md_parser import to_md_parser
 
 from app.core.config import settings, timezone_vi
 from app.schemas import EmailData
-
-# jinja2 template
-templates = Jinja2Templates(directory="app/templates/build")
+from app.templates import email_templates
 
 
 def serialize_datetime(value: datetime) -> str:
@@ -26,7 +28,7 @@ def serialize_datetime(value: datetime) -> str:
 
 
 def render_email_template(*, template: str, context: dict[str, Any]) -> str:
-    template_path = templates.get_template(template)
+    template_path = email_templates.get_template(template)
     html_content = template_path.render(context)
     return html_content
 
@@ -148,3 +150,70 @@ def custom_generate_unique_id(route: APIRoute) -> str:
     if route.tags:
         return f"{route.tags[0]}-{route.name}"
     return f"default-{route.name}"
+
+
+def save_uploaded_file(file: UploadFile) -> str:
+    unique_name = f"{uuid.uuid4()}.md"
+    file_path = os.path.join(settings.DOC_UPLOAD_DIR, unique_name)
+    with open(file_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    return file_path
+
+
+def extract_markdown_tables(
+    md_content: str, remove_tables: bool = True
+) -> tuple[str, list[str]]:
+    if not md_content:
+        return (md_content, [])
+
+    try:
+        md = markdown_to_data.Markdown(md_content)
+        elements = md.md_list
+        table_elements = []
+        new_elements = []
+        for element in elements:
+            if "table" in element.keys():
+                if len(element.keys()) > 1:
+                    raise RuntimeError(
+                        f"Expected only one key in table element, found {element.keys()}"
+                    )
+                table_elements.append(element)
+            else:
+                new_elements.append(element)
+
+        if remove_tables:
+            new_content = to_md_parser(new_elements, spacer=1)
+        else:
+            new_content = md_content
+
+        tables = []
+        if table_elements:
+            tables = [
+                to_md_parser([table_element], spacer=1)
+                for table_element in table_elements
+            ]
+
+        return (new_content, tables)
+    except Exception as e:
+        logger.error(f"Failed to extract markdown tables: {e}")
+        return (md_content, [])
+
+
+def get_langchain_llm(model_name: str, **kwargs):
+    if "/" not in model_name:
+        raise ValueError(
+            f"Expected model name have the format <provider>/<model_name>, got {model_name}"
+        )
+
+    provider, model_name = model_name.split("/")
+    if provider == "google":
+        from langchain_google_genai import GoogleGenerativeAI
+
+        return GoogleGenerativeAI(model=model_name, **kwargs)
+    elif provider == "openai":
+        from langchain_openai import ChatOpenAI
+
+        return ChatOpenAI(model=model_name, **kwargs)
+    else:
+        raise ValueError(f"Unsupported provider: {provider}")

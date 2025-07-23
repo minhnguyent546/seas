@@ -4,6 +4,11 @@ services:
     ports:
       - "5433:5432"
 
+  qdrant:
+    restart: "no"
+    ports:
+      - "6333:6333" # REST API
+      - "6334:6334" # gRPC
   adminer:
     restart: "no"
     ports:
@@ -20,11 +25,11 @@ services:
     networks:
       - seas
     ports:
-      - "1025:1025"  # SMTP server
-      - "1080:1080"  # Web interface
+      - "1025:1025" # SMTP server
+      - "1080:1080" # Web interface
     environment:
       - TZ=Asia/Ho_Chi_Minh
-      - MAILDEV_SMTP_PORT=1025  # Changed to match port mapping
+      - MAILDEV_SMTP_PORT=1025 # Changed to match port mapping
       - MAILDEV_WEB_PORT=1080
 
   api:

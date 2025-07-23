@@ -28,6 +28,14 @@ dependencies = [
     "starlette[full]>=0.46.2",
     "langchain>=0.3.26",
     "langchain-google-genai>=2.1.8",
+    "sqlalchemy-utils>=0.41.2",
+    "langchain-community>=0.3.27",
+    "langchain-qdrant>=0.2.0",
+    "python-frontmatter>=1.1.0",
+    "qdrant-client>=1.13.1",
+    "markdown-to-data>=1.0.0",
+    "langchain-openai>=0.3.28",
+    "jinja2>=3.1.6",
 ]
 
 [dependency-groups]
@@ -49,30 +57,30 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = [
-    "B",  # flake8-bugbear
-    "C",  # comple-structure
-    "E",  # pycodestyle errors
-    "F",  # pyflakes
-    "I",  # isort
-    "W",  # pycodestyle warnings
-    "RUF013",  # implicit-optional
+    "B",      # flake8-bugbear
+    "C",      # comple-structure
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "W",      # pycodestyle warnings
+    "RUF013", # implicit-optional
     "UP006",  # non-pep585-annotation (e.g. `list[int]` instead of `List[int]`)
 ]
 extend-safe-fixes = ["UP006"]
 ignore = [
-    "C901",  # complex-structure
-    "E101",  # mixed-spaces-and-tabs
-    "E501",  # line-too-long
-    "E741",  # ambiguous-variable-name
-    "F402",  # import-shadowed-by-loop-var
-    "F823",  # undefined-local
+    "C901", # complex-structure
+    "E101", # mixed-spaces-and-tabs
+    "E501", # line-too-long
+    "E741", # ambiguous-variable-name
+    "F402", # import-shadowed-by-loop-var
+    "F823", # undefined-local
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = [
-    "E402",  # module-import-not-at-top-of-file
-    "F401",  # unused-import
-    "F403",  # undefined-local-with-import-star
+    "E402", # module-import-not-at-top-of-file
+    "F401", # unused-import
+    "F403", # undefined-local-with-import-star
 ]
 
 [tool.ruff.format]
@@ -83,3 +91,6 @@ line-ending = "lf"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.uv.workspace]
+members = ["app/chatbot/test/firecrawl"]

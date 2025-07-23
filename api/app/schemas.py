@@ -1,6 +1,7 @@
 """Global schemas for the application."""
 
 import enum
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -19,6 +20,7 @@ class MessageStatus(str, enum.Enum):
 class MessageResponse(BaseModel):
     status: MessageStatus = MessageStatus.SUCCESS
     message: str
+    extra: dict[str, Any] = {}
 
 
 class EmailData(BaseModel):
