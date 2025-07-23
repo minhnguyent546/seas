@@ -25,7 +25,7 @@ reviews:
   auto_apply_labels: false
   suggested_reviewers: true
   auto_assign_reviewers: false
-  poem: true
+  poem: false
   labeling_instructions:
     - label: ""
       instructions: ""
@@ -46,7 +46,7 @@ reviews:
     docstrings:
       enabled: true
     unit_tests:
-      enabled: true
+      enabled: false
   tools:
     ast-grep:
       rule_dirs: []

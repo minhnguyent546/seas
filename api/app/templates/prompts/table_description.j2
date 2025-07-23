@@ -1,0 +1,16 @@
+Cho một bảng ở định dạng markdown như sau được trích từ các thông tin về chương trình tuyển sinh đại học năm 2025 của Đại học Cần Thơ.
+
+{{ tableContent }}
+
+**Yêu cầu:**
+1. Mô tả trực quan nội dung của bảng.
+2. Mô tả nội dung của mỗi dòng trong bảng bằng cách kết hợp header cùng với nội dung mỗi cột của dòng tương ứng.
+3. Những nội dung sinh ra sẽ được dùng để thay thế bảng gốc, do đó hãy đảm bảo rằng nội dung sinh ra là mạch lạc, trực quan, đầy đủ thông tin và phù hợp để thay thế bảng gốc.
+4. Output trả về chứa nội dung tóm tắt của bảng, cùng với nội dung mỗi dòng trong bảng. Các nội dung này được viết thành **các đoạn mạch lạc** với định dạng sau, không có thêm bất kì nội dung nào khác ngoài yêu cầu:
+{% raw %}
+####### {{ Một đoạn tóm tắt nội dung của bảng }}
+
+{{ Số thứ tự dòng }}. {{ Nội dung của dòng }}
+
+Trong đó các nội dung trong cặp ngoặc {{ }} là nội dung cần hoàn thiện. Hãy đảm bảo mô tả đầy đủ các dòng trong bảng và không bỏ sót dòng nào.
+{% endraw %}

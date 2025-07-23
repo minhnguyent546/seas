@@ -1,9 +1,15 @@
+# node modules
+node_modules/
+
+# vite pre-bundled deps
+.vite/
+
 # python stuff
 .ipynb_checkpoints
 __pycache__/
 *.py[oc]
 build/
-!/api/app/templates/build/
+!/api/app/templates/emails/build/
 dist/
 wheels/
 *.egg-info

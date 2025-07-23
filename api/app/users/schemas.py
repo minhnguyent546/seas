@@ -12,6 +12,12 @@ class UserRole(str, enum.Enum):
     USER = "USER"
 
 
+class OAuthProvider(str, enum.Enum):
+    GOOGLE = "GOOGLE"
+    GITHUB = "GITHUB"
+    LOCAL = "LOCAL"  # For username/password registration
+
+
 class UserCreate(BaseModel):
     username: Annotated[str, Field(min_length=3, max_length=50)]
     email: EmailStr
@@ -19,6 +25,7 @@ class UserCreate(BaseModel):
     is_active: bool = True
     password: Annotated[str, Field(min_length=6, max_length=128)]
     role: UserRole = UserRole.USER
+    oauth_provider: OAuthProvider = OAuthProvider.LOCAL
 
 
 class UserRegister(BaseModel):
@@ -64,6 +71,7 @@ class UserPublic(BaseModel):
     full_name: Annotated[str, Field(min_length=3, max_length=100)]
     is_active: bool
     role: UserRole
+    oauth_provider: OAuthProvider
     created_at: datetime
 
     @field_serializer("created_at")

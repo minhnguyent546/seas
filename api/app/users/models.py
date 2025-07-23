@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.base import Base
 from app.core.config import timezone_vi
-from app.users.schemas import UserRole
+from app.users.schemas import OAuthProvider, UserRole
 
 
 class User(Base):
@@ -23,15 +23,18 @@ class User(Base):
         Enum(UserRole), default=UserRole.USER
     )
     password: Mapped[str] = mapped_column(String())
+    oauth_provider: Mapped[OAuthProvider] = mapped_column(
+        Enum(OAuthProvider), default=OAuthProvider.LOCAL
+    )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.now(tz=timezone_vi)
+        DateTime(timezone=True), default=lambda: datetime.now(tz=timezone_vi)
     )
 
     def __repr__(self) -> str:
         return (
             f"<User(id={self.id!r}, username={self.username!r}, email={self.email!r}, "
             f"full_name={self.full_name!r}, role={self.role!r}, "
-            f"is_active={self.is_active!r})>"
+            f"oauth_provider={self.oauth_provider!r}, is_active={self.is_active!r})>"
         )
 
 

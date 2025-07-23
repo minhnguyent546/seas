@@ -3,10 +3,12 @@ from typing import Annotated, Any, Literal, Self
 
 import pytz
 from pydantic import (
+    AnyHttpUrl,
     AnyUrl,
     BeforeValidator,
     EmailStr,
     PostgresDsn,
+    TypeAdapter,
     computed_field,
     model_validator,
 )
@@ -46,6 +48,20 @@ class Settings(BaseSettings):
     # general
     API_PREFIX: str = "/api/v1"
     API_PORT: int = 8444
+
+    # google oauth2
+    GOOGLE_OAUTH2_CLIENT_ID: str
+    GOOGLE_OAUTH2_CLIENT_SECRET: str
+    GOOGLE_OAUTH2_USERINFO_URL: AnyHttpUrl = TypeAdapter(
+        AnyHttpUrl
+    ).validate_python("https://www.googleapis.com/oauth2/v3/userinfo")
+
+    # github oauth2
+    GITHUB_OAUTH2_CLIENT_ID: str
+    GITHUB_OAUTH2_CLIENT_SECRET: str
+    GITHUB_OAUTH2_USERINFO_URL: AnyHttpUrl = TypeAdapter(
+        AnyHttpUrl
+    ).validate_python("https://api.github.com/user")
 
     # cors
     BACKEND_CORS_ORIGINS: Annotated[
@@ -88,6 +104,36 @@ class Settings(BaseSettings):
     EMAILS_FROM_NAME: EmailStr | None = None
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 24  # 24 hours
     EMAIL_TEST_USER: str = "testuser@test.com"
+
+    # llm
+    CHAT_MODEL: str = "google/gemini-2.5-flash"
+    TABLE_SUMMARY_MODEL: str = "openai/gpt-4o"
+    GOOGLE_API_KEY: str = ""
+    OPENAI_API_KEY: str = ""
+    ANTHROPIC_API_KEY: str = ""
+
+    # embeddings model
+    EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
+    CHUNK_SIZE: int = 4096
+    CHUNK_OVERLAP: int = 512
+
+    # doc upload dir
+    DOC_UPLOAD_DIR: str = "uploaded-docs"
+
+    # qdrant
+    QDRANT_HOST: str = "localhost"
+    QDRANT_PORT: int = 6333
+    QDRANT_API_KEY: str | None = None
+    QDRANT_COLLECTION_NAME: str = "seas_documents"
+    QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
+
+    # similarity search
+    SIMILARITY_SEARCH_TOP_K: int = 3
+    SIMILARITY_SEARCH_THRESHOLD: float = 0.6
+
+    # config for adding document in batch
+    BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 10
+    BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS: int = 5_000
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
@@ -138,6 +184,15 @@ class Settings(BaseSettings):
             options["password"] = self.SMTP_PASSWORD
 
         return options
+
+    @property
+    def cookie_common_options(self) -> dict[str, Any]:
+        return {
+            "path": "/",
+            "secure": False,  # TODO: should be set to True in production
+            "httponly": True,
+            "samesite": "lax",
+        }
 
 
 settings = Settings()  # pyright: ignore[reportCallIssue]

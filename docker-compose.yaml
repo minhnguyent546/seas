@@ -8,7 +8,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - seas-db-data:/var/lib/postgresql/data
+      - seas-db-data:/var/lib/postgresql/pgdata
     env_file:
       - .env
     environment:
@@ -16,6 +16,17 @@ services:
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+    networks:
+      - seas
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1" ]
+      timeout: 5s
+      retries: 3
+    volumes:
+      - seas-qdrant-data:/qdrant/storage
     networks:
       - seas
 
@@ -29,10 +40,9 @@ services:
       - ADMINER_DESIGN=rmsoft
     networks:
       - seas
+
   api:
-    build:
-      context: api
-      dockerfile: Dockerfile
+    image: "${API_IMAGE}:${API_TAG-latest}"
     restart: always
     env_file:
       - .env
@@ -43,6 +53,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - FIRST_USER_PASSWORD=${FIRST_USER_PASSWORD?Variable not set}
+      - QDRANT_HOST=qdrant
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8444/health" ]
       interval: 10s
@@ -51,24 +62,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      qdrant:
+        condition: service_healthy
     networks:
       - seas
-
-  ui:
-    build:
-      context: ui
-      dockerfile: Dockerfile
-      args:
-        - NODE_ENV=production
-    restart: always
-    depends_on:
-      - api
-    networks:
-      - seas
-
 
 volumes:
   seas-db-data:
-
+  seas-qdrant-data:
 networks:
   seas:

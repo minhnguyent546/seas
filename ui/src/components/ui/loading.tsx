@@ -1,3 +1,4 @@
+import { SeasLogo } from '@/components/icons';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
 interface LoadingProps {
@@ -22,6 +23,7 @@ export function Loading({
         gap: 2,
       }}
     >
+      <SeasLogo size={60} className="text-primary mb-2" />
       <CircularProgress size={size} />
       {message && (
         <Typography variant="body1" color="text.secondary">

@@ -1,0 +1,33 @@
+name: Deploy UI to Vercel - Preview environment
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "ui/**"
+  workflow_dispatch:
+
+jobs:
+  deploy-ui-to-vercel-preview:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ui
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        env:
+          VITE_API_URL: "${{ secrets.VITE_API_URL }}"
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}

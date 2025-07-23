@@ -1,102 +1,144 @@
 import {
-  type Body_auth_login_for_access_token as AccessToken,
-  type ApiError,
+  ApiError,
   AuthService,
+  type Body_auth_login as BodyAuthLogin,
   type UserPublic,
   type UserRegister,
   UsersService,
 } from '@/client';
 import { ROUTE_PATHS } from '@/constants/path_routes';
-import { handleError } from '@/lib/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
-const isLoggedIn = () => {
-  return localStorage.getItem('access_token') !== null;
+// Authentication query keys
+export const AUTH_QUERY_KEYS = {
+  currentUser: ['currentUser'] as const,
+  users: ['users'] as const,
+} as const;
+
+// Helper function to extract error message from API error
+const extractErrorMessage = (
+  error: ApiError,
+  fallback = 'Something went wrong',
+): string => {
+  if (!error.body || typeof error.body !== 'object') {
+    return fallback;
+  }
+
+  const body = error.body as Record<string, unknown>;
+  const detail = body.detail;
+
+  if (typeof detail === 'string') {
+    return detail;
+  }
+
+  if (Array.isArray(detail) && detail.length > 0) {
+    return String(detail[0]);
+  }
+
+  return fallback;
+};
+
+// Check if user is authenticated based on current user query
+export const useAuthStatus = () => {
+  const userQuery = useQuery<UserPublic | null, Error>({
+    queryKey: AUTH_QUERY_KEYS.currentUser,
+    queryFn: UsersService.getUserMe,
+    retry: (failureCount, error) => {
+      // Don't retry on auth errors
+      if (error instanceof ApiError && [401, 403].includes(error.status)) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  return {
+    user: userQuery.data,
+    isAuthenticated: !!userQuery.data,
+    isLoading: userQuery.isLoading,
+    isError: userQuery.isError,
+    error: userQuery.error,
+  };
 };
 
 const useAuth = () => {
-  const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: user } = useQuery<UserPublic | null, Error>({
-    queryKey: ['currentUser'],
-    queryFn: UsersService.getUserMe,
-    enabled: isLoggedIn(),
-  });
+  const { user, isAuthenticated, isLoading } = useAuthStatus();
 
+  // Signup mutation
   const signupMutation = useMutation({
     mutationFn: async (data: UserRegister) => {
       await AuthService.signup({ requestBody: data });
     },
     onSuccess: () => {
+      setAuthError(null);
       navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
     },
-    onError: (err: ApiError) => {
-      handleError(err);
+    onError: (error: ApiError) => {
+      const message = extractErrorMessage(error, 'Failed to create account');
+      setAuthError(message);
+      console.error('Signup error:', error);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.users });
     },
   });
 
-  const login = async (data: AccessToken) => {
-    const response = await AuthService.loginForAccessToken({ formData: data });
-    localStorage.setItem('access_token', response.access_token);
-    localStorage.setItem('token_type', response.token_type || 'Bearer');
-  };
-
+  // Login mutation
   const loginMutation = useMutation({
-    mutationFn: login,
+    mutationFn: async (data: BodyAuthLogin) => {
+      await AuthService.login({ formData: data });
+    },
     onSuccess: () => {
-      setError(null);
+      setAuthError(null);
+      // Invalidate and refetch current user to update auth state
+      queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
       navigate({ to: ROUTE_PATHS.HOME });
-      // Force a re-render by invalidating the current user query
-      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
     },
     onError: (error: ApiError) => {
-      const errorMessage =
-        error.body &&
-        typeof error.body === 'object' &&
-        'detail' in (error.body as Record<string, unknown>)
-          ? (error.body as Record<string, unknown>).detail
-          : 'Login failed. Please check your credentials.';
-
-      let message =
-        typeof errorMessage === 'string'
-          ? errorMessage
-          : 'Login failed. Please check your credentials.';
-      if (Array.isArray(errorMessage) && errorMessage.length > 0) {
-        message = String(errorMessage[0]);
-      }
-
-      setError(message);
-      handleError(error);
+      const message = extractErrorMessage(
+        error,
+        'Incorrect username or password',
+      );
+      setAuthError(message);
+      console.error('Login error:', error);
     },
   });
 
-  const logout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('token_type');
-
-    // Navigate to login page
-    navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
-
-    // Clear user data and force re-render
-    queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-    queryClient.clear(); // Clear all cached data
+  // Logout function
+  const logout = async () => {
+    try {
+      await AuthService.signout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear all cached data and navigate to login
+      queryClient.clear();
+      navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
+    }
   };
 
   return {
+    // Auth state
+    user,
+    isAuthenticated,
+    isLoading,
+    error: authError,
+
+    // Mutations
     signupMutation,
     loginMutation,
+
+    // Actions
     logout,
-    user,
-    error,
-    resetError: () => setError(null),
+    resetError: () => setAuthError(null),
   };
 };
 
-export { isLoggedIn };
 export default useAuth;

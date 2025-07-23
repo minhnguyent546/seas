@@ -1,52 +1,10 @@
-import { ROUTE_PATHS } from '@/constants/path_routes';
-import { isLoggedIn } from '@/hooks/useAuth';
-import {
-  Outlet,
-  createRootRoute,
-  redirect,
-  useRouter,
-} from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
-  // This is executed before the route is even loaded
-  beforeLoad: ({ location }) => {
-    // Redirect unauthenticated users to login page if they're trying to access protected routes
-    const isAuthRoute = location.pathname !== ROUTE_PATHS.AUTH.LOGIN;
-    if (isAuthRoute && !isLoggedIn()) {
-      throw redirect({
-        to: ROUTE_PATHS.AUTH.LOGIN,
-      });
-    }
-
-    // Redirect authenticated users to home if they try to access login
-    if (location.pathname === ROUTE_PATHS.AUTH.LOGIN && isLoggedIn()) {
-      throw redirect({
-        to: ROUTE_PATHS.HOME,
-      });
-    }
-  },
   component: RootComponent,
 });
 
 function RootComponent() {
-  const router = useRouter();
-
-  // This ensures the router is aware of auth state changes
-  useEffect(() => {
-    const checkAuth = () => {
-      // Force a reload of the current route when auth state changes
-      router.invalidate();
-    };
-
-    // Listen for storage events (logout/login in other tabs)
-    window.addEventListener('storage', checkAuth);
-
-    return () => {
-      window.removeEventListener('storage', checkAuth);
-    };
-  }, [router]);
-
   return (
     <>
       <Outlet />

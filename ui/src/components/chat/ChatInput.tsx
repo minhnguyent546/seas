@@ -1,11 +1,6 @@
-import {
-  FileIcon,
-  ImageIcon,
-  MicrophoneIcon,
-  SendIcon,
-} from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { CircularProgress } from '@mui/material';
+import { IconMicrophone, IconSend } from '@tabler/icons-react';
 import React, { useRef, useState } from 'react';
 
 interface ChatInputProps {
@@ -17,7 +12,7 @@ interface ChatInputProps {
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
   isLoading = false,
-  placeholder = 'Ask me anything...',
+  placeholder = 'Ask me anything about CTU Enrollment Program...',
 }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -53,7 +48,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="relative rounded-2xl border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div className="relative rounded-3xl border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div className="flex w-full items-end gap-2">
         <div className="flex flex-1 flex-col">
           <textarea
@@ -73,27 +68,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             size="icon"
             type="button"
             className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-            aria-label="Upload image"
-          >
-            <ImageIcon size={20} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            type="button"
-            className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-            aria-label="Upload file"
-          >
-            <FileIcon size={20} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            type="button"
-            className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             aria-label="Voice input"
           >
-            <MicrophoneIcon size={20} />
+            <IconMicrophone size={20} />
           </Button>
           <Button
             onClick={handleSendMessage}
@@ -105,7 +82,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             {isLoading ? (
               <CircularProgress size={16} color="inherit" />
             ) : (
-              <SendIcon size={16} />
+              <IconSend size={16} />
             )}
           </Button>
         </div>

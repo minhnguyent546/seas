@@ -16,8 +16,15 @@ import { routeTree } from './routeTree.gen';
 
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
-    localStorage.removeItem('access_token');
-    window.location.href = ROUTE_PATHS.AUTH.LOGIN;
+    // Only redirect if we're not already on auth pages
+    const currentPath = window.location.pathname;
+    const isOnAuthPage =
+      currentPath === ROUTE_PATHS.AUTH.LOGIN ||
+      currentPath === ROUTE_PATHS.AUTH.SIGNUP;
+
+    if (!isOnAuthPage) {
+      window.location.href = ROUTE_PATHS.AUTH.LOGIN;
+    }
   }
 };
 
@@ -45,10 +52,8 @@ const queryClient = new QueryClient({
 // Configure OpenAPI client
 const configureOpenAPI = () => {
   OpenAPI.BASE = import.meta.env.VITE_API_URL;
-
-  OpenAPI.TOKEN = async () => {
-    return localStorage.getItem('access_token') || '';
-  };
+  OpenAPI.CREDENTIALS = 'include';
+  OpenAPI.WITH_CREDENTIALS = true;
 };
 
 // router

@@ -1,36 +1,126 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Request,
+    Response,
+    status,
+)
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 import app.auth.service as auth_service
 import app.users.service as users_service
 import app.utils as app_utils
-from app.auth.schemas import NewPassword, Token
-from app.auth.utils import hash_password
+from app.auth.oauth_client import oauth_client
+from app.auth.schemas import NewPassword
+from app.auth.utils import handle_oauth_error, hash_password
+from app.core.config import settings
 from app.deps import (
     AsyncSessionDep,
     CurrentActiveUserDep,
     get_current_superuser,
 )
-from app.schemas import MessageResponse
-from app.users.schemas import UserPublic, UserRegister
+from app.schemas import LoginResponse, MessageResponse
+from app.users.schemas import OAuthProvider, UserPublic, UserRegister
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login/access-token", response_model=Token)
-async def login_for_access_token(
+@router.post("/login", response_model=LoginResponse)
+async def login(
     session: AsyncSessionDep,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    response: Response,
 ):
-    """Login with username and password to get an access token for future requests."""
+    """Login with username and password."""
     token = await auth_service.login_for_access_token(
         session=session, form_data=form_data
     )
-    return token
+    response.set_cookie(
+        key="access_token",
+        value=token.access_token,
+        max_age=int(token.expires_in),
+        **settings.cookie_common_options,
+    )
+    return LoginResponse(
+        message="Login successful",
+        token_type="bearer",
+        expires_in=token.expires_in,
+    )
+
+
+@router.get("/login/google-oauth2", status_code=status.HTTP_303_SEE_OTHER)
+async def login_via_google_oauth2(
+    request: Request, response_class=RedirectResponse
+):
+    """Login with Google OAuth2."""
+    redirect_uri = request.url_for("google_oauth2_callback")
+    return await oauth_client.google.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
+
+
+@router.get("/login/google-oauth2/callback", response_class=RedirectResponse)
+async def google_oauth2_callback(session: AsyncSessionDep, request: Request):
+    """Callback to handle redirect from Google OAuth2."""
+    try:
+        # Let Authlib handle the state validation automatically
+        auth_access_token = await oauth_client.google.authorize_access_token(  # pyright: ignore[reportOptionalMemberAccess]
+            request
+        )
+
+        token = await auth_service.google_oauth2_callback(
+            session=session, auth_access_token=auth_access_token
+        )
+        response = RedirectResponse(
+            url=settings.FRONTEND_HOST, status_code=status.HTTP_303_SEE_OTHER
+        )
+        response.set_cookie(
+            key="access_token",
+            value=token.access_token,
+            max_age=int(token.expires_in),
+            **settings.cookie_common_options,
+        )
+        return response
+    except (HTTPException, Exception) as err:
+        return handle_oauth_error(provider=OAuthProvider.GOOGLE, error=err)
+
+
+@router.get("/login/github-oauth2", status_code=status.HTTP_303_SEE_OTHER)
+async def login_via_github_oauth2(
+    request: Request, response_class=RedirectResponse
+):
+    """Login with GitHub OAuth2."""
+    redirect_uri = request.url_for("github_oauth2_callback")
+    return await oauth_client.github.authorize_redirect(request, redirect_uri)  # pyright: ignore[reportOptionalMemberAccess]
+
+
+@router.get("/login/github-oauth2/callback", response_class=RedirectResponse)
+async def github_oauth2_callback(session: AsyncSessionDep, request: Request):
+    """Callback to handle redirect from GitHub OAuth2."""
+    try:
+        # Let Authlib handle the state validation automatically
+        auth_access_token = await oauth_client.github.authorize_access_token(  # pyright: ignore[reportOptionalMemberAccess]
+            request
+        )
+
+        token = await auth_service.github_oauth2_callback(
+            session=session, auth_access_token=auth_access_token
+        )
+        response = RedirectResponse(
+            url=settings.FRONTEND_HOST, status_code=status.HTTP_303_SEE_OTHER
+        )
+        response.set_cookie(
+            key="access_token",
+            value=token.access_token,
+            max_age=int(token.expires_in),
+            **settings.cookie_common_options,
+        )
+        return response
+    except (HTTPException, Exception) as err:
+        return handle_oauth_error(provider=OAuthProvider.GITHUB, error=err)
 
 
 @router.post(
@@ -55,6 +145,13 @@ async def test_token(current_user: CurrentActiveUserDep):
     return current_user
 
 
+@router.post("/signout", response_model=MessageResponse)
+async def signout(response: Response):
+    """Signout the user"""
+    response.delete_cookie("access_token", **settings.cookie_common_options)
+    return MessageResponse(message="Sign out successful")
+
+
 @router.post("/password-recovery/{email}", response_model=MessageResponse)
 async def recover_password(session: AsyncSessionDep, email: EmailStr):
     """Recover password by email."""
@@ -64,6 +161,15 @@ async def recover_password(session: AsyncSessionDep, email: EmailStr):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No user found with this email.",
         )
+
+    # Check if user was created with OAuth provider
+    if user.oauth_provider != OAuthProvider.LOCAL:
+        provider_name = user.oauth_provider.value.title()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"This account was created using {provider_name}. Please sign in with {provider_name} instead. Password reset is not available for OAuth accounts.",
+        )
+
     password_reset_token = app_utils.generate_password_reset_token(
         email=user.email
     )
@@ -95,6 +201,15 @@ async def reset_password(session: AsyncSessionDep, new_password: NewPassword):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No user found with this email.",
         )
+
+    # Check if user was created with OAuth provider
+    if user.oauth_provider != OAuthProvider.LOCAL:
+        provider_name = user.oauth_provider.value.title()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"This account was created using {provider_name}. Password reset is not available for OAuth accounts. Please sign in with {provider_name} instead.",
+        )
+
     hashed_password = hash_password(new_password.new_password)
     user.password = hashed_password
     session.add(user)

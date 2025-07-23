@@ -2,8 +2,11 @@ from typing import Annotated
 
 from fastapi import Depends
 from loguru import logger
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 import app.users.service as user_service
 from app.auth.utils import hash_password
@@ -13,7 +16,7 @@ from app.users.models import User
 from app.users.schemas import UserCreate, UserRole
 
 engine = create_async_engine(settings.SQLALCHEMY_POSTGRES_URI)
-AsyncSessionLocal = sessionmaker(
+AsyncSessionLocal = async_sessionmaker(
     bind=engine,  # pyright: ignore[reportArgumentType, reportCallIssue]
     class_=AsyncSession,
     autocommit=False,
@@ -51,7 +54,13 @@ async def init_db(session: AsyncSession):
 
 async def get_async_session():
     async with AsyncSessionLocal() as async_session:  # pyright: ignore[reportGeneralTypeIssues]
-        yield async_session
+        try:
+            yield async_session
+        except Exception:
+            await async_session.rollback()
+            raise
+        finally:
+            await async_session.close()
 
 
 AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_session)]

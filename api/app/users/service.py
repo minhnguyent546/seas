@@ -1,3 +1,4 @@
+import secrets
 import uuid
 from typing import Sequence
 
@@ -194,3 +195,13 @@ async def create_user(session: AsyncSession, user_create: UserCreate) -> User:
     await session.commit()
     await session.refresh(user)
     return user
+
+
+async def get_distinct_username(
+    session: AsyncSession, base_username: str
+) -> str:
+    user = await get_user_by_username(session=session, username=base_username)
+    if user is None:
+        return base_username
+    random_suffix = secrets.token_hex(4)
+    return f"{base_username}_{random_suffix}"

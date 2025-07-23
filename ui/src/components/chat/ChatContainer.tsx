@@ -1,68 +1,21 @@
-import { ChatFeatures } from '@/components/chat/ChatFeatures';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { Message } from '@/components/chat/Message';
-import { generateId } from '@/lib/utils';
-import type { ChatFeature, Message as MessageType } from '@/types/chat';
-import { Box, CircularProgress } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
+import { SeasLogo } from '@/components/icons';
+import { useAutoScroll } from '@/hooks/useAutoScroll';
+import { useChat } from '@/hooks/useChat';
+import React from 'react';
 
 interface ChatContainerProps {
   userName: string;
 }
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { messages, isLoading, handleSendMessage } = useChat();
+  const { scrollRef } = useAutoScroll(messages);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Mock function to simulate AI response
-  const simulateResponse = async (userMessage: string) => {
-    setIsLoading(true);
-
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const botResponse: MessageType = {
-      id: generateId(),
-      role: 'assistant',
-      content: `Hello ${userName}, I received your message: "${userMessage}". How can I help you further?`,
-      timestamp: new Date(),
-    };
-
-    setMessages((prevMessages) => [...prevMessages, botResponse]);
-    setIsLoading(false);
-  };
-
-  const handleSendMessage = async (content: string) => {
-    const userMessage: MessageType = {
-      id: generateId(),
-      role: 'user',
-      content,
-      timestamp: new Date(),
-    };
-
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-    await simulateResponse(content);
-  };
-
-  const handleFeatureClick = (feature: ChatFeature) => {
-    // Handle feature selection
-    const systemMessage: MessageType = {
-      id: generateId(),
-      role: 'system',
-      content: `You selected the ${feature.title} feature`,
-      timestamp: new Date(),
-    };
-
-    setMessages((prevMessages) => [...prevMessages, systemMessage]);
+  const handleQuestionClick = (question: string) => {
+    handleSendMessage(question);
   };
 
   return (
@@ -70,34 +23,36 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
       <div className="flex-1 overflow-y-auto p-4 min-h-0">
         <div className="mx-auto w-full max-w-[var(--content-max-width)] h-full">
           {messages.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center">
-              <h1 className="mb-2 text-3xl font-semibold text-gray-800 dark:text-white">
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+                <SeasLogo size={80} className="text-primary" />
+              </div>
+              <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-800 dark:text-white sm:text-4xl">
                 Hi, {userName}!
               </h1>
-              <p className="mb-8 text-lg text-gray-600 dark:text-gray-300">
-                How can I assist you today?
+              <p className="mb-8 text-lg text-gray-500 dark:text-gray-400">
+                Ask me anything about CTU Enrollment Program
               </p>
-              <div className="w-full">
-                <ChatFeatures onFeatureClick={handleFeatureClick} />
+              <div className="w-full max-w-2xl">
+                <RecommendedQuestions onQuestionClick={handleQuestionClick} />
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
-              {messages.map((message) => (
+            <div className="space-y-4 pb-8">
+              {messages.map((message, index) => (
                 <Message
                   key={message.id}
                   message={message}
-                  isLastMessage={
-                    message.id === messages[messages.length - 1].id
-                  }
+                  isLastMessage={index === messages.length - 1}
+                  isLoading={isLoading && index === messages.length - 1}
                 />
               ))}
-              {isLoading && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
-                  <CircularProgress size={30} />
-                </Box>
-              )}
-              <div ref={messagesEndRef} />
+              <div
+                ref={scrollRef}
+                className="h-0 w-0 overflow-hidden"
+                aria-hidden="true"
+                role="presentation"
+              />
             </div>
           )}
         </div>
