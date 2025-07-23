@@ -6,6 +6,7 @@ from typing import Any
 import frontmatter
 from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
+from fastembed import SparseTextEmbedding
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -15,7 +16,7 @@ from langchain_text_splitters import (
 )
 from loguru import logger
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
+from qdrant_client import models as qdrant_models
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -36,6 +37,11 @@ class RagService:
         self.session = session
         self.__qdrant_client: AsyncQdrantClient | None = None
         self.__embeddings: Embeddings | None = None
+        self.__bm42_model: SparseTextEmbedding | None = None
+
+        # TODO: Using English BM42 model as multilingual BM42 isn't available in fastembed yet
+        # For Vietnamese, we might want to consider SPLADE++ which has better multilingual support
+        self.BM42_MODEL_NAME = "Qdrant/bm42-all-minilm-l6-v2-attentions"
 
         self.TABLE_TOK = "<table_title>"
         self.TABLE_HEADER_SYMBOL = "#######"
@@ -71,6 +77,14 @@ class RagService:
             )
         return self.__embeddings
 
+    @property
+    def _bm42_model(self) -> SparseTextEmbedding:
+        if self.__bm42_model is None:
+            self.__bm42_model = SparseTextEmbedding(
+                model_name=self.BM42_MODEL_NAME
+            )
+        return self.__bm42_model
+
     async def _initialize_qdrant_collection(self) -> bool:
         try:
             collections = await self._qdrant_client.get_collections()
@@ -79,10 +93,18 @@ class RagService:
             if settings.QDRANT_COLLECTION_NAME not in collection_names:
                 await self._qdrant_client.create_collection(
                     collection_name=settings.QDRANT_COLLECTION_NAME,
-                    vectors_config=VectorParams(
-                        size=settings.QDRANT_VECTOR_SIZE,
-                        distance=Distance.COSINE,
-                    ),
+                    vectors_config={
+                        "dense": qdrant_models.VectorParams(
+                            size=settings.QDRANT_VECTOR_SIZE,
+                            distance=qdrant_models.Distance.COSINE,
+                        ),
+                    },
+                    sparse_vectors_config={
+                        "bm42": qdrant_models.SparseVectorParams(
+                            # Enable automatic IDF calculation for BM42
+                            modifier=qdrant_models.Modifier.IDF,
+                        ),
+                    },
                 )
                 logger.info(
                     f"Created Qdrant collection: {settings.QDRANT_COLLECTION_NAME}"
@@ -91,6 +113,26 @@ class RagService:
         except Exception as e:
             logger.error(f"Failed to initialize Qdrant collection: {e}")
             return False
+
+    def _get_bm42_sparse_vector(self, text: str) -> qdrant_models.SparseVector:
+        """Generate BM42 sparse vector using fastembed
+
+        Note: The current BM42 model is English-focused. For better Vietnamese support,
+        consider switching to SPLADE++ model: "prithivida/Splade_PP_en_v1"
+        """
+        try:
+            # Generate sparse embedding using fastembed BM42
+            sparse_embedding = list(self._bm42_model.embed([text]))[0]
+
+            return qdrant_models.SparseVector(
+                indices=sparse_embedding.indices.tolist(),
+                values=sparse_embedding.values.tolist(),
+            )
+
+        except Exception as e:
+            logger.error(f"Error generating BM42 sparse vector: {e}")
+            # Simple fallback - return empty sparse vector
+            return qdrant_models.SparseVector(indices=[], values=[])
 
     def _split_markdown_on_header(
         self, md_file_path: str
@@ -303,19 +345,37 @@ class RagService:
         self, search_params: SimilaritySearchParams
     ) -> list[DocumentSectionChunkPublic]:
         try:
-            # search in Qdrant
-            query_vector = await self._embeddings.aembed_query(
+            # compute dense and sparse vector for the query
+            query_dense_vector = await self._embeddings.aembed_query(
                 search_params.query
             )
-            search_results = await self._qdrant_client.search(
+            query_sparse_vector = self._get_bm42_sparse_vector(
+                search_params.query
+            )
+
+            search_results = await self._qdrant_client.query_points(
                 collection_name=settings.QDRANT_COLLECTION_NAME,
-                query_vector=query_vector,
+                prefetch=[
+                    qdrant_models.Prefetch(
+                        query=query_dense_vector,
+                        using="dense",
+                        limit=search_params.limit,
+                    ),
+                    qdrant_models.Prefetch(
+                        query=query_sparse_vector,
+                        using="bm42",
+                        limit=search_params.limit,
+                    ),
+                ],
+                query=qdrant_models.FusionQuery(
+                    fusion=qdrant_models.Fusion.RRF
+                ),
                 limit=search_params.limit,
                 score_threshold=search_params.threshold,
             )
 
-            # get chunk
-            chunk_ids = [result.id for result in search_results]
+            # Extract chunk IDs from search results
+            chunk_ids = [result.id for result in search_results.points]
             if not chunk_ids:
                 return []
 
@@ -338,7 +398,7 @@ class RagService:
                 for chunk in document_section_chunks
             ]
             for i, chunk in enumerate(document_section_chunks_public):
-                chunk.similarity_score = search_results[i].score
+                chunk.similarity_score = search_results.points[i].score
 
             return document_section_chunks_public
 
@@ -410,11 +470,21 @@ class RagService:
 
                     # embeddings and qdrants points
                     # TODO: consider embedding in batch
-                    embedding = await self._embeddings.aembed_query(
+                    chunk_dense_vector = await self._embeddings.aembed_query(
+                        doc_section_chunk.page_content
+                    )
+                    chunk_sparse_vector = self._get_bm42_sparse_vector(
                         doc_section_chunk.page_content
                     )
                     qdrant_points.append(
-                        PointStruct(id=chunk_id, vector=embedding, payload={})
+                        qdrant_models.PointStruct(
+                            id=chunk_id,
+                            vector={
+                                "dense": chunk_dense_vector,
+                                "bm42": chunk_sparse_vector,
+                            },
+                            payload={},
+                        )
                     )
 
             # batch upsert to Qdrant
@@ -557,7 +627,7 @@ class RagService:
                 )
 
             # Step 3: Process all valid files and prepare data for batch operations
-            all_qdrant_points: list[PointStruct] = []
+            all_qdrant_points: list[qdrant_models.PointStruct] = []
             all_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
             all_document_sections: list[DocumentSection] = []
 
@@ -596,7 +666,7 @@ class RagService:
                 }
 
                 try:
-                    file_qdrant_points: list[PointStruct] = []
+                    file_qdrant_points: list[qdrant_models.PointStruct] = []
                     file_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
                     file_document_sections: list[DocumentSection] = []
 
@@ -634,13 +704,23 @@ class RagService:
                                 document_section_chunk_db
                             )
 
-                            # Generate embedding
-                            embedding = await self._embeddings.aembed_query(
+                            # Generate dense and sparse embeddings
+                            chunk_dense_vector = (
+                                await self._embeddings.aembed_query(
+                                    doc_section_chunk.page_content
+                                )
+                            )
+                            chunk_sparse_vector = self._get_bm42_sparse_vector(
                                 doc_section_chunk.page_content
                             )
                             file_qdrant_points.append(
-                                PointStruct(
-                                    id=chunk_id, vector=embedding, payload={}
+                                qdrant_models.PointStruct(
+                                    id=chunk_id,
+                                    vector={
+                                        "dense": chunk_dense_vector,
+                                        "bm42": chunk_sparse_vector,
+                                    },
+                                    payload={},
                                 )
                             )
 
