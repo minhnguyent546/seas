@@ -114,8 +114,8 @@ class Settings(BaseSettings):
 
     # embeddings model
     EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
-    CHUNK_SIZE: int = 4096
-    CHUNK_OVERLAP: int = 512
+    CHUNK_SIZE: int = 3072
+    CHUNK_OVERLAP: int = 384
 
     # doc upload dir
     DOC_UPLOAD_DIR: str = "uploaded-docs"

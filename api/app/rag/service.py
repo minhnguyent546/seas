@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 from typing import Any
 
@@ -363,6 +364,7 @@ class RagService:
             )
 
         saved_file_path = None
+        process_start_time = time.perf_counter()
         try:
             saved_file_path = app_utils.save_uploaded_file(file=upload_file)
             doc_sections = self._split_markdown_on_header(
@@ -428,6 +430,7 @@ class RagService:
             self.session.add_all(doc_section_chunk_dbs)
             await self.session.commit()
 
+            elapsed_time = time.perf_counter() - process_start_time
             return MessageResponse(
                 message=f"Document {upload_file.filename} added to the databases",
                 extra={
@@ -438,6 +441,7 @@ class RagService:
                     "num_doc_sections": len(doc_sections),
                     "num_doc_section_chunks": len(doc_section_chunk_dbs),
                     "num_qdrant_points": len(qdrant_points),
+                    "elapsed_time": f"{elapsed_time:.2f} seconds",
                 },
             )
         except Exception as err:
@@ -469,6 +473,7 @@ class RagService:
         saved_file_paths: list[str] = []
         successful_files: list[dict[str, Any]] = []
         failed_files: list[dict[str, Any]] = []
+        process_start_time = time.perf_counter()
 
         try:
             # Step 1: Validate and save all files first
@@ -576,7 +581,10 @@ class RagService:
                     detail=f"Estimated total chunks ({total_estimated_chunks}) exceeds limit ({settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS}). Please reduce batch size.",
                 )
 
-            for filename, doc_sections in valid_doc_sections:
+            for i, (filename, doc_sections) in enumerate(valid_doc_sections):
+                logger.debug(
+                    f"Preparing data for file {i + 1}/{len(valid_doc_sections)}: {filename}"
+                )
                 file_result: dict[str, Any] = {
                     "filename": filename,
                     "error": None,
@@ -665,6 +673,9 @@ class RagService:
 
             # Step 4: Batch operations (all or nothing for data consistency)
             try:
+                logger.debug(
+                    "Adding document section chunks and embeddings to database..."
+                )
                 # Add document sections to session first
                 self.session.add_all(all_document_sections)
 
@@ -717,11 +728,13 @@ class RagService:
                     failed_files.append(file_result)
                 successful_files.clear()
 
+            elapsed_time = time.perf_counter() - process_start_time
             return JSONResponse(
                 content={
                     "message": f"Batch processing completed. {len(successful_files)} successful, {len(failed_files)} failed.",
                     "successful_files": successful_files,
                     "failed_files": failed_files,
+                    "elapsed_time": f"{elapsed_time:.2f} seconds",
                     "summary": {
                         "total_files": len(upload_files),
                         "successful_count": len(successful_files),
