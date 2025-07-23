@@ -29,10 +29,9 @@ services:
       - ADMINER_DESIGN=rmsoft
     networks:
       - seas
+
   api:
-    build:
-      context: api
-      dockerfile: Dockerfile
+    image: "${API_IMAGE}:${API_TAG-latest}"
     restart: always
     env_file:
       - .env
@@ -53,19 +52,6 @@ services:
         condition: service_healthy
     networks:
       - seas
-
-  ui:
-    build:
-      context: ui
-      dockerfile: Dockerfile
-      args:
-        - NODE_ENV=production
-    restart: always
-    depends_on:
-      - api
-    networks:
-      - seas
-
 
 volumes:
   seas-db-data:
