@@ -41,12 +41,11 @@ def crawl(args: argparse.Namespace):
             continue
 
         retry_remaining = max(args.retries, 0)
-        while retry_remaining > 0:
+
+        output_file = os.path.join(args.output_dir, f"scraped_{cnt + 1}.md")
+        while retry_remaining >= 0:
             try:
                 logger.info(f"Scraping URL {i + 1}/{len(urls)}: {url}")
-                output_file = os.path.join(
-                    args.output_dir, f"scraped_{cnt + 1}.md"
-                )
 
                 response = app.scrape_url(
                     url,
@@ -93,14 +92,16 @@ def crawl(args: argparse.Namespace):
                 time.sleep(0.5)  # avoid rate limiting
                 break
             except Exception as err:
-                if retry_remaining > 1:
+                if retry_remaining > 0:
                     logger.warning(
-                        f"Failed to scrape {url}, retrying... ({retry_remaining - 1} retries left)"
+                        f"Failed to scrape {url}, retrying... ({retry_remaining} retries left)"
                     )
                     retry_remaining -= 1
+                    time.sleep(1)
                 else:
                     logger.error(f"Failed to scrape {url}: {err}")
                     failed_urls.append(url)
+                    break
 
     if failed_urls:
         logger.error(f"Failed to scrape {len(failed_urls)} URLs:")
