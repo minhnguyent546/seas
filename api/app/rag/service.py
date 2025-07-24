@@ -315,7 +315,9 @@ class RagService:
 
         saved_file_path = None
         try:
-            saved_file_path = app_utils.save_uploaded_file(file=upload_file)
+            saved_file_path = app_utils.save_uploaded_document(
+                file=upload_file
+            )
             docs = self._split_markdown_on_header(md_file_path=saved_file_path)
 
             return_docs = []
@@ -426,7 +428,9 @@ class RagService:
         saved_file_path = None
         process_start_time = time.perf_counter()
         try:
-            saved_file_path = app_utils.save_uploaded_file(file=upload_file)
+            saved_file_path = app_utils.save_uploaded_document(
+                file=upload_file
+            )
             doc_sections = self._split_markdown_on_header(
                 md_file_path=saved_file_path
             )
@@ -571,7 +575,7 @@ class RagService:
                         continue
 
                     # Save and process file
-                    saved_file_path = app_utils.save_uploaded_file(
+                    saved_file_path = app_utils.save_uploaded_document(
                         file=upload_file
                     )
                     saved_file_paths.append(saved_file_path)

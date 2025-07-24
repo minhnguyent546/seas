@@ -152,7 +152,23 @@ def custom_generate_unique_id(route: APIRoute) -> str:
     return f"default-{route.name}"
 
 
-def save_uploaded_file(file: UploadFile) -> str:
+def get_file_size(file: UploadFile) -> int:
+    file.file.seek(0, os.SEEK_END)  # Seek to end of file
+    file_size = file.file.tell()
+    file.file.seek(0, os.SEEK_SET)  # Reset to beginning
+    return file_size
+
+
+def save_uploaded_document(file: UploadFile) -> str:
+    MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB in bytes
+    file_size = get_file_size(file=file)
+
+    if file_size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File size ({file_size / (1024 * 1024):.2f}MB) exceeds maximum allowed size of {MAX_FILE_SIZE / (1024 * 1024):.2f}MB",
+        )
+
     unique_name = f"{uuid.uuid4()}.md"
     file_path = os.path.join(settings.DOC_UPLOAD_DIR, unique_name)
     with open(file_path, "wb") as f:
