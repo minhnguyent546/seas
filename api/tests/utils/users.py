@@ -1,7 +1,7 @@
 from httpx import AsyncClient
-from loguru import logger
 
 from app.core.config import settings
+from app.core.logger import logger
 
 
 async def get_superuser_cookies(client: AsyncClient) -> dict[str, str]:

@@ -12,7 +12,6 @@ from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
     RecursiveCharacterTextSplitter,
 )
-from loguru import logger
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 from sqlalchemy import select
@@ -21,6 +20,7 @@ from sqlalchemy.orm import selectinload
 import app.utils as app_utils
 from app.core.config import settings
 from app.core.database import AsyncSession
+from app.core.logger import logger
 from app.rag.models import (
     DocumentSection,
     DocumentSectionChunk,

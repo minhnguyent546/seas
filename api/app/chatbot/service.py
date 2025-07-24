@@ -6,12 +6,12 @@ from html import escape as html_escape
 from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage, SystemMessage
-from loguru import logger
 
 import app.utils as app_utils
 from app.chatbot.schemas import ChatQuery
 from app.core.config import settings
 from app.core.database import AsyncSession
+from app.core.logger import logger
 from app.rag.schemas import SimilaritySearchParams
 from app.rag.service import RagService
 from app.templates import prompt_templates

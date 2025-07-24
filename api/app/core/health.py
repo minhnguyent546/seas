@@ -4,11 +4,11 @@ from datetime import datetime
 
 import psutil
 from fastapi import HTTPException, status
-from loguru import logger
 from sqlalchemy import text
 
 from app.core.config import settings, timezone_vi
 from app.core.database import AsyncSessionLocal
+from app.core.logger import logger
 from app.utils import serialize_datetime
 
 _start_time = time.time()

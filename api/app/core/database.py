@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import Depends
-from loguru import logger
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -12,6 +11,7 @@ import app.users.service as user_service
 from app.auth.utils import hash_password
 from app.core.base import Base
 from app.core.config import settings
+from app.core.logger import logger
 from app.users.models import User
 from app.users.schemas import UserCreate, UserRole
 

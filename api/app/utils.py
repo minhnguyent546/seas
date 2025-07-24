@@ -9,10 +9,10 @@ import jwt
 import markdown_to_data
 from fastapi import BackgroundTasks, HTTPException, UploadFile, status
 from fastapi.routing import APIRoute
-from loguru import logger
 from markdown_to_data.to_md.to_md_parser import to_md_parser
 
 from app.core.config import settings, timezone_vi
+from app.core.logger import logger
 from app.schemas import EmailData
 from app.templates import email_templates
 

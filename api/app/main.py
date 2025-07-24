@@ -7,7 +7,6 @@ from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from loguru import logger
 from pydantic import EmailStr
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -16,6 +15,7 @@ from app.api import api_router
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
 from app.core.health import check_health
+from app.core.logger import init_logger, logger
 from app.schemas import MessageResponse
 from app.utils import custom_generate_unique_id
 
@@ -25,6 +25,20 @@ _start_time = 0
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global _start_time
+    init_logger(
+        level="DEBUG",
+        log_file="api.log",
+        log_dir="logs",
+        compact=True,
+        rotate_size="50 MB",
+        rotate_time="1 day",
+        retention="30 days",
+        compression="gz",
+        enable_backtrace=True,
+        enable_diagnose=True,
+        catch_exceptions=True,
+    )
+
     logger.info('"Starting application...')
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
     _start_time = time.time()
