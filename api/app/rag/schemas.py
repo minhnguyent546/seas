@@ -20,5 +20,6 @@ class SimilaritySearchParams(BaseModel):
 
 
 class SimilaritySearchResult(BaseModel):
+    num_chunks: int
     chunks: list[DocumentSectionChunkPublic]
     query: str

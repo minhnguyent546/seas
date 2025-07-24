@@ -1,7 +1,7 @@
 import os
 import time
 import uuid
-from typing import Any
+from typing import Any, Literal
 
 import frontmatter
 from fastapi import HTTPException, UploadFile, status
@@ -114,25 +114,39 @@ class RagService:
             logger.error(f"Failed to initialize Qdrant collection: {e}")
             return False
 
-    def _get_bm42_sparse_vector(self, text: str) -> qdrant_models.SparseVector:
+    def _get_bm42_sparse_vector(
+        self, text: str, text_type: Literal["query", "passage"]
+    ) -> qdrant_models.SparseVector:
+        return self._get_bm42_sparse_vector_batch(
+            texts=[text], text_type=text_type
+        )[0]
+
+    def _get_bm42_sparse_vector_batch(
+        self, texts: list[str], text_type: Literal["query", "passage"]
+    ) -> list[qdrant_models.SparseVector]:
         """Generate BM42 sparse vector using fastembed
 
         Note: The current BM42 model is English-focused. For better Vietnamese support,
         consider switching to SPLADE++ model: "prithivida/Splade_PP_en_v1"
         """
-        try:
-            # Generate sparse embedding using fastembed BM42
-            sparse_embedding = list(self._bm42_model.embed([text]))[0]
+        if text_type == "query":
+            sparse_embeddings = list(
+                self._bm42_model.query_embed(texts, batch_size=8)
+            )
+        elif text_type == "passage":
+            sparse_embeddings = list(
+                self._bm42_model.passage_embed(texts, batch_size=8)
+            )
+        else:
+            raise ValueError(f"Invalid text type: {text_type}")
 
-            return qdrant_models.SparseVector(
+        return [
+            qdrant_models.SparseVector(
                 indices=sparse_embedding.indices.tolist(),
                 values=sparse_embedding.values.tolist(),
             )
-
-        except Exception as e:
-            logger.error(f"Error generating BM42 sparse vector: {e}")
-            # Simple fallback - return empty sparse vector
-            return qdrant_models.SparseVector(indices=[], values=[])
+            for sparse_embedding in sparse_embeddings
+        ]
 
     def _split_markdown_on_header(
         self, md_file_path: str
@@ -352,7 +366,8 @@ class RagService:
                 search_params.query
             )
             query_sparse_vector = self._get_bm42_sparse_vector(
-                search_params.query
+                search_params.query,
+                text_type="query",
             )
 
             search_results = await self._qdrant_client.query_points(
@@ -443,7 +458,6 @@ class RagService:
                     detail="Failed to create Qdrant collection",
                 )
 
-            qdrant_points = []
             doc_section_chunk_dbs: list[DocumentSectionChunk] = []
             for doc_section in doc_sections:
                 doc_section_id = str(uuid.uuid4())
@@ -460,38 +474,67 @@ class RagService:
                     metadata=doc_section.metadata,
                     prepend_headers=True,
                 )
-                for i, doc_section_chunk in enumerate(doc_section_chunks):
+                for i, doc_section_chunk_db in enumerate(doc_section_chunks):
                     chunk_id = str(uuid.uuid4())
                     document_section_chunk_db = DocumentSectionChunk(
                         id=chunk_id,
                         document_section_id=doc_section_id,
-                        content=doc_section_chunk.page_content,
+                        content=doc_section_chunk_db.page_content,
                         chunk_index=i,
                         qdrant_point_id=chunk_id,
                         metadata={},
                     )
                     doc_section_chunk_dbs.append(document_section_chunk_db)
 
-                    # embeddings and qdrants points
-                    # TODO: consider embedding in batch
-                    chunk_dense_vector = await self._embeddings.aembed_query(
-                        doc_section_chunk.page_content
-                    )
-                    chunk_sparse_vector = self._get_bm42_sparse_vector(
-                        doc_section_chunk.page_content
-                    )
-                    qdrant_points.append(
-                        qdrant_models.PointStruct(
-                            id=chunk_id,
-                            vector={
-                                "dense": chunk_dense_vector,
-                                "bm42": chunk_sparse_vector,
-                            },
-                            payload={},
-                        )
-                    )
+            logger.debug(
+                f"Generating BM42 sparse vectors for {len(doc_section_chunk_dbs)} chunks"
+            )
+            doc_section_chunk_sparse_vectors = (
+                self._get_bm42_sparse_vector_batch(
+                    texts=[
+                        doc_section_chunk.content
+                        for doc_section_chunk in doc_section_chunk_dbs
+                    ],
+                    text_type="passage",
+                )
+            )
+
+            logger.debug(
+                f"Generating dense vectors for {len(doc_section_chunk_dbs)} chunks"
+            )
+            doc_section_chunk_dense_vectors = (
+                await self._embeddings.aembed_documents(
+                    [
+                        doc_section_chunk.content
+                        for doc_section_chunk in doc_section_chunk_dbs
+                    ],
+                )
+            )
 
             # batch upsert to Qdrant
+            qdrant_points: list[qdrant_models.PointStruct] = []
+            for (
+                doc_section_chunk_db,
+                doc_section_chunk_sparse_vector,
+                doc_section_chunk_dense_vector,
+            ) in zip(
+                doc_section_chunk_dbs,
+                doc_section_chunk_sparse_vectors,
+                doc_section_chunk_dense_vectors,
+                strict=False,
+            ):
+                assert doc_section_chunk_db.qdrant_point_id is not None
+                qdrant_points.append(
+                    qdrant_models.PointStruct(
+                        id=str(doc_section_chunk_db.qdrant_point_id),
+                        vector={
+                            "dense": doc_section_chunk_dense_vector,
+                            "bm42": doc_section_chunk_sparse_vector,
+                        },
+                        payload={},
+                    )
+                )
+
             if qdrant_points:
                 logger.debug("Adding points to Qdrant...")
                 await self._qdrant_client.upsert(
@@ -526,346 +569,3 @@ class RagService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to add document: {err}",
             ) from err
-
-    async def add_documents_to_database_in_batch(
-        self, upload_files: list[UploadFile]
-    ) -> JSONResponse:
-        """Add multiple documents to the database in batch."""
-        if not upload_files:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="No files provided",
-            )
-
-        if len(upload_files) > settings.BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Batch size too large. Maximum {settings.BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE} files allowed per batch.",
-            )
-
-        # Track temporary files for cleanup
-        saved_file_paths: list[str] = []
-        successful_files: list[dict[str, Any]] = []
-        failed_files: list[dict[str, Any]] = []
-        process_start_time = time.perf_counter()
-
-        try:
-            # Step 1: Validate and save all files first
-            valid_doc_sections: list[tuple[str, list[LangchainDocument]]] = []
-
-            for upload_file in upload_files:
-                file_result = {
-                    "filename": upload_file.filename,
-                    "error": None,
-                    "details": {},
-                }
-
-                try:
-                    # Validate individual file
-                    if upload_file.filename is None:
-                        file_result["error"] = (
-                            "Missing filename in the uploaded file"
-                        )
-                        failed_files.append(file_result)
-                        continue
-
-                    if not upload_file.filename.endswith((".md", ".markdown")):
-                        file_result["error"] = "File must be a markdown file"
-                        failed_files.append(file_result)
-                        continue
-
-                    # Save and process file
-                    saved_file_path = app_utils.save_uploaded_document(
-                        file=upload_file
-                    )
-                    saved_file_paths.append(saved_file_path)
-
-                    doc_sections = self._split_markdown_on_header(
-                        md_file_path=saved_file_path
-                    )
-
-                    if not doc_sections:
-                        file_result["error"] = (
-                            "No document sections found in file"
-                        )
-                        failed_files.append(file_result)
-                        continue
-
-                    valid_doc_sections.append((
-                        upload_file.filename,
-                        doc_sections,
-                    ))
-
-                except Exception as err:
-                    file_result["error"] = (
-                        f"Failed to process file: {str(err)}"
-                    )
-                    failed_files.append(file_result)
-                    logger.error(
-                        f"Failed to process file {upload_file.filename}: {err}"
-                    )
-                    continue
-
-            # If no valid files, return early
-            if not valid_doc_sections:
-                return JSONResponse(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    content={
-                        "message": "No valid files to process",
-                        "successful_files": successful_files,
-                        "failed_files": failed_files,
-                        "summary": {
-                            "total_files": len(upload_files),
-                            "successful_count": 0,
-                            "failed_count": len(failed_files),
-                        },
-                    },
-                )
-
-            # Step 2: Initialize Qdrant collection
-            is_collection_created = await self._initialize_qdrant_collection()
-            if not is_collection_created:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Failed to create Qdrant collection",
-                )
-
-            # Step 3: Process all valid files and prepare data for batch operations
-            all_qdrant_points: list[qdrant_models.PointStruct] = []
-            all_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
-            all_document_sections: list[DocumentSection] = []
-
-            # Track total chunks to prevent memory issues
-            total_estimated_chunks = 0
-
-            for _, doc_sections in valid_doc_sections:
-                # Estimate chunks for memory check
-                for doc_section in doc_sections:
-                    estimated_chunks = max(
-                        1, len(doc_section.page_content) // settings.CHUNK_SIZE
-                    )
-                    total_estimated_chunks += estimated_chunks
-
-            if (
-                total_estimated_chunks
-                > settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS
-            ):
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Estimated total chunks ({total_estimated_chunks}) exceeds limit ({settings.BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS}). Please reduce batch size.",
-                )
-
-            for i, (filename, doc_sections) in enumerate(valid_doc_sections):
-                logger.debug(
-                    f"Preparing data for file {i + 1}/{len(valid_doc_sections)}: {filename}"
-                )
-                file_result: dict[str, Any] = {
-                    "filename": filename,
-                    "error": None,
-                    "details": {
-                        "num_doc_sections": len(doc_sections),
-                        "num_doc_section_chunks": 0,
-                        "num_qdrant_points": 0,
-                    },
-                }
-
-                try:
-                    file_qdrant_points: list[qdrant_models.PointStruct] = []
-                    file_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
-                    file_document_sections: list[DocumentSection] = []
-
-                    for doc_section in doc_sections:
-                        doc_section_id = str(uuid.uuid4())
-                        document_section_db = DocumentSection(
-                            id=doc_section_id,
-                            title=doc_section.metadata.get("title"),
-                            url=doc_section.metadata.get("url"),
-                            description=doc_section.metadata.get(
-                                "description"
-                            ),
-                        )
-                        file_document_sections.append(document_section_db)
-
-                        doc_section_chunks = self._split_document_recursive(
-                            content=doc_section.page_content,
-                            metadata=doc_section.metadata,
-                            prepend_headers=True,
-                        )
-
-                        for i, doc_section_chunk in enumerate(
-                            doc_section_chunks
-                        ):
-                            chunk_id = str(uuid.uuid4())
-                            document_section_chunk_db = DocumentSectionChunk(
-                                id=chunk_id,
-                                document_section_id=doc_section_id,
-                                content=doc_section_chunk.page_content,
-                                chunk_index=i,
-                                qdrant_point_id=chunk_id,
-                                metadata={},
-                            )
-                            file_doc_section_chunk_dbs.append(
-                                document_section_chunk_db
-                            )
-
-                            # Generate dense and sparse embeddings
-                            chunk_dense_vector = (
-                                await self._embeddings.aembed_query(
-                                    doc_section_chunk.page_content
-                                )
-                            )
-                            chunk_sparse_vector = self._get_bm42_sparse_vector(
-                                doc_section_chunk.page_content
-                            )
-                            file_qdrant_points.append(
-                                qdrant_models.PointStruct(
-                                    id=chunk_id,
-                                    vector={
-                                        "dense": chunk_dense_vector,
-                                        "bm42": chunk_sparse_vector,
-                                    },
-                                    payload={},
-                                )
-                            )
-
-                    # Update file results
-                    file_result["details"]["num_doc_section_chunks"] = len(
-                        file_doc_section_chunk_dbs
-                    )
-                    file_result["details"]["num_qdrant_points"] = len(
-                        file_qdrant_points
-                    )
-
-                    # Add to batch collections
-                    all_document_sections.extend(file_document_sections)
-                    all_doc_section_chunk_dbs.extend(
-                        file_doc_section_chunk_dbs
-                    )
-                    all_qdrant_points.extend(file_qdrant_points)
-
-                    successful_files.append(file_result)
-
-                except Exception as err:
-                    file_result["error"] = (
-                        f"Failed to prepare data for file: {str(err)}"
-                    )
-                    failed_files.append(file_result)
-                    logger.error(
-                        f"Failed to prepare data for file {filename}: {err}"
-                    )
-                    continue
-
-            # Step 4: Batch operations (all or nothing for data consistency)
-            try:
-                logger.debug(
-                    "Adding document section chunks and embeddings to database..."
-                )
-                # Add document sections to session first
-                self.session.add_all(all_document_sections)
-
-                # Add all chunks to session
-                self.session.add_all(all_doc_section_chunk_dbs)
-
-                # Commit database transaction first to ensure data consistency
-                await self.session.commit()
-
-                # Batch upsert to Qdrant after successful database commit
-                if all_qdrant_points:
-                    logger.debug(
-                        f"Adding {len(all_qdrant_points)} points to Qdrant..."
-                    )
-                    try:
-                        await self._qdrant_client.upsert(
-                            collection_name=settings.QDRANT_COLLECTION_NAME,
-                            points=all_qdrant_points,
-                        )
-                        logger.debug(
-                            f"Successfully added {len(all_qdrant_points)} points to Qdrant"
-                        )
-                    except Exception as qdrant_err:
-                        logger.error(
-                            f"Qdrant upsert failed after successful database commit: {qdrant_err}"
-                        )
-                        # Database changes are already committed, but Qdrant failed
-                        # Log this as a warning since data is partially consistent
-                        logger.warning(
-                            "Database records created successfully, but vector search may be incomplete. "
-                            "Manual Qdrant cleanup may be required."
-                        )
-                        # Don't raise the exception - database operations succeeded
-
-                logger.info(
-                    f"Successfully processed {len(successful_files)} files in batch"
-                )
-
-            except Exception as err:
-                logger.error(f"Batch operation failed: {err}")
-
-                # Rollback database transaction
-                await self.session.rollback()
-
-                # Move all successful files to failed
-                for file_result in successful_files:
-                    file_result["error"] = (
-                        f"Batch operation failed: {str(err)}"
-                    )
-                    failed_files.append(file_result)
-                successful_files.clear()
-
-            elapsed_time = time.perf_counter() - process_start_time
-            return JSONResponse(
-                content={
-                    "message": f"Batch processing completed. {len(successful_files)} successful, {len(failed_files)} failed.",
-                    "successful_files": successful_files,
-                    "failed_files": failed_files,
-                    "elapsed_time": f"{elapsed_time:.2f} seconds",
-                    "summary": {
-                        "total_files": len(upload_files),
-                        "successful_count": len(successful_files),
-                        "failed_count": len(failed_files),
-                        "total_doc_sections": sum(
-                            f["details"]["num_doc_sections"]
-                            for f in successful_files
-                        ),
-                        "total_doc_section_chunks": len(
-                            all_doc_section_chunk_dbs
-                        )
-                        if successful_files
-                        else 0,
-                        "total_qdrant_points": len(all_qdrant_points)
-                        if successful_files
-                        else 0,
-                        "config": {
-                            "chunk_size": settings.CHUNK_SIZE,
-                            "chunk_overlap": settings.CHUNK_OVERLAP,
-                        },
-                    },
-                }
-            )
-
-        except Exception as err:
-            logger.error(
-                f"Unexpected error in batch processing: {err}",
-                extra={
-                    "error_type": type(err).__name__,
-                    "total_files": len(upload_files),
-                    "saved_files_count": len(saved_file_paths),
-                    "successful_files_count": len(successful_files),
-                    "failed_files_count": len(failed_files),
-                },
-            )
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Unexpected error in batch processing: {err}",
-            ) from err
-
-        finally:
-            # Clean up all temporary files regardless of success/failure
-            for saved_file_path in saved_file_paths:
-                try:
-                    if os.path.exists(saved_file_path):
-                        os.remove(saved_file_path)
-                except Exception as cleanup_err:
-                    logger.warning(
-                        f"Failed to clean up temporary file {saved_file_path}: {cleanup_err}"
-                    )

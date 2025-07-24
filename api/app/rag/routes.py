@@ -46,22 +46,6 @@ async def add_document_to_database(
 
 
 @router.post(
-    "/documents/batch-upload",
-    dependencies=[Depends(get_current_superuser)],
-    response_model=MessageResponse,
-)
-async def add_document_to_database_in_batch(
-    files: Annotated[
-        list[UploadFile],
-        File(description="The documents to add to the database"),
-    ],
-    rag_service: RagServiceDep,
-):
-    """Add a document to the database(s) in batch. Requires superuser permissions."""
-    return await rag_service.add_documents_to_database_in_batch(files)
-
-
-@router.post(
     "/private/similarity-search",
     dependencies=[Depends(get_current_superuser)],
     response_model=SimilaritySearchResult,
@@ -71,11 +55,12 @@ async def similarity_search(
 ):
     """Similarity search for a query. Requires superuser permissions."""
     result = await rag_service.similarity_search(search_params)
+    chunks = [
+        DocumentSectionChunkPublic.model_validate(chunk) for chunk in result
+    ]
     return SimilaritySearchResult(
-        chunks=[
-            DocumentSectionChunkPublic.model_validate(chunk)
-            for chunk in result
-        ],
+        num_chunks=len(chunks),
+        chunks=chunks,
         query=search_params.query,
     )
 
