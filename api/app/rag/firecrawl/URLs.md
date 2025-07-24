@@ -68,6 +68,10 @@ Author: minhnguyent546
 
 - Trang chủ: https://tuyensinh.ctu.edu.vn/thong-tin-tuyen-sinh/1107-thong-bao-lich-to-chuc-ky-thi-vsat-dot-6-nam-2025.html
 
+### Thông báo ngưỡng đảm bảo chất lượng đầu vào đại học chính quy năm 2025
+
+- PDF: https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/TB2688_Ngng-bo-m-cht-lng-u-vo-i-hc-chnh-quy-nm-2025.pdf
+
 # Tiên tiến & Chất lượng cao
 
 ## Chương trình tiên tiến
