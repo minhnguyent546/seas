@@ -62,6 +62,9 @@ def extract_math(
     try:
         # Convert image to base64
         image_base64 = image_to_base64(image)
+        if image_base64 is None:
+            logger.error("Failed to convert image to base64")
+            return None
 
         # Create the message with text and image
         system_message = SystemMessage(
