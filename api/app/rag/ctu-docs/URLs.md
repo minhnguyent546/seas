@@ -115,6 +115,5 @@ Author: minhnguyent546
 
 # Khác
 
-- PDF: Thông tin tuyển sinh đại học năm 2025: https://tuyensinh.ctu.edu.vn/images/upload/TTTS-DHCQ-2025.pdf
 - Tổng chỉ tiêu: https://tuyensinh.ctu.edu.vn/chuong-trinh-dai-tra/945-doi-tuong-vung.html
 - Điểm ưu tiên trong tuyển sinh: https://tuyensinh.ctu.edu.vn/chuong-trinh-dai-tra/895-diem-uu-tien.html
