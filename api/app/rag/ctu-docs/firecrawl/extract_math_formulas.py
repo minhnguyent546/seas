@@ -131,7 +131,9 @@ def replace_image_with_formula(
         return False
 
     # Perform the replacement using lambda to avoid regex escape issues with LaTeX backslashes
-    new_content = re.sub(pattern=image_pattern, repl=lambda m: replacement, string=content)
+    new_content = re.sub(
+        pattern=image_pattern, repl=lambda m: replacement, string=content
+    )
 
     # Write back to file
     with open(file_path, "w", encoding="utf-8") as f:
@@ -162,9 +164,9 @@ def process_markdown_files(args: argparse.Namespace) -> None:
     for file_path in args.file_paths:
         if os.path.isdir(file_path):
             for file in os.listdir(file_path):
-                if file.endswith('.md'):
+                if file.endswith(".md"):
                     file_paths.append(os.path.join(file_path, file))
-        elif os.path.isfile(file_path) and file_path.endswith('.md'):
+        elif os.path.isfile(file_path) and file_path.endswith(".md"):
             file_paths.append(file_path)
 
     logger.info(f"Found {len(file_paths)} files to process")
@@ -205,7 +207,9 @@ def process_markdown_files(args: argparse.Namespace) -> None:
                 logger.info(f"Formula: {formula}")
                 if args.dry_run:
                     continue
-                if not args.dry_run and replace_image_with_formula(file_path, url, formula):
+                if not args.dry_run and replace_image_with_formula(
+                    file_path, url, formula
+                ):
                     total_replaced += 1
 
             time.sleep(10)  # avoid rate limit
@@ -245,7 +249,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--dry_run",
-        action='store_true',
+        action="store_true",
         help="Do not replace the image with the formula, just print the formula",
     )
     args = parser.parse_args()

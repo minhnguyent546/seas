@@ -55,7 +55,7 @@ async def process_query(
         )
     )
     context_str = "\n".join([
-        f'<Document title="{html_escape(chunk.chunk_metadata.get("title", ""))}" url="{html_escape(chunk.chunk_metadata.get("url", ""))}">{html_escape(chunk.content)}</Document>\n'
+        f'<Document title="{html_escape(chunk.chunk_metadata.get("title") or "")}" url="{html_escape(chunk.chunk_metadata.get("url") or "")}">{html_escape(chunk.content)}</Document>\n'
         for chunk in context_chunks
     ])
     chat_prompt = chat_prompt_template.render(

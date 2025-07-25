@@ -46,4 +46,6 @@ htmlcov/
 # other
 *.bak
 *.backup
-.bak*
+*.bak*
+
+api/app/rag/ctu-docs/pdf-docs/*.pdf
