@@ -1,0 +1,18 @@
+{
+  "titles": {
+    "home": "Enrollment Advisory",
+    "login": "Sign In",
+    "signup": "Sign Up",
+    "settings": "Settings"
+  },
+  "descriptions": {
+    "home": "SEAS",
+    "login": "SEAS",
+    "signup": "SEAS",
+    "settings": "SEAS"
+  },
+  "meta": {
+    "defaultTitle": "SEAS",
+    "defaultDescription": "SEAS"
+  }
+}

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/hooks/useLanguage';
 import { CircularProgress } from '@mui/material';
 import { IconMicrophone, IconSend } from '@tabler/icons-react';
 import React, { useRef, useState } from 'react';
@@ -12,10 +13,13 @@ interface ChatInputProps {
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
   isLoading = false,
-  placeholder = 'Ask me anything about CTU Enrollment Program...',
+  placeholder,
 }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useLanguage();
+
+  const defaultPlaceholder = placeholder || t('chat.placeholder');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -57,7 +61,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder}
+            placeholder={defaultPlaceholder}
             className="max-h-[200px] min-h-[40px] w-full resize-none border-0 bg-transparent px-2 py-2 text-base focus:outline-none focus:ring-0 dark:text-white"
             rows={1}
           />

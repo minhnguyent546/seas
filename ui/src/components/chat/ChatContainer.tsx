@@ -4,6 +4,7 @@ import { RecommendedQuestions } from '@/components/chat/RecommendedQuestions';
 import { SeasLogo } from '@/components/icons';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 import { useChat } from '@/hooks/useChat';
+import { useLanguage } from '@/hooks/useLanguage';
 import React from 'react';
 
 interface ChatContainerProps {
@@ -13,6 +14,7 @@ interface ChatContainerProps {
 export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
   const { messages, isLoading, handleSendMessage } = useChat();
   const { scrollRef } = useAutoScroll(messages);
+  const { t } = useLanguage();
 
   const handleQuestionClick = (question: string) => {
     handleSendMessage(question);
@@ -28,10 +30,10 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
                 <SeasLogo size={80} className="text-primary" />
               </div>
               <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-800 dark:text-white sm:text-4xl">
-                Hi, {userName}!
+                {t('chat.welcomeGreeting', { name: userName })}
               </h1>
               <p className="mb-8 text-lg text-gray-500 dark:text-gray-400">
-                Ask me anything about CTU Enrollment Program
+                {t('chat.welcomeMessage')}
               </p>
               <div className="w-full max-w-2xl">
                 <RecommendedQuestions onQuestionClick={handleQuestionClick} />
