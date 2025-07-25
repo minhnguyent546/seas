@@ -57,7 +57,9 @@ Vd:  Thí sinh tốt nghiệp THPT từ năm 2022 trở về trước, thì kh�
 
 **2\. Điểm ưu tiên** đối với thí sinh đạt tổng điểm **từ 22,5 trở lên** _(khi quy đổi về điểm theo thang 10 và tổng điểm 3 môn tối đa là 30)_ được xác định theo công thức sau:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2023/dut.PNG)
+
+$$\text{Điểm ưu tiên} = \frac{(30 - \text{Tổng điểm đạt được})}{7,5} \times \text{Mức điểm ưu tiên}$$
+
 
 _(giảm dần khi tổng điểm đạt được càng cao, kể từ 22,5đ cứ tăng mỗi 1 đ thì điểm ưu tiên được tính giảm khoảng 13% mức điểm ưu tiên)_
 

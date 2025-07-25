@@ -46,3 +46,4 @@ htmlcov/
 # other
 *.bak
 *.backup
+.bak*

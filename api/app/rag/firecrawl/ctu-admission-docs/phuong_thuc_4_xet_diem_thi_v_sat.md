@@ -43,7 +43,9 @@ Năm 2025, xét tuyển dựa vào điểm thi V-SAT theo tổ hợp 3 môn ứn
 
 **Điểm xét tuyển:** bằng tổng điểm các môn theo tổ hợp xét tuyển đã quy đổi (VM\_nQĐ) và không nhân hệ số môn trong tổ hợp; cộng với điểm ưu tiên. ĐXT được làm tròn đến hai chữ số thập phân và theo thang 30 điểm:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/phuongthuc4_ct.png)
+
+$$\text{ĐXT} = (\text{VM\_1QĐ} + \text{VM\_2QĐ} + \text{VM\_3QĐ}) + \text{Điểm ưu tiên}$$
+
 
 _(Thí sinh được Trường chọn sử dụng tổ hợp có ĐXT cao nhất để xét tuyển)_
 
