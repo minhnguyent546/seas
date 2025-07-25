@@ -39,7 +39,9 @@ Năm 2025, xét tuyển dựa vào Điểm trung bình môn cả năm (ĐTBMCN) 
 
 Điểm mỗi môn (gọi là **HM**) bằng trung bình cộng của ĐTBMCN của 3 năm học, được làm tròn đến hai chữ số thập phân (thang điểm 10) như sau:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/phuongthuc3_ct.png)
+
+$$\mathbf{HM} = \frac{\mathbf{ĐTBMCN}_{\text{L10}} + \mathbf{ĐTBMCN}_{\text{L11}} + \mathbf{ĐTBMCN}_{\text{L12}}}{3}$$
+
 
 _(Lưu ý: Không sử dụng điểm kiểm tra lại)_
 
@@ -47,7 +49,9 @@ _(Lưu ý: Không sử dụng điểm kiểm tra lại)_
 
 **Điểm xét tuyển (ĐXT):** bằng tổng điểm các môn theo tổ hợp xét tuyển đã quy đổi (HM\_nQĐ) và không nhân hệ số môn trong tổ hợp; cộng với điểm ưu tiên. ĐXT được làm tròn đến hai chữ số thập phân và theo thang 30 điểm:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/phuongthuc3_ct-2.png)
+
+$$\text{ĐXT} = (\text{HM\_1QĐ} + \text{HM\_2QĐ} + \text{HM\_3QĐ}) + \text{Điểm ưu tiên}$$
+
 
 _(Thí sinh được Trường chọn sử dụng tổ hợp có ĐXT cao nhất để xét tuyển)_
 

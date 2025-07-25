@@ -43,7 +43,9 @@ creditsUsed: "1"
 
 \- Điểm mỗi môn của [phương thức xét học bạ](https://tuyensinh.ctu.edu.vn/phuong-thuc-xet-tuyen/939-phuong-th-c-3.html) ( **HM**), [phương thức xét điểm V-SAT](https://tuyensinh.ctu.edu.vn/phuong-thuc-xet-tuyen/947-phuong-thuc-4.html) ( **VM**) được quy đổi tương đương với điểm thi tốt nghiệp THPT năm 2025 theo công thức nội suy tuyến tính:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/PT_XT/quydoidiem.png)
+
+$$y = c + \left(\frac{x - a}{b - a}\right) \times (d - c)$$
+
 
 _Trong đó:_**x** là điểm học bạ (HM) hoặc điểm V-SAT (VM) gốc của thí sinh;
 
@@ -89,7 +91,9 @@ _Trong đó:_**x** là điểm học bạ (HM) hoặc điểm V-SAT (VM) gốc c
 
 Do x = 8,1 trong khoảng 7,77 < x ≤ 8,10, thuộc tốp 50%nên a = 7,77; b = 8,10; c = 7,20 và d = 7,60. Áp dụng công thức nội suy tuyến tính, điểm quy đổi **HM\_ToánQĐ**:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/PT_XT/quydoidiem-ct2.png)
+
+$$y = c + \left(\frac{x - a}{b - a}\right) \times (d - c) = 7.2 + \left(\frac{8.1 - 7.77}{8.1 - 7.77}\right) \times (7.6 - 7.2) = 7.60$$
+
 
 Vậy, điểm học bạ môn toán HM\_Toán = **8,1 điểm** được quy đổi tương đương với điểm thi THPT là HM\_ToánQĐ = **7,60 điểm** _(theo Bảng quy đổi giả định)._
 
@@ -111,7 +115,9 @@ Vậy, điểm học bạ môn toán HM\_Toán = **8,1 điểm** được quy đ
 
 Do x = 100 trong khoảng 99,5 < x ≤ 106,0 thuộc tốp 40% nên a = 99,5 ; b = 106,0; c = 8,0 và d = 8,2. Áp dụng công thức nội suy tuyến tính, điểm quy đổi **VM\_ToánQĐ**:
 
-![](https://tuyensinh.ctu.edu.vn/images/upload/TT_TS/2025/PT_XT/quydoidiem-ct3.png)
+
+$$y = c + \left(\frac{x - a}{b - a}\right) \times (d - c) = 8.0 + \left(\frac{100 - 99.5}{106 - 99.5}\right) \times (8.2 - 8.0) = 8.02$$
+
 
 Vậy, điểm V-SAT môn Toán VM\_Toán = **100 điểm** được quy đổi tương đương với điểm thi THPT là VM\_ToánQĐ = **8,02 điểm** _(theo Bảng quy đổi giả định)._
 
