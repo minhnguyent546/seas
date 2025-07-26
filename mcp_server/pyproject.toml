@@ -1,0 +1,71 @@
+[project]
+name = "seas-mcp-server"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Minh-Thien Nguyen", email = "minhnguyent546@gmail.com" }]
+dependencies = [
+    "loguru>=0.7.3",
+    "pydantic>=2.11.7,<2.12.0",
+    "pydantic-settings>=2.10.1,<2.11.0",
+    "python-dotenv>=1.1.0,<2.0.0",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "requests>=2.32.4",
+    "mcp[cli]>=1.12.2",
+]
+
+[dependency-groups]
+dev = [
+    "autoflake>=2.3.1,<3.0.0",
+    "colorama>=0.4.6",
+    "flake8>=7.2.0,<8.0.0",
+    "isort>=6.0.1,<7.0.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.1",
+    "tabulate>=0.9.0",
+]
+
+[tool.ruff]
+line-length = 79
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "B",      # flake8-bugbear
+    "C",      # comple-structure
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "W",      # pycodestyle warnings
+    "RUF013", # implicit-optional
+    "UP006",  # non-pep585-annotation (e.g. `list[int]` instead of `List[int]`)
+]
+extend-safe-fixes = ["UP006"]
+ignore = [
+    "C901", # complex-structure
+    "E101", # mixed-spaces-and-tabs
+    "E501", # line-too-long
+    "E741", # ambiguous-variable-name
+    "F402", # import-shadowed-by-loop-var
+    "F823", # undefined-local
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "E402", # module-import-not-at-top-of-file
+    "F401", # unused-import
+    "F403", # undefined-local-with-import-star
+]
+
+[tool.ruff.format]
+preview = true
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

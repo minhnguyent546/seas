@@ -67,6 +67,26 @@ services:
     networks:
       - seas
 
+  mcp-server:
+    image: "${MCP_SERVER_IMAGE}:${MCP_SERVER_TAG-latest}"  # should be the same image as API
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - FASTMCP_PORT=8666
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8666/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    networks:
+      - seas
+
 volumes:
   seas-db-data:
   seas-qdrant-data:

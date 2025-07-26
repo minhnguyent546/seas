@@ -65,3 +65,23 @@ services:
             - ./api/.venv
         - path: ./api/pyproject.toml
           action: rebuild
+
+  mcp_server:
+    build:
+      context: mcp_server
+      dockerfile: Dockerfile
+    restart: "no"
+    ports:
+      - "6274:6274"  # MCP inspector client UI
+      - "6277:6277"  # MCP proxy server
+    command: ["mcp", "run", "app/main.py:mcp", "--transport", "streamable-http"]
+    develop:
+      watch:
+        - path: ./mcp_server
+          action: sync
+          target: /mcp_server
+          ignore:
+            - .venv
+            - ./mcp_server/.venv
+        - path: ./mcp_server/pyproject.toml
+          action: rebuild
