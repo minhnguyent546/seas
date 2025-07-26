@@ -72,7 +72,8 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["utils"])
 async def health_check():
-    return await check_health()
+    global _start_time
+    return await check_health(start_time=_start_time)
 
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)

@@ -11,10 +11,8 @@ from app.core.config import settings, timezone_vi
 from app.core.database import AsyncSessionLocal
 from app.utils import serialize_datetime
 
-_start_time = time.time()
 
-
-async def check_health():
+async def check_health(start_time: int | float):
     try:
         # Test database connectivity
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
@@ -22,7 +20,7 @@ async def check_health():
             environment = getattr(settings, "ENVIRONMENT", "development")
 
             # Calculate uptime
-            uptime_seconds = time.time() - _start_time
+            uptime_seconds = time.time() - start_time
             days, remainder = divmod(int(uptime_seconds), 24 * 60 * 60)
             hours, remainder = divmod(remainder, 60 * 60)
             minutes, seconds = divmod(remainder, 60)
