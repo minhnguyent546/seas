@@ -1,0 +1,11 @@
+{
+  "[python]": {
+    "diffEditor.ignoreTrimWhitespace": true,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  }
+}

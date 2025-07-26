@@ -33,6 +33,7 @@ jobs:
           OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
           ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
           API_IMAGE=seas-api
+          MCP_SERVER_IMAGE=seas-mcp-server
           EOF
 
       - name: Set up Docker Buildx
@@ -45,10 +46,13 @@ jobs:
         run: docker compose down -v --remove-orphans
 
       - name: Start containers
-        run: docker compose up -d --wait api
+        run: docker compose up -d --wait api mcp-server
 
       - name: Test if backend is up
         run: curl -f http://localhost:8444/health
+
+      - name: Test if MCP server is up
+        run: curl -f http://localhost:8666/health
 
       - name: Cleanup
         run: docker compose down -v --remove-orphans

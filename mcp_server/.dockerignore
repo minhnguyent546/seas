@@ -1,0 +1,44 @@
+# python stuff
+.ipynb_checkpoints
+__pycache__/
+*.py[oc]
+build/
+!/app/templates/build/
+dist/
+wheels/
+*.egg-info
+
+# virtual environments
+.venv
+.venv.*
+.venv-*
+
+# local stuff
+_*
+_test_crawling/
+!__init__.py
+*.local
+
+# log files
+*.log
+*.logs
+
+# cache files
+.ruff_cache
+.pytest_cache
+
+# coverage files
+.coverage
+.coverage.*
+/htmlcov/
+
+# environment files
+.env
+.env.local
+.env.dev
+.env.prod
+
+# other
+*.bak
+*.backup
+*.bak*

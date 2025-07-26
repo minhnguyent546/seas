@@ -18,6 +18,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
     networks:
       - seas
+
   qdrant:
     image: qdrant/qdrant:latest
     restart: always
@@ -56,6 +57,31 @@ services:
       - QDRANT_HOST=qdrant
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8444/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    networks:
+      - seas
+
+  mcp-server:
+    image: "${MCP_SERVER_IMAGE}:${MCP_SERVER_TAG-latest}"  # should be the same image as API
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - FASTMCP_PORT=8666
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - QDRANT_HOST=qdrant
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8666/health" ]
       interval: 10s
       timeout: 5s
       retries: 3

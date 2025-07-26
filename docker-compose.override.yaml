@@ -34,8 +34,8 @@ services:
 
   api:
     build:
-      context: api
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./api/Dockerfile
     restart: "no"
     ports:
       - "8444:8444"
@@ -59,9 +59,35 @@ services:
       watch:
         - path: ./api
           action: sync
-          target: /app
+          target: /api
           ignore:
             - .venv
             - ./api/.venv
+        - path: ./api_shared
+          action: sync
+          target: /api/api_shared
         - path: ./api/pyproject.toml
+          action: rebuild
+
+  mcp-server:
+    build:
+      context: ./
+      dockerfile: ./mcp_server/Dockerfile
+    restart: "no"
+    ports:
+      - "6274:6274"  # MCP inspector client UI
+      - "6277:6277"  # MCP proxy server
+    command: ["mcp", "run", "app/main.py:mcp", "--transport", "streamable-http"]
+    develop:
+      watch:
+        - path: ./mcp_server
+          action: sync
+          target: /mcp_server
+          ignore:
+            - .venv
+            - ./mcp_server/.venv
+        - path: ./api_shared
+          action: sync
+          target: /mcp_server/api_shared
+        - path: ./mcp_server/pyproject.toml
           action: rebuild
