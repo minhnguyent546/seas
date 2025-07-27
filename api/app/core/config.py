@@ -112,6 +112,10 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
 
+    # tavily search tool
+    TAVILY_MAX_RESULTS: int = 3
+    TAVILY_API_KEY: str = ""
+
     # embeddings model
     EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
     CHUNK_SIZE: int = 4096

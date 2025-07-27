@@ -12,6 +12,7 @@ from pydantic import EmailStr
 from starlette.middleware.sessions import SessionMiddleware
 
 import app.utils as app_utils
+from app.agent import agent
 from app.api import api_router
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
@@ -28,6 +29,8 @@ async def lifespan(app: FastAPI):
     logger.info('"Starting application...')
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
     _start_time = time.time()
+
+    agent.get_graph().draw_mermaid_png(output_file_path="graph.png")
 
     if not os.path.isdir(settings.DOC_UPLOAD_DIR):
         os.makedirs(settings.DOC_UPLOAD_DIR)

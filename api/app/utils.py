@@ -224,9 +224,9 @@ def get_langchain_llm(model_name: str, **kwargs):
 
     provider, model_name = model_name.split("/")
     if provider == "google":
-        from langchain_google_genai import GoogleGenerativeAI
+        from langchain_google_genai import ChatGoogleGenerativeAI
 
-        return GoogleGenerativeAI(model=model_name, **kwargs)
+        return ChatGoogleGenerativeAI(model=model_name, **kwargs)
     elif provider == "openai":
         from langchain_openai import ChatOpenAI
 

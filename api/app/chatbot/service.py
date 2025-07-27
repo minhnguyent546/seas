@@ -9,6 +9,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from loguru import logger
 
 import app.utils as app_utils
+from app.agent import GraphState, agent
 from app.chatbot.schemas import ChatQuery
 from app.core.config import settings
 from app.core.database import AsyncSession
@@ -95,6 +96,57 @@ async def process_query(
                         raise AssertionError(
                             f"Unexpected chunk type: {type(chunk.content)}. Expected str or list of str/dict."
                         )
+        except asyncio.TimeoutError as timeout_err:
+            logger.error("Streaming timeout")
+            raise HTTPException(
+                status_code=504,
+                detail="Request timeout. Please try again.",
+            ) from timeout_err
+        except Exception as err:
+            logger.error(f"Error in streaming: {err}")
+            # More specific error handling
+            if "quota" in str(err).lower():
+                raise HTTPException(
+                    status_code=429,
+                    detail="API quota exceeded. Please try again later.",
+                ) from err
+            raise HTTPException(
+                status_code=500,
+                detail="An error occurred while processing your request.",
+            ) from err
+
+    return StreamingResponse(stream_generator(), media_type="text/plain")
+
+
+async def process_query_with_agent(
+    chat_query: ChatQuery,
+    session: AsyncSession,
+    current_user: User,
+) -> StreamingResponse:
+    human_message = chat_query.query.strip()
+    if not human_message:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Query cannot be empty.",
+        )
+
+    logger.debug(f"Processing query: {human_message = }")
+
+    async def stream_generator() -> AsyncGenerator[str, None]:
+        try:
+            async with asyncio.timeout(120):  # 2 minutes timeout
+                input = GraphState(
+                    question=human_message,
+                    generation="",
+                    web_search=False,
+                    documents=[],
+                    classification="",
+                )
+                async for chunk in agent.astream(
+                    input=input, stream_mode="values"
+                ):
+                    yield chunk["generation"]
+
         except asyncio.TimeoutError as timeout_err:
             logger.error("Streaming timeout")
             raise HTTPException(
