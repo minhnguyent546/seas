@@ -27,7 +27,6 @@ from app.rag.models import (
 )
 from app.rag.schemas import DocumentSectionChunkPublic, SimilaritySearchParams
 from app.schemas import MessageResponse
-from app.templates import prompt_templates
 
 
 class RagService:
@@ -180,8 +179,10 @@ class RagService:
         )
 
         retry_remaining = retries
-        prompt_template = prompt_templates.get_template("table_description.j2")
-        prompt = prompt_template.render(tableContent=table_md_content)
+        prompt = app_utils.get_prompt(
+            template_name="table_description.j2",
+            tableContent=table_md_content,
+        )
         while True:
             try:
                 response = table_summary_llm.invoke(prompt)

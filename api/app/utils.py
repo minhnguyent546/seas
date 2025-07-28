@@ -14,7 +14,7 @@ from markdown_to_data.to_md.to_md_parser import to_md_parser
 
 from app.core.config import settings, timezone_vi
 from app.schemas import EmailData
-from app.templates import email_templates
+from app.templates import email_templates, prompt_templates
 
 
 def serialize_datetime(value: datetime) -> str:
@@ -233,3 +233,20 @@ def get_langchain_llm(model_name: str, **kwargs):
         return ChatOpenAI(model=model_name, **kwargs)
     else:
         raise ValueError(f"Unsupported provider: {provider}")
+
+
+def get_prompt_template(template_name: str):
+    try:
+        return prompt_templates.get_template(template_name)
+    except Exception as err:
+        logger.error(f"Failed to get prompt template: {err}")
+        raise err
+
+
+def get_prompt(*, template_name: str, **kwargs):
+    try:
+        template = get_prompt_template(template_name)
+        return template.render(kwargs)
+    except Exception as err:
+        logger.error(f"Failed to get prompt: {err}")
+        raise err

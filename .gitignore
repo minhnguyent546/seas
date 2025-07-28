@@ -49,3 +49,4 @@ htmlcov/
 *.bak*
 
 api/app/rag/ctu-docs/pdf-docs/*.pdf
+*.Identifier
