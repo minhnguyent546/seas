@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 from typing import Any
 
 import frontmatter
@@ -24,7 +25,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 import app.utils as app_utils
-from app.core.config import settings
+from app.core.config import settings, timezone_vi
 from app.core.database import AsyncSession
 from app.rag.models import (
     DocumentSection,
@@ -384,7 +385,10 @@ class RagService:
 
             queries = [search_params.query]  # include the original query
 
-            if search_params.expand_query and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0:
+            if (
+                search_params.expand_query
+                and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0
+            ):
                 query_expansion_llm = QueryExpansionLLM()
                 expanded_queries = await query_expansion_llm.expand_query(
                     search_params.query
@@ -957,3 +961,64 @@ class RagService:
                     logger.warning(
                         f"Failed to clean up temporary file {saved_file_path}: {cleanup_err}"
                     )
+
+    async def export_document_sections_chunks(
+        self, session: AsyncSession
+    ) -> dict[str, Any]:
+        try:
+            result = await session.execute(
+                select(DocumentSection)
+                .options(selectinload(DocumentSection.document_section_chunks))
+                .order_by(DocumentSection.created_at)
+            )
+            document_sections = result.scalars().all()
+
+            sections_list: list[dict[str, Any]] = []
+            export_data: dict[str, Any] = {
+                "exported_at": datetime.now(tz=timezone_vi).isoformat(),
+                "total_sections": len(document_sections),
+                "total_chunks": sum(
+                    len(section.document_section_chunks)
+                    for section in document_sections
+                ),
+                "sections": sections_list,
+            }
+
+            for section in document_sections:
+                chunks_list: list[dict[str, Any]] = []
+                section_data: dict[str, Any] = {
+                    "id": str(section.id),
+                    "title": section.title,
+                    "url": section.url,
+                    "description": section.description,
+                    "created_at": section.created_at.isoformat()
+                    if section.created_at
+                    else None,
+                    "chunks": chunks_list,
+                }
+
+                for chunk in section.document_section_chunks:
+                    chunk_data: dict[str, Any] = {
+                        "id": str(chunk.id),
+                        "content": chunk.content,
+                        "chunk_index": chunk.chunk_index,
+                        "chunk_metadata": chunk.chunk_metadata,
+                        "qdrant_point_id": str(chunk.qdrant_point_id)
+                        if chunk.qdrant_point_id
+                        else None,
+                        "created_at": chunk.created_at.isoformat()
+                        if chunk.created_at
+                        else None,
+                    }
+                    chunks_list.append(chunk_data)
+
+                sections_list.append(section_data)
+
+            return export_data
+
+        except Exception as err:
+            logger.error(f"Error exporting document sections chunks: {err}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to export document sections chunks: {err}",
+            ) from err

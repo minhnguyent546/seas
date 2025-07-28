@@ -1,3 +1,5 @@
+import json
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import (
@@ -7,8 +9,9 @@ from fastapi import (
     File,
     UploadFile,
 )
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
+from app.core.config import timezone_vi
 from app.deps import (
     AsyncSessionDep,
     get_current_superuser,
@@ -108,6 +111,7 @@ async def split_markdown_on_headers(
 async def query_expansion(
     query: Annotated[str, Body(description="The query to expand", embed=True)],
 ):
+    """Query expansion. Requires superuser permissions."""
     query_expansion_llm = QueryExpansionLLM()
     queries = await query_expansion_llm.expand_query(query)
     return {
@@ -115,3 +119,33 @@ async def query_expansion(
         "num_new_queries": len(queries),
         "new_queries": queries,
     }
+
+
+@router.get(
+    "/private/export-document-sections-chunks",
+    dependencies=[Depends(get_current_superuser)],
+    response_class=Response,
+)
+async def export_document_sections_chunks(
+    session: AsyncSessionDep,
+    rag_service: RagServiceDep,
+):
+    """Export document sections chunks to a JSON file. Requires superuser permissions."""
+
+    export_data = await rag_service.export_document_sections_chunks(
+        session=session
+    )
+
+    json_content = json.dumps(export_data, indent=2, ensure_ascii=False)
+
+    timestamp = datetime.now(tz=timezone_vi).strftime("%Y%m%d_%H%M%S")
+    filename = f"document_sections_chunks_export_{timestamp}.json"
+
+    return Response(
+        content=json_content.encode("utf-8"),
+        media_type="application/json",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}",
+            "Content-Type": "application/json; charset=utf-8",
+        },
+    )
