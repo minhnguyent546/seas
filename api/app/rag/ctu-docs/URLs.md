@@ -117,3 +117,4 @@ Author: minhnguyent546
 
 - Tổng chỉ tiêu: https://tuyensinh.ctu.edu.vn/chuong-trinh-dai-tra/945-doi-tuong-vung.html
 - Điểm ưu tiên trong tuyển sinh: https://tuyensinh.ctu.edu.vn/chuong-trinh-dai-tra/895-diem-uu-tien.html
+- Quy chế học vụ: https://tansinhvien.ctu.edu.vn/images/upload/Tansinhvien_K50/Quychehocvu/QD3266_Quy_dinh_cong_tac_hoc_vu_danh_cho_sinh_vien_trinh_do_dai_hoc_hinh_thuc_chinh_quy_V3.pdf
