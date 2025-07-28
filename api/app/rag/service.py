@@ -459,7 +459,6 @@ class RagService:
                     detail="Failed to create Qdrant collection",
                 )
 
-            qdrant_points = []
             doc_section_chunk_dbs: list[DocumentSectionChunk] = []
             for doc_section in doc_sections:
                 doc_section_id = str(uuid.uuid4())
@@ -488,14 +487,33 @@ class RagService:
                     )
                     doc_section_chunk_dbs.append(document_section_chunk_db)
 
-                    # embeddings and qdrants points
-                    # TODO: consider embedding in batch
-                    embedding = await self._embeddings.aembed_query(
-                        doc_section_chunk.page_content
+            # compute embeddings for all chunks
+            doc_section_chunk_vectors = (
+                await self._embeddings.aembed_documents(
+                    [
+                        doc_section_chunk.content
+                        for doc_section_chunk in doc_section_chunk_dbs
+                    ],
+                )
+            )
+
+            # compute qdrant points
+            qdrant_points: list[PointStruct] = []
+            for (
+                doc_section_chunk_db,
+                doc_section_chunk_vector,
+            ) in zip(
+                doc_section_chunk_dbs,
+                doc_section_chunk_vectors, strict=True
+            ):
+                assert doc_section_chunk_db.qdrant_point_id is not None
+                qdrant_points.append(
+                    PointStruct(
+                        id=str(doc_section_chunk_db.qdrant_point_id),
+                        vector=doc_section_chunk_vector,
+                        payload={},
                     )
-                    qdrant_points.append(
-                        PointStruct(id=chunk_id, vector=embedding, payload={})
-                    )
+                )
 
             # batch upsert to Qdrant
             if qdrant_points:
