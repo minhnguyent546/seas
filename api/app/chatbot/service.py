@@ -1,20 +1,13 @@
 import asyncio
 from collections.abc import AsyncGenerator
-from datetime import datetime
-from html import escape as html_escape
 
 from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
-from langchain_core.messages import HumanMessage, SystemMessage
 from loguru import logger
 
-import app.utils as app_utils
+from app.chatbot.chat_llm import RagChatLLM
 from app.chatbot.schemas import ChatQuery
-from app.core.config import settings
 from app.core.database import AsyncSession
-from app.rag.schemas import SimilaritySearchParams
-from app.rag.service import RagService
-from app.templates import prompt_templates
 from app.users.models import User
 
 
@@ -23,55 +16,20 @@ async def process_query(
     session: AsyncSession,
     current_user: User,
 ) -> StreamingResponse:
-    llm = app_utils.get_langchain_llm(
-        model_name=settings.CHAT_MODEL,
-        temperature=0,
-    )
-
     human_message = chat_query.query.strip()
     if not human_message:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
         )
-
-    # get prompt templates
-    system_prompt_template = prompt_templates.get_template(
-        "system_prompt_vi.j2"
-    )
-    chat_prompt_template = prompt_templates.get_template("chat_prompt.j2")
-    system_prompt = system_prompt_template.render(
-        currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
-        currentYear=datetime.now().year,
-    )
-
-    # similarity search
-    rag_service = RagService(session=session)
-    context_chunks = await rag_service.similarity_search(
-        search_params=SimilaritySearchParams(
-            query=human_message,
-            limit=settings.SIMILARITY_SEARCH_TOP_K,
-            threshold=settings.SIMILARITY_SEARCH_THRESHOLD,
-        )
-    )
-    context_str = "\n".join([
-        f'<Document title="{html_escape(chunk.chunk_metadata.get("title") or "")}" url="{html_escape(chunk.chunk_metadata.get("url") or "")}">{html_escape(chunk.content)}</Document>\n'
-        for chunk in context_chunks
-    ])
-    chat_prompt = chat_prompt_template.render(
-        context=context_str,
-        query=human_message,
-    )
-    messages = [
-        SystemMessage(content=system_prompt),
-        HumanMessage(content=chat_prompt),
-    ]
-    logger.debug(f"Processing query: {human_message = }")
+    chat_llm = RagChatLLM()
 
     async def stream_generator() -> AsyncGenerator[str, None]:
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
-                async for chunk in llm.astream(input=messages):
+                async for chunk in chat_llm.astream(
+                    session=session, query=human_message
+                ):
                     if isinstance(chunk, str):
                         yield chunk
                         continue

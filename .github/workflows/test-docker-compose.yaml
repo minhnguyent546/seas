@@ -33,6 +33,7 @@ jobs:
           OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
           ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
           API_IMAGE=seas-api
+          RERANK_ENABLED=false
           EOF
 
       - name: Set up Docker Buildx

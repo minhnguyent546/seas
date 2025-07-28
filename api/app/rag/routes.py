@@ -13,7 +13,6 @@ from app.deps import (
     get_current_superuser,
 )
 from app.rag.schemas import (
-    DocumentSectionChunkPublic,
     SimilaritySearchParams,
     SimilaritySearchResult,
 )
@@ -23,8 +22,8 @@ from app.schemas import MessageResponse
 router = APIRouter(prefix="/rag", tags=["rag"])
 
 
-def _get_rag_service(session: AsyncSessionDep) -> RagService:
-    return RagService(session=session)
+def _get_rag_service() -> RagService:
+    return RagService()
 
 
 RagServiceDep = Annotated[RagService, Depends(_get_rag_service)]
@@ -39,10 +38,13 @@ async def add_document_to_database(
     file: Annotated[
         UploadFile, File(description="The document to add to the database")
     ],
+    session: AsyncSessionDep,
     rag_service: RagServiceDep,
 ):
     """Add a document to the database(s). Requires superuser permissions."""
-    return await rag_service.add_document_to_database(file)
+    return await rag_service.add_document_to_database(
+        session=session, upload_file=file
+    )
 
 
 @router.post(
@@ -55,10 +57,13 @@ async def add_document_to_database_in_batch(
         list[UploadFile],
         File(description="The documents to add to the database"),
     ],
+    session: AsyncSessionDep,
     rag_service: RagServiceDep,
 ):
     """Add a document to the database(s) in batch. Requires superuser permissions."""
-    return await rag_service.add_documents_to_database_in_batch(files)
+    return await rag_service.add_documents_to_database_in_batch(
+        session=session, upload_files=files
+    )
 
 
 @router.post(
@@ -67,17 +72,15 @@ async def add_document_to_database_in_batch(
     response_model=SimilaritySearchResult,
 )
 async def similarity_search(
-    search_params: SimilaritySearchParams, rag_service: RagServiceDep
+    search_params: SimilaritySearchParams,
+    session: AsyncSessionDep,
+    rag_service: RagServiceDep,
 ):
     """Similarity search for a query. Requires superuser permissions."""
-    result = await rag_service.similarity_search(search_params)
-    return SimilaritySearchResult(
-        chunks=[
-            DocumentSectionChunkPublic.model_validate(chunk)
-            for chunk in result
-        ],
-        query=search_params.query,
+    result = await rag_service.similarity_search(
+        session=session, search_params=search_params
     )
+    return result
 
 
 @router.post(
@@ -92,4 +95,4 @@ async def split_markdown_on_headers(
     rag_service: RagServiceDep,
 ):
     """Split a document on headers. Requires superuser permissions."""
-    return await rag_service.split_markdown_on_headers(file)
+    return await rag_service.split_markdown_on_headers(upload_file=file)
