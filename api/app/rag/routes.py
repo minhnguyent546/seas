@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import (
     APIRouter,
+    Body,
     Depends,
     File,
     UploadFile,
@@ -12,6 +13,7 @@ from app.deps import (
     AsyncSessionDep,
     get_current_superuser,
 )
+from app.rag.query_expansion_llm import QueryExpansionLLM
 from app.rag.schemas import (
     SimilaritySearchParams,
     SimilaritySearchResult,
@@ -96,3 +98,20 @@ async def split_markdown_on_headers(
 ):
     """Split a document on headers. Requires superuser permissions."""
     return await rag_service.split_markdown_on_headers(upload_file=file)
+
+
+@router.post(
+    "/private/query-expansion",
+    dependencies=[Depends(get_current_superuser)],
+    response_class=JSONResponse,
+)
+async def query_expansion(
+    query: Annotated[str, Body(description="The query to expand", embed=True)],
+):
+    query_expansion_llm = QueryExpansionLLM()
+    queries = await query_expansion_llm.expand_query(query)
+    return {
+        "original_query": query,
+        "num_new_queries": len(queries),
+        "new_queries": queries,
+    }

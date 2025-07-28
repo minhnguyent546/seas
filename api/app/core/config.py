@@ -114,8 +114,12 @@ class Settings(BaseSettings):
 
     # embeddings model
     EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
-    CHUNK_SIZE: int = 4096
-    CHUNK_OVERLAP: int = 512
+    CHUNK_SIZE: int = 3072
+    CHUNK_OVERLAP: int = 384
+
+    # query expansion
+    QUERY_EXPANSION_MODEL: str = "google/gemini-2.5-flash"
+    QUERY_EXPANSION_NUM_NEW_QUERIES: int = 3  # change to less than 1 to disable query expansion
 
     # reranking model
     RERANK_ENABLED: bool = True
