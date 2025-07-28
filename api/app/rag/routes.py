@@ -72,6 +72,7 @@ async def similarity_search(
     """Similarity search for a query. Requires superuser permissions."""
     result = await rag_service.similarity_search(search_params)
     return SimilaritySearchResult(
+        num_chunks=len(result),
         chunks=[
             DocumentSectionChunkPublic.model_validate(chunk)
             for chunk in result

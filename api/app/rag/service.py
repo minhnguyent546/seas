@@ -5,6 +5,7 @@ from typing import Any
 import frontmatter
 from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
+from FlagEmbedding import FlagReranker
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -34,6 +35,7 @@ class RagService:
         self.session = session
         self.__qdrant_client: AsyncQdrantClient | None = None
         self.__embeddings: Embeddings | None = None
+        self.__reranker: FlagReranker | None = None
 
         self.TABLE_TOK = "<table_title>"
         self.TABLE_HEADER_SYMBOL = "#######"
@@ -68,6 +70,19 @@ class RagService:
                 google_api_key=settings.GOOGLE_API_KEY,  # pyright: ignore[reportArgumentType]
             )
         return self.__embeddings
+
+    @property
+    def _reranker(self) -> FlagReranker:
+        if self.__reranker is None:
+            import torch
+
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.__reranker = FlagReranker(
+                model_name_or_path=settings.BAAI_RERANKER_MODEL,
+                use_fp16=True,
+                device=device,
+            )
+        return self.__reranker
 
     async def _initialize_qdrant_collection(self) -> bool:
         try:
@@ -305,6 +320,7 @@ class RagService:
         self, search_params: SimilaritySearchParams
     ) -> list[DocumentSectionChunkPublic]:
         try:
+            logger.debug(f"{search_params = }")
             # search in Qdrant
             query_vector = await self._embeddings.aembed_query(
                 search_params.query
@@ -339,8 +355,31 @@ class RagService:
                 DocumentSectionChunkPublic.model_validate(chunk)
                 for chunk in document_section_chunks
             ]
-            for i, chunk in enumerate(document_section_chunks_public):
-                chunk.similarity_score = search_results[i].score
+
+            # reranking
+            if search_params.rerank:
+                logger.debug(
+                    f"Reranking {len(document_section_chunks_public)} chunks..."
+                )
+                rerank_docs = [
+                    (search_params.query, chunk.content)
+                    for chunk in document_section_chunks_public
+                ]
+                rerank_results = self._reranker.compute_score(
+                    rerank_docs, batch_size=8, normalize=True
+                )
+                assert rerank_results is not None
+                for i, chunk in enumerate(document_section_chunks_public):
+                    chunk.similarity_score = rerank_results[i]
+            else:
+                for i, chunk in enumerate(document_section_chunks_public):
+                    chunk.similarity_score = search_results[i].score
+
+            if search_params.sort_by_score:
+                document_section_chunks_public.sort(
+                    key=lambda doc_section_chunk: doc_section_chunk.similarity_score,  # pyright: ignore[reportArgumentType]
+                    reverse=True,
+                )
 
             return document_section_chunks_public
 

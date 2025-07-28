@@ -117,6 +117,10 @@ class Settings(BaseSettings):
     CHUNK_SIZE: int = 4096
     CHUNK_OVERLAP: int = 512
 
+    # reranking model
+    RERANK_ENABLED: bool = True
+    BAAI_RERANKER_MODEL: str = "BAAI/bge-reranker-v2-m3"
+
     # doc upload dir
     DOC_UPLOAD_DIR: str = "uploaded-docs"
 
@@ -128,11 +132,11 @@ class Settings(BaseSettings):
     QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
 
     # similarity search
-    SIMILARITY_SEARCH_TOP_K: int = 3
+    SIMILARITY_SEARCH_TOP_K: int = 10
     SIMILARITY_SEARCH_THRESHOLD: float = 0.6
 
     # config for adding document in batch
-    BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 10
+    BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 20
     BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS: int = 5_000
 
     @model_validator(mode="after")
