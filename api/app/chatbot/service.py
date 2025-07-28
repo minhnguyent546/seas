@@ -8,7 +8,6 @@ from loguru import logger
 from app.chatbot.chat_llm import RagChatLLM
 from app.chatbot.schemas import ChatQuery
 from app.core.database import AsyncSession
-from app.rag.service import RagService
 from app.users.models import User
 
 
@@ -23,13 +22,14 @@ async def process_query(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
         )
-    rag_service = RagService(session=session)
-    chat_llm = RagChatLLM(rag_service=rag_service)
+    chat_llm = RagChatLLM()
 
     async def stream_generator() -> AsyncGenerator[str, None]:
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
-                async for chunk in chat_llm.astream(query=human_message):
+                async for chunk in chat_llm.astream(
+                    session=session, query=human_message
+                ):
                     if isinstance(chunk, str):
                         yield chunk
                         continue

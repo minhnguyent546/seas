@@ -28,5 +28,6 @@ class SimilaritySearchParams(BaseModel):
 
 class SimilaritySearchResult(BaseModel):
     num_chunks: int
-    chunks: list[DocumentSectionChunkPublic]
+    reranked: bool
     query: str
+    chunks: list[DocumentSectionChunkPublic]

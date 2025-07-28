@@ -5,7 +5,6 @@ from typing import Any
 import frontmatter
 from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
-from FlagEmbedding import FlagReranker
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -26,16 +25,28 @@ from app.rag.models import (
     DocumentSection,
     DocumentSectionChunk,
 )
-from app.rag.schemas import DocumentSectionChunkPublic, SimilaritySearchParams
+from app.rag.schemas import (
+    DocumentSectionChunkPublic,
+    SimilaritySearchParams,
+    SimilaritySearchResult,
+)
 from app.schemas import MessageResponse
+
+# Optional import for FlagEmbedding (reranking functionality)
+try:
+    from FlagEmbedding import FlagReranker
+
+    _has_reranker = True
+except ImportError:
+    FlagReranker = None  # type: ignore
+    _has_reranker = False
 
 
 class RagService:
-    def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+    def __init__(self) -> None:
         self.__qdrant_client: AsyncQdrantClient | None = None
         self.__embeddings: Embeddings | None = None
-        self.__reranker: FlagReranker | None = None
+        self.__reranker: Any = None
 
         self.TABLE_TOK = "<table_title>"
         self.TABLE_HEADER_SYMBOL = "#######"
@@ -72,12 +83,15 @@ class RagService:
         return self.__embeddings
 
     @property
-    def _reranker(self) -> FlagReranker:
+    def _reranker(self) -> Any:
+        if not _has_reranker:
+            return None
+
         if self.__reranker is None:
             import torch
 
             device = "cuda" if torch.cuda.is_available() else "cpu"
-            self.__reranker = FlagReranker(
+            self.__reranker = FlagReranker(  # type: ignore
                 model_name_or_path=settings.BAAI_RERANKER_MODEL,
                 use_fp16=True,
                 device=device,
@@ -317,8 +331,8 @@ class RagService:
                 os.remove(saved_file_path)
 
     async def similarity_search(
-        self, search_params: SimilaritySearchParams
-    ) -> list[DocumentSectionChunkPublic]:
+        self, session: AsyncSession, search_params: SimilaritySearchParams
+    ) -> SimilaritySearchResult:
         try:
             logger.debug(f"{search_params = }")
             # search in Qdrant
@@ -335,9 +349,14 @@ class RagService:
             # get chunk
             chunk_ids = [result.id for result in search_results]
             if not chunk_ids:
-                return []
+                return SimilaritySearchResult(
+                    num_chunks=0,
+                    reranked=False,
+                    chunks=[],
+                    query=search_params.query,
+                )
 
-            document_section_chunks_result = await self.session.execute(
+            document_section_chunks_result = await session.execute(
                 select(DocumentSectionChunk)
                 .where(DocumentSectionChunk.qdrant_point_id.in_(chunk_ids))
                 .options(selectinload(DocumentSectionChunk.document_section))
@@ -357,21 +376,35 @@ class RagService:
             ]
 
             # reranking
-            if search_params.rerank:
-                logger.debug(
-                    f"Reranking {len(document_section_chunks_public)} chunks..."
-                )
-                rerank_docs = [
-                    (search_params.query, chunk.content)
-                    for chunk in document_section_chunks_public
-                ]
-                rerank_results = self._reranker.compute_score(
-                    rerank_docs, batch_size=8, normalize=True
-                )
-                assert rerank_results is not None
-                for i, chunk in enumerate(document_section_chunks_public):
-                    chunk.similarity_score = rerank_results[i]
+            rerank_applied = False
+            if search_params.rerank and settings.RERANK_ENABLED:
+                reranker = self._reranker
+                if reranker is not None:
+                    logger.debug(
+                        f"Reranking {len(document_section_chunks_public)} chunks..."
+                    )
+                    rerank_docs = [
+                        (search_params.query, chunk.content)
+                        for chunk in document_section_chunks_public
+                    ]
+                    rerank_results = reranker.compute_score(
+                        rerank_docs, batch_size=8, normalize=True
+                    )
+                    assert rerank_results is not None
+                    for i, chunk in enumerate(document_section_chunks_public):
+                        chunk.similarity_score = rerank_results[i]
+
+                    rerank_applied = True
+                else:
+                    logger.warning(
+                        "Reranking requested but FlagEmbedding not available. "
+                        "Install with: uv add --group rerank flagembedding. "
+                        "Falling back to vector similarity scores."
+                    )
+                    for i, chunk in enumerate(document_section_chunks_public):
+                        chunk.similarity_score = search_results[i].score
             else:
+                # Use vector similarity scores (no reranking)
                 for i, chunk in enumerate(document_section_chunks_public):
                     chunk.similarity_score = search_results[i].score
 
@@ -381,7 +414,12 @@ class RagService:
                     reverse=True,
                 )
 
-            return document_section_chunks_public
+            return SimilaritySearchResult(
+                num_chunks=len(document_section_chunks_public),
+                reranked=rerank_applied,
+                chunks=document_section_chunks_public,
+                query=search_params.query,
+            )
 
         except Exception as err:
             logger.debug(f"Error during performing similarity search: {err}")
@@ -391,7 +429,7 @@ class RagService:
             ) from err
 
     async def add_document_to_database(
-        self, upload_file: UploadFile
+        self, session: AsyncSession, upload_file: UploadFile
     ) -> MessageResponse:
         if upload_file.filename is None:
             raise HTTPException(
@@ -431,7 +469,7 @@ class RagService:
                     url=doc_section.metadata.get("url"),
                     description=doc_section.metadata.get("description"),
                 )
-                self.session.add(document_section_db)
+                session.add(document_section_db)
 
                 doc_section_chunks = self._split_document_recursive(
                     content=doc_section.page_content,
@@ -469,8 +507,8 @@ class RagService:
                 # TODO: how to rollback if upsert fails?
                 logger.debug(f"Added {len(qdrant_points)} points to Qdrant")
 
-            self.session.add_all(doc_section_chunk_dbs)
-            await self.session.commit()
+            session.add_all(doc_section_chunk_dbs)
+            await session.commit()
 
             return MessageResponse(
                 message=f"Document {upload_file.filename} added to the databases",
@@ -494,7 +532,7 @@ class RagService:
             ) from err
 
     async def add_documents_to_database_in_batch(
-        self, upload_files: list[UploadFile]
+        self, session: AsyncSession, upload_files: list[UploadFile]
     ) -> JSONResponse:
         """Add multiple documents to the database in batch."""
         if not upload_files:
@@ -710,13 +748,13 @@ class RagService:
             # Step 4: Batch operations (all or nothing for data consistency)
             try:
                 # Add document sections to session first
-                self.session.add_all(all_document_sections)
+                session.add_all(all_document_sections)
 
                 # Add all chunks to session
-                self.session.add_all(all_doc_section_chunk_dbs)
+                session.add_all(all_doc_section_chunk_dbs)
 
                 # Commit database transaction first to ensure data consistency
-                await self.session.commit()
+                await session.commit()
 
                 # Batch upsert to Qdrant after successful database commit
                 if all_qdrant_points:
@@ -751,7 +789,7 @@ class RagService:
                 logger.error(f"Batch operation failed: {err}")
 
                 # Rollback database transaction
-                await self.session.rollback()
+                await session.rollback()
 
                 # Move all successful files to failed
                 for file_result in successful_files:

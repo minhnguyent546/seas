@@ -4,6 +4,8 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
 
+ARG RERANK_ENABLED=false
+
 RUN apt update && apt install -y --no-install-recommends \
     gcc \
     libc-dev \
@@ -30,7 +32,12 @@ ENV UV_LINK_MODE=copy
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project
+    if [ "$RERANK_ENABLED" = "true" ]; then \
+        echo "Installing with rerank dependencies..." && \
+        uv sync --frozen --no-install-project --group rerank; \
+    else \
+        uv sync --frozen --no-install-project; \
+    fi
 
 ENV PYTHONPATH=/app
 
@@ -38,7 +45,11 @@ COPY . /app
 
 # sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync
+    if [ "$RERANK_ENABLED" = "true" ]; then \
+        uv sync --group rerank; \
+    else \
+        uv sync; \
+    fi
 
 EXPOSE 8444
 
