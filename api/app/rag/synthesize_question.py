@@ -7,9 +7,10 @@ Example usage:
 ```bash
 # from the root of the api directory (i.e. seas/api)
 OPENAI_API_KEY=<your-openai-api-key> python -m app.rag.synthesize_question \
-    --document_sections_chunks_file=app/rag/document_sections_chunks_export_20250728_162327.json \
-    --num_questions=5 \
-    --retries=3
+    --document_sections_chunks_file app/rag/document_sections_chunks_export_20250728_162327.json \
+    --model openai/gpt-4o \
+    --num_questions 5 \
+    --retries 3
 ```
 
 """
@@ -25,7 +26,6 @@ from typing import Any
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
 from loguru import logger
 from tqdm.autonotebook import tqdm
 
@@ -33,7 +33,7 @@ prompt_templates = None
 
 
 def get_prompt_template(template_name: str):
-    """Copied from ~app/utils."""
+    """Copied from ~app/utils.py"""
     global prompt_templates
     if prompt_templates is None:
         prompt_templates = Environment(
@@ -47,7 +47,7 @@ def get_prompt_template(template_name: str):
 
 
 def get_prompt(*, template_name: str, **kwargs):
-    """Copied from ~app/utils."""
+    """Copied from ~app/utils.py"""
     try:
         template = get_prompt_template(template_name)
         return template.render(kwargs)
@@ -56,13 +56,39 @@ def get_prompt(*, template_name: str, **kwargs):
         raise err
 
 
+def get_langchain_llm(model_name: str, **kwargs):
+    """Copied from ~app/utils.py."""
+    if "/" not in model_name:
+        raise ValueError(
+            f"Expected model name have the format <provider>/<model_name>, got {model_name}"
+        )
+
+    provider, model_name = model_name.split("/")
+    if provider == "google":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+
+        google_api_key = os.getenv("GOOGLE_API_KEY")
+        if not google_api_key:
+            raise ValueError("GOOGLE_API_KEY is not set")
+
+        return ChatGoogleGenerativeAI(
+            model=model_name, api_key=google_api_key, **kwargs
+        )  # pyright: ignore[reportArgumentType]
+    elif provider == "openai":
+        from langchain_openai import ChatOpenAI
+
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        if not openai_api_key:
+            raise ValueError("OPENAI_API_KEY is not set")
+
+        return ChatOpenAI(model=model_name, api_key=openai_api_key, **kwargs)  # pyright: ignore[reportArgumentType]
+    else:
+        raise ValueError(f"Unsupported provider: {provider}")
+
+
 def generate_question(
     args: argparse.Namespace,
 ) -> None:
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    if not openai_api_key:
-        raise ValueError("OPENAI_API_KEY is not set")
-
     if os.path.isdir(args.output_dir) and len(os.listdir(args.output_dir)) > 0:
         raise ValueError(
             f"Output directory {args.output_dir} already exists and is not empty"
@@ -81,11 +107,7 @@ def generate_question(
     sections = df["sections"]
     logger.info(f"Total sections: {len(sections)} | total chunks: {len(df)}")
 
-    llm = ChatOpenAI(
-        model=args.openai_model,
-        temperature=0.6,
-        api_key=openai_api_key,  # pyright: ignore[reportArgumentType]
-    )
+    llm = get_langchain_llm(model_name=args.model, temperature=0.6)
 
     system_prompt = get_prompt(
         template_name="synthesize_questions_system_prompt.j2",
@@ -180,10 +202,10 @@ def main() -> None:
         help="The file containing the document sections chunks (.json file). Get this file by exporting data from `api/v1/rag/private/export-document-sections-chunks`",
     )
     parser.add_argument(
-        "--openai_model",
+        "--model",
         type=str,
-        default="gpt-4o",
-        help="The OpenAI model to use for generating questions",
+        default="openai/gpt-4o",
+        help="The model to use for generating questions in the format <provider>/<model_name>. Supported providers are: [openai, google]",
     )
     parser.add_argument(
         "--output_dir",
