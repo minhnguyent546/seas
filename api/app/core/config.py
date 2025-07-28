@@ -119,7 +119,7 @@ class Settings(BaseSettings):
 
     # query expansion
     QUERY_EXPANSION_MODEL: str = "google/gemini-2.5-flash"
-    QUERY_EXPANSION_NUM_NEW_QUERIES: int = 3
+    QUERY_EXPANSION_NUM_NEW_QUERIES: int = 3  # change to less than 1 to disable query expansion
 
     # reranking model
     RERANK_ENABLED: bool = True
