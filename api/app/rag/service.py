@@ -14,7 +14,12 @@ from langchain_text_splitters import (
 )
 from loguru import logger
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
+from qdrant_client.models import (
+    Distance,
+    PointStruct,
+    ScoredPoint,
+    VectorParams,
+)
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -25,6 +30,7 @@ from app.rag.models import (
     DocumentSection,
     DocumentSectionChunk,
 )
+from app.rag.query_expansion_llm import QueryExpansionLLM
 from app.rag.schemas import (
     DocumentSectionChunkPublic,
     SimilaritySearchParams,
@@ -288,6 +294,46 @@ class RagService:
                 detail=f"Failed to process table in document section: {err}",
             ) from err
 
+    def _apply_reciprocal_rank_fusion(
+        self, search_results_list: list[list[ScoredPoint]], k: int = 60
+    ) -> list[ScoredPoint]:
+        """Apply Reciprocal Rank Fusion to combine multiple search result lists."""
+        # Handle edge case: no results from any query
+        if not search_results_list or all(
+            not results for results in search_results_list
+        ):
+            return []
+
+        rrf_scores: dict[str, dict[str, Any]] = {}
+
+        for search_results in search_results_list:
+            for rank, result in enumerate(search_results, start=1):
+                doc_id = str(result.id)
+                rrf_score = 1 / (k + rank)
+
+                if doc_id in rrf_scores:
+                    rrf_scores[doc_id]["score"] += rrf_score  # pyright: ignore[reportOperatorIssue]
+                else:
+                    rrf_scores[doc_id] = {  # pyright: ignore[reportArgumentType]
+                        "score": rrf_score,
+                        "result": result,
+                    }
+
+        # Sort by RRF score and return results
+        sorted_results = sorted(
+            rrf_scores.items(), key=lambda x: x[1]["score"], reverse=True
+        )
+
+        # Create result objects with RRF scores
+        fused_results = []
+        for _doc_id, data in sorted_results:
+            result: ScoredPoint = data["result"]
+            # Update the score to be the RRF score
+            result.score = data["score"]
+            fused_results.append(result)
+
+        return fused_results
+
     async def split_markdown_on_headers(self, upload_file: UploadFile):
         if upload_file.filename is None:
             raise HTTPException(
@@ -335,19 +381,46 @@ class RagService:
     ) -> SimilaritySearchResult:
         try:
             logger.debug(f"{search_params = }")
-            # search in Qdrant
-            query_vector = await self._embeddings.aembed_query(
-                search_params.query
-            )
-            search_results = await self._qdrant_client.search(
-                collection_name=settings.QDRANT_COLLECTION_NAME,
-                query_vector=query_vector,
-                limit=search_params.limit,
-                score_threshold=search_params.threshold,
+
+            queries = [search_params.query]  # include the original query
+
+            if search_params.expand_query:
+                query_expansion_llm = QueryExpansionLLM()
+                expanded_queries = await query_expansion_llm.expand_query(
+                    search_params.query
+                )
+                if expanded_queries:
+                    queries.extend(expanded_queries)
+                    logger.debug(
+                        f"Expanded {len(expanded_queries)} additional queries"
+                    )
+                else:
+                    logger.warning(
+                        f"No expanded queries provided for {search_params.query}"
+                    )
+
+            # Perform similarity search for each query
+            all_search_results: list[list[ScoredPoint]] = []
+            for query in queries:
+                query_vector = await self._embeddings.aembed_query(query)
+                search_results = await self._qdrant_client.search(
+                    collection_name=settings.QDRANT_COLLECTION_NAME,
+                    query_vector=query_vector,
+                    limit=search_params.limit
+                    * 2,  # Get more results for fusion
+                    score_threshold=search_params.threshold,
+                )
+                all_search_results.append(search_results)
+
+            # Apply Reciprocal Rank Fusion (RRF) to combine results
+            fused_results = self._apply_reciprocal_rank_fusion(
+                all_search_results
             )
 
-            # get chunk
-            chunk_ids = [result.id for result in search_results]
+            # Limit to requested number of results
+            fused_results = fused_results[: search_params.limit]
+
+            chunk_ids = [str(result.id) for result in fused_results]
             if not chunk_ids:
                 return SimilaritySearchResult(
                     num_chunks=0,
@@ -364,6 +437,15 @@ class RagService:
             document_section_chunks = (
                 document_section_chunks_result.scalars().all()
             )
+
+            # Check if we got all expected chunks
+            retrieved_chunk_ids = {
+                str(chunk.qdrant_point_id) for chunk in document_section_chunks
+            }
+            missing_chunks = set(chunk_ids) - retrieved_chunk_ids
+            if missing_chunks:
+                logger.warning(f"Missing chunks in database: {missing_chunks}")
+
             for document_section_chunk in document_section_chunks:
                 document_section_chunk.chunk_metadata.update({
                     "title": document_section_chunk.document_section.title,
@@ -374,6 +456,10 @@ class RagService:
                 DocumentSectionChunkPublic.model_validate(chunk)
                 for chunk in document_section_chunks
             ]
+
+            score_map = {
+                str(result.id): result.score for result in fused_results
+            }
 
             # reranking
             rerank_applied = False
@@ -398,15 +484,15 @@ class RagService:
                 else:
                     logger.warning(
                         "Reranking requested but FlagEmbedding not available. "
-                        "Install with: uv add --group rerank flagembedding. "
-                        "Falling back to vector similarity scores."
+                        "Install with: uv add --group rerank FlagEmbedding. "
+                        "Falling back to fusion scores."
                     )
-                    for i, chunk in enumerate(document_section_chunks_public):
-                        chunk.similarity_score = search_results[i].score
+                    for chunk in document_section_chunks_public:
+                        chunk.similarity_score = score_map.get(chunk.id, 0.0)
             else:
-                # Use vector similarity scores (no reranking)
-                for i, chunk in enumerate(document_section_chunks_public):
-                    chunk.similarity_score = search_results[i].score
+                # Use fusion scores (no reranking)
+                for chunk in document_section_chunks_public:
+                    chunk.similarity_score = score_map.get(chunk.id, 0.0)
 
             if search_params.sort_by_score:
                 document_section_chunks_public.sort(
@@ -503,8 +589,7 @@ class RagService:
                 doc_section_chunk_db,
                 doc_section_chunk_vector,
             ) in zip(
-                doc_section_chunk_dbs,
-                doc_section_chunk_vectors, strict=True
+                doc_section_chunk_dbs, doc_section_chunk_vectors, strict=True
             ):
                 assert doc_section_chunk_db.qdrant_point_id is not None
                 qdrant_points.append(
