@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
 from loguru import logger
 
-from app.chatbot.chat_llm import RagChatLLM
+from app.chatbot.rag_chat_llm import RagChatLLM
 from app.chatbot.schemas import ChatQuery
 from app.core.database import AsyncSession
 from app.users.models import User

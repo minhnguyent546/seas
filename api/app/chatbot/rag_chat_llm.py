@@ -24,12 +24,12 @@ class RagChatLLM:
         self._rag_service: RagService | None = None
 
         self.system_prompt = app_utils.get_prompt(
-            template_name="system_prompt_vi.j2",
+            template_name="chat_system_prompt.j2",
             currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
             currentYear=datetime.now().year,
         )
-        self.chat_prompt_template = app_utils.get_prompt_template(
-            template_name="chat_prompt.j2"
+        self.human_prompt_template = app_utils.get_prompt_template(
+            template_name="chat_human_prompt.j2"
         )
 
     @property
@@ -67,14 +67,14 @@ class RagChatLLM:
             doc_tag.to_html() for doc_tag in document_tags
         ])
 
-        chat_prompt = self.chat_prompt_template.render(
+        human_prompt = self.human_prompt_template.render(
             context=context_str,
             query=query,
         )
 
         messages = [
             SystemMessage(content=self.system_prompt),
-            HumanMessage(content=chat_prompt),
+            HumanMessage(content=human_prompt),
         ]
 
         async for chunk in self.llm.astream(input=messages):
