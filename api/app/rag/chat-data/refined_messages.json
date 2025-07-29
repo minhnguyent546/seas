@@ -1,0 +1,3028 @@
+{
+  "model": "openai/gpt-4o",
+  "num_consecutive_messages": 30,
+  "refined_messages": [
+    {
+      "start_idx": 0,
+      "end_idx": 30,
+      "refined_messages": [
+        "Ngành giáo dục tiểu học lấy bao nhiêu điểm? Có xét tuyển thẳng không và yêu cầu như thế nào?",
+        "Thời gian xét học bạ của trường?",
+        "Học bạ tầm 27 điểm thì có cơ hội vào CNSH không?",
+        "Trường đã mở cổng xét học bạ chưa?",
+        "Khi nào xét tuyển thi năng khiếu ngành Kiến trúc?",
+        "Khối C01 có thể xét được bao nhiêu ngành?",
+        "V-SAT có xét được các ngành sư phạm không?",
+        "Điểm V-SAT cỡ bao nhiêu là ổn?",
+        "28.97 học bạ D66 chưa cộng điểm ưu tiên có an toàn vào Sư phạm Anh không?",
+        "Thi V-SAT là xét 3 môn cùng 1 hội đồng hay không được chọn môn cao nhất?",
+        "Cách tính điểm học bạ như thế nào?",
+        "Điểm V-SAT ngôn ngữ Anh chương trình chất lượng cao cỡ bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 30,
+      "end_idx": 60,
+      "refined_messages": [
+        "Điểm học bạ tầm 23-24 có đậu ngành Vật lý kỹ thuật không?",
+        "Ngành Tài chính ngân hàng có khó vào không?",
+        "Tính điểm học bạ như thế nào?",
+        "Xét học bạ và xét điểm thi tốt nghiệp cái nào được ưu tiên hơn?",
+        "Thi đạt học sinh giỏi tỉnh có được cộng điểm không?",
+        "Khi nào mở xét học bạ?",
+        "Sư phạm địa lý năm nay trường mình lấy bao nhiêu điểm?",
+        "Ngành Luật dân sự và dân sự tố tụng mới khả năng điểm cao không?",
+        "Ngành Du lịch điểm chuẩn năm nay tầm bao nhiêu?",
+        "Học bạ 26-27 điểm thì có đỗ vào Sư phạm Vật lý không?",
+        "Học bạ 27,2 có đủ điểm vào sư phạm không?",
+        "Trường Đại học Cần Thơ phân hiệu Sóc Trăng năm nay tuyển sinh chưa?",
+        "Ngành Truyền thông báo chí xét bao nhiêu điểm?",
+        "Dự đoán tăng bao nhiêu điểm ngành Chính trị học?"
+      ]
+    },
+    {
+      "start_idx": 60,
+      "end_idx": 90,
+      "refined_messages": [
+        "Trường có đào tạo ngành quan hệ công chúng không?",
+        "Học bạ 26,2 đủ đậu CTU không?",
+        "Thi năng khiếu mầm non có mấy phần thi? Phần hát được tự chọn hay bốc thăm?",
+        "Điểm A00 26,8 đậu quản trị công nghiệp không?",
+        "Ngành quản trị kinh doanh năm nay với bao nhiêu điểm là ổn?",
+        "CTU có xét VSAT Đồng Tháp không?",
+        "Ngành luật lấy điểm cao không?"
+      ]
+    },
+    {
+      "start_idx": 90,
+      "end_idx": 120,
+      "refined_messages": [
+        "Ngành sư phạm mầm non cần bao nhiêu điểm? Có xét học bạ không?",
+        "Điểm học bạ 27,1 có thể đậu ngành luật không?",
+        "CTU có xét học bạ cho tất cả các trường không?",
+        "Điểm thi bao nhiêu thì đậu ngành luật?",
+        "Sư phạm thể chất năm nay lấy bao nhiêu điểm?",
+        "Điểm 296 B00 có vào được ngành hóa học không?",
+        "Khối A00, A01 với 24 điểm có đậu được ngành quản trị nào không?",
+        "Ngành kỹ thuật điện tử viễn thông năm nay lấy cao không?",
+        "Ngành CNTT lấy bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 120,
+      "end_idx": 150,
+      "refined_messages": [
+        "Ngành tâm lý học năm nay lấy bao nhiêu điểm?",
+        "Sư phạm có xét học bạ được không?",
+        "Xét học bạ có cần gửi hồ sơ để làm minh chứng không?",
+        "Điểm sẽ quy về thang điểm 10, vậy điểm Vsat có đổi về thang điểm 10 không?",
+        "Sư phạm Anh học bạ năm nay bao nhiêu thì an toàn?",
+        "Học bạ 28 điểm có đủ xét ngôn ngữ Anh hay kinh doanh quốc tế không?",
+        "Nuôi trồng thủy sản lấy điểm có cao không?"
+      ]
+    },
+    {
+      "start_idx": 180,
+      "end_idx": 210,
+      "refined_messages": [
+        "A00 học bạ 26,8 đậu được ngành gì?",
+        "Muốn vào ngành Luật cần bao nhiêu điểm học bạ?"
+      ]
+    },
+    {
+      "start_idx": 240,
+      "end_idx": 270,
+      "refined_messages": [
+        "Tầm bao nhiêu điểm học bạ để vào ngành quản trị kinh doanh?",
+        "Điểm học bạ bao nhiêu thì đậu ngành Marketing?"
+      ]
+    },
+    {
+      "start_idx": 330,
+      "end_idx": 360,
+      "refined_messages": [
+        "Sư phạm toán với IT năm nay lấy điểm cỡ bao nhiêu?",
+        "Khi nào thì trường mở xét học bạ?",
+        "20 điểm thì còn cách nào khác vào ngành kinh tế không?",
+        "Thiết kế vi mạch lấy điểm cỡ bao nhiêu?",
+        "NNA 300 VSAT có được không?"
+      ]
+    },
+    {
+      "start_idx": 360,
+      "end_idx": 390,
+      "refined_messages": [
+        "Nộp học bạ xét tuyển gồm những gì?",
+        "Điểm học bạ khoảng bao nhiêu là đậu ngành Vật lý kỹ thuật?",
+        "Ngành nuôi trồng thủy sản lấy điểm cao không?",
+        "Học bạ 25,24 điểm ngành nuôi trồng thủy sản liệu đậu không?",
+        "Sử dụng điểm năng khiếu thể dục thể thao của trường ĐH Đồng Tháp để đăng ký nguyện vọng Giáo dục thể chất trường CTU được không?",
+        "Xét học bạ sư phạm có điều kiện gì không?",
+        "Ngành chăn nuôi năm nay xét học bạ tầm bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 390,
+      "end_idx": 420,
+      "refined_messages": [
+        "Sử dụng điểm năng khiếu thể dục thể thao của trường ĐH Đồng Tháp để đăng kí nguyện vọng Giáo dục thể chất trường CTU được không?",
+        "Điểm học bạ ngành Sư phạm Lịch Sử và Địa Lý sẽ ra sao?",
+        "Điểm chắc của VSAT để vào ngành Quản trị Kinh doanh là bao nhiêu?",
+        "Ngành Luật xét học bạ cần bao nhiêu điểm?",
+        "296 điểm VSAT có thể vào ngành Hóa học không?",
+        "Xét học bạ có cần để nguyện vọng không hay chỉ điền ngành mình chọn?",
+        "Trường xét học bạ có giới hạn trường không?",
+        "243 điểm VSAT có đủ vào 3 ngành Thủy sản không?",
+        "306.5 điểm có đủ vào ngành Quản lý Công nghiệp không?"
+      ]
+    },
+    {
+      "start_idx": 420,
+      "end_idx": 450,
+      "refined_messages": [
+        "Ngành sư phạm mầm non xét học bạ tầm bao nhiêu điểm?",
+        "Khi nào nhận được giấy chứng nhận sau khi thi VSAT CTU?",
+        "Trường đã mở xét học bạ chưa?",
+        "Mất giấy chứng nhận có sao không?",
+        "Thú y thì bao nhiêu điểm là đủ?",
+        "Khi nào trường mới mở xét học bạ?",
+        "Điểm học bạ của trường dao động từ bao nhiêu cho các ngành?",
+        "Xét VSAT có cần nộp giấy chứng nhận không?"
+      ]
+    },
+    {
+      "start_idx": 450,
+      "end_idx": 480,
+      "refined_messages": [
+        "Học bạ 27.54 vào được ngành Ngôn ngữ Anh hoặc Sư phạm Anh không?",
+        "Nộp hồ sơ học bạ là phải lên trường nộp đúng không?",
+        "Kỹ thuật y sinh học bạ 27.46 có khả năng trúng tuyển không?",
+        "23,75 điểm có đủ để vào CTU không?",
+        "Du lịch năm nay thi bao nhiêu là an toàn?",
+        "Có ai tư vấn ngành Thống Kê không?",
+        "Học bạ 28.19 có đủ để xét vào ngành Tài chính Ngân hàng không?",
+        "300 điểm VSAT có đủ vào ngành Kế toán không?",
+        "Bác sĩ thú y cần bao nhiêu điểm để đủ điều kiện trúng tuyển?"
+      ]
+    },
+    {
+      "start_idx": 480,
+      "end_idx": 510,
+      "refined_messages": [
+        "Khoảng ngày mấy có điểm luận của CTU đợt 5?",
+        "360 điểm có khả năng đậu các ngành xét B00 của trường không?",
+        "Xét học bạ sư phạm thể chất cần bao nhiêu điểm đậu?",
+        "Du lịch và sư phạm tiểu học tầm bao nhiêu điểm học bạ là ổn?",
+        "C01 học được ngành nào?",
+        "Quản trị kinh doanh khu Hòa An khác gì với quản trị kinh doanh?",
+        "Điểm hiện giờ có cơ hội cho ngành hóa học không?",
+        "Nếu học ngành hóa học thì sau này học thêm nghiệp vụ sư phạm để dạy cấp 3 được không?",
+        "Sư phạm tiểu học tầm bao nhiêu điểm mới đậu?",
+        "Có ai xét sư phạm hóa của trường không?"
+      ]
+    },
+    {
+      "start_idx": 510,
+      "end_idx": 540,
+      "refined_messages": [
+        "28.19 điểm học bạ ngành Tài chính Ngân hàng hệ đại trà xét học bạ có ổn không?",
+        "Dự định năm nay khoảng bao nhiêu điểm là đỗ sư phạm Hóa?",
+        "Học bạ 24.88 điểm A00 thì xét Quản lý tài nguyên, môi trường có đậu không?",
+        "Truyền thông đa phương tiện khó vào không?",
+        "Logistic năm nay khoảng bao nhiêu điểm?",
+        "VSAT lấy bao nhiêu phần trăm vậy mỗi ngành?",
+        "Hóa dược tầm bao nhiêu điểm?",
+        "381.5 điểm C00 đủ vào báo chí không?",
+        "Sư phạm Toán THPT tầm bao nhiêu điểm là an toàn?",
+        "Xét học bạ là ngày 16/7 đăng ký trên hệ thống phải không?",
+        "Thú y điểm cỡ nhiêu là an toàn?",
+        "VSAT mở xét tuyển sớm hay chung với ghi nguyện vọng trên web bộ?",
+        "Kinh doanh thương mại học bạ tầm bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 540,
+      "end_idx": 570,
+      "refined_messages": [
+        "Sư phạm tiểu học tầm bao nhiêu điểm mới đậu?",
+        "Điều dưỡng khoảng bao nhiêu điểm?",
+        "Học bạ D15 27+ đủ đậu du lịch không?",
+        "Sư phạm lịch sử khoảng bao nhiêu điểm đậu?",
+        "A00, 369 điểm đủ điểm vào tài chính ngân hàng không?",
+        "A00 tầm 28,9 - 29,4 đậu Sư phạm KHTN hoặc T L H không?",
+        "A01 26+ đậu nổi sư phạm không?",
+        "Xét học bạ CTU khoảng ngày mấy và xét làm sao?",
+        "C00 du lịch bao nhiêu là an toàn?",
+        "Điểm quy đổi qua xong nữa so chung với điểm THPT hay sao?"
+      ]
+    },
+    {
+      "start_idx": 570,
+      "end_idx": 600,
+      "refined_messages": [
+        "Điểm tuyển sinh mỗi năm có thay đổi không hay cố định?",
+        "Điểm A00 bao nhiêu là an toàn?",
+        "Điểm D01 cho ngành sư phạm tiểu học bao nhiêu thì ổn?",
+        "Điểm D07 bao nhiêu là ổn?",
+        "Điểm học bạ ngành quản trị kinh doanh bao nhiêu là an toàn?",
+        "VSAT có lấy 20% chỉ tiêu mỗi ngành không?",
+        "Sư phạm mầm non có thể thi năng khiếu ở trường khác không?",
+        "Toán ứng dụng học ngành sư phạm có thể đi dạy cấp 3 không?",
+        "Khi nào đăng ký xét học bạ?",
+        "Điểm chuẩn ngành tâm lý học giáo dục khi nào có?",
+        "Điểm học bạ ngành quản lý đất đai tầm bao nhiêu là ổn?"
+      ]
+    },
+    {
+      "start_idx": 600,
+      "end_idx": 630,
+      "refined_messages": [
+        "Bên trường xét học bạ 6 kỳ hay chỉ lớp 12 thôi?",
+        "Ngành công nghệ thực phẩm khoảng bao nhiêu điểm VSAT thì an toàn?",
+        "Điểm học bạ đi sư phạm cỡ bao nhiêu thì an toàn?",
+        "C00 du lịch học bạ bao nhiêu thì ổn?",
+        "GDMN thì VSAT 2 môn tầm nhiêu là an toàn?",
+        "Điểm VSAT tính như thế nào và nếu tính thêm điểm THPTQG thì tính chung sẽ như thế nào?",
+        "VSAT ngôn ngữ Anh cỡ 350 an toàn không?"
+      ]
+    },
+    {
+      "start_idx": 630,
+      "end_idx": 660,
+      "refined_messages": [
+        "SP mầm non có xét học bạ không?",
+        "Du Lịch Quản Trị khách sạn bao nhiêu điểm?",
+        "Mình đổ học bạ mà trượt THPT thì vẫn đậu được không?",
+        "26,72 điểm học bạ đậu được ngành nào khối A01 không?",
+        "Trường có lấy điểm thi năng khiếu mầm non của trường khác để xét không?",
+        "Xét học bạ tất cả các ngành luôn không?",
+        "26+ điểm đủ đậu sư phạm không?",
+        "Kĩ thuật xây dựng mọi người nghĩ tăng bao nhiêu điểm với xét học bạ nhỉ?"
+      ]
+    },
+    {
+      "start_idx": 660,
+      "end_idx": 690,
+      "refined_messages": [
+        "Học bạ 29,1 thì có vào sư phạm Lý được không?",
+        "27 điểm có đủ vào CTU năm nay không?",
+        "Xét học bạ sư phạm có điều kiện gì không?",
+        "Học bạ bao nhiêu thì đậu sư phạm Toán?",
+        "Ví dụ thi được 26 điểm mà ngành đó 27 điểm nhưng học bạ đủ thì có đậu không?",
+        "Xét học bạ vào CTU như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 690,
+      "end_idx": 720,
+      "refined_messages": [
+        "Học bạ thường bao nhiêu sẽ đỗ CNTP?",
+        "Học bạ 28,56 A00 thì có thể đỗ sư phạm lý hay sư phạm tiểu học không?"
+      ]
+    },
+    {
+      "start_idx": 720,
+      "end_idx": 750,
+      "refined_messages": [
+        "Trường mình xét 6 học kỳ hay 3 năm?",
+        "Giáo dục thể chất thì xét bao nhiêu điểm là ổn?",
+        "Học bạ xét ở đâu?",
+        "Thi năng khiếu xong rồi tính điểm sao?",
+        "Mình xét 6 học kỳ đúng không?",
+        "Khi nào xét học bạ?",
+        "Mấy bạn sư phạm Lý xét học bạ hết không?",
+        "Sư phạm Tiểu học có xét học bạ không?",
+        "6 học kỳ là lớp 10, 11 hay 11, 12?",
+        "Mấy bạn sư phạm Lý điểm xét tuyển sao rồi?"
+      ]
+    },
+    {
+      "start_idx": 750,
+      "end_idx": 780,
+      "refined_messages": [
+        "Ngôn ngữ Anh học bạ tầm bao nhiêu điểm xét ổn vậy?",
+        "Xét học bạ là điểm trung bình cả năm 3 lớp hay xét 6 học kỳ?",
+        "SPMM có cần 3 năm học sinh giỏi không?",
+        "28 điểm học bạ đủ đậu công nghệ ô tô không?"
+      ]
+    },
+    {
+      "start_idx": 810,
+      "end_idx": 840,
+      "refined_messages": [
+        "Muốn vào sư phạm Cần Thơ có cần 3 năm học sinh giỏi không?",
+        "Em muốn vào ngôn ngữ Anh bằng hình thức xét học bạ nhưng tiếng Anh còn yếu thì năm đầu trường có dạy lại từ căn bản không?",
+        "Học bạ 26+ có khả năng đậu ngành du lịch không?",
+        "24,65 điểm có đậu ngành AI không?",
+        "Có môn khá có thể xét học bạ không?",
+        "Xét điểm THPT thì có cần điều kiện gì không?",
+        "Kinh tế nông nghiệp mọi năm điểm có thất thường không?",
+        "Học bạ 27+ có đậu ngành truyền thông hoặc marketing không?",
+        "Học bạ 26+ có khả năng đậu ngành thú y không?"
+      ]
+    },
+    {
+      "start_idx": 870,
+      "end_idx": 900,
+      "refined_messages": [
+        "Kế toán trường có tổ hợp môn gì?",
+        "Học bạ nào mới nộp được?",
+        "333 điểm VSAT có khả năng đậu ngành bán dẫn không?",
+        "24,65 điểm A01 có vào được ngành AI hay ngành nào công nghệ không?",
+        "Cần Thơ xét học bạ như thế nào?",
+        "Trường đã mở xét học bạ chưa?",
+        "Cho xin đánh giá về ngành quản trị du lịch?",
+        "300 điểm D01 thi VSAT có cao không?",
+        "Có ai học ngành cơ điện tử tư vấn giúp em với?"
+      ]
+    },
+    {
+      "start_idx": 900,
+      "end_idx": 930,
+      "refined_messages": [
+        "Ngành thương mại điện tử là ngành mới, liệu có đủ chỉ tiêu không?",
+        "Với 24,65 điểm A01 có thể vào ngành AI hay ngành công nghệ nào không?",
+        "Ngành Sư phạm Cần Thơ cần bao nhiêu điểm để vào được?",
+        "Với 340 điểm A00 VSAT có đủ đậu Sư phạm Hóa không?",
+        "Trường đã mở xét học bạ chưa?",
+        "Năm 12 không được học sinh giỏi thì xét học bạ được không?",
+        "Khi nào Đại học Cần Thơ mở cổng nhận học bạ xét tuyển?"
+      ]
+    },
+    {
+      "start_idx": 960,
+      "end_idx": 990,
+      "refined_messages": [
+        "Trường có chia chỉ tiêu ra xét không, hay tất cả phương thức đều xét chung?",
+        "Thi xong điểm VSAT đổi về thang 30 hay xét thang 450?",
+        "24,65 điểm A01 có vào được ngành AI hay ngành công nghệ nào không?",
+        "Trường có xét học bạ không?"
+      ]
+    },
+    {
+      "start_idx": 990,
+      "end_idx": 1020,
+      "refined_messages": [
+        "Xét học bạ CTU xét 6 học kỳ hay sao?"
+      ]
+    },
+    {
+      "start_idx": 1050,
+      "end_idx": 1080,
+      "refined_messages": [
+        "Trường có chia chỉ tiêu ra xét không, hay tất cả phương thức đều xét chung?",
+        "Với 313,5 điểm VSAT còn hy vọng nào cho ngành truyền thông đa phương tiện hay ngôn ngữ Anh không?",
+        "Thi V_SAT đợt 4 bên Đại học ĐT xét bên Đại học Cần Thơ được không?",
+        "Sư phạm mầm non có yêu cầu học sinh giỏi không?"
+      ]
+    },
+    {
+      "start_idx": 1140,
+      "end_idx": 1170,
+      "refined_messages": [
+        "Năm nay sư phạm mầm non lấy khoảng bao nhiêu điểm?",
+        "Từ tỉnh khác qua học sư phạm thì có được hưởng nghị định 116 không?",
+        "Sư phạm mầm non năm nay có lấy điểm năng khiếu của trường khác để xét không?"
+      ]
+    },
+    {
+      "start_idx": 1230,
+      "end_idx": 1260,
+      "refined_messages": [
+        "Dưới đây là danh sách các câu hỏi liên quan đến chương trình tuyển sinh đại học của Đại học Cần Thơ năm 2025:",
+        "Thi toán ở Đồng Tháp và văn anh ở Cần Thơ có được không?",
+        "Thi VSAT nhiều lần thì lấy điểm cao nhất mỗi môn hay chỉ được chọn điểm của một lần thi?",
+        "Xét điểm VSAT là lấy tổng của môn cao nhất hay tổng của đợt cao nhất?",
+        "Khi nào trường xét học bạ và điểm học bạ cỡ bao nhiêu mới đậu?",
+        "Thi VSAT ở Đồng Tháp thì có thể sử dụng để xét tuyển vào Đại học Cần Thơ không?",
+        "Khi nào đăng ký nguyện vọng VSAT?"
+      ]
+    },
+    {
+      "start_idx": 1290,
+      "end_idx": 1320,
+      "refined_messages": [
+        "Xét điểm VSAT là lấy tổng của môn cao nhất hay là tổng của đợt cao nhất?",
+        "Điểm SAT năm nay có xét ngành Văn học không?"
+      ]
+    },
+    {
+      "start_idx": 1320,
+      "end_idx": 1350,
+      "refined_messages": [
+        "Học phí của Đại học Cần Thơ có rẻ không?",
+        "Học phí các ngành tại Đại học Cần Thơ có chênh lệch nhiều không?",
+        "Ngành nào có học phí 30 triệu một năm?",
+        "Mỗi năm học phí có tăng không?"
+      ]
+    },
+    {
+      "start_idx": 1350,
+      "end_idx": 1380,
+      "refined_messages": [
+        "26 điểm khối C00 có đỗ ngành Chính trị không?",
+        "Xét học bạ 26,2 điểm có thể xét vào ngành nào ở Đại học Cần Thơ?",
+        "Đăng ký xét tuyển vào chương trình VSAT của Đại học Cần Thơ bằng cách nào?",
+        "Muốn đỗ ngành Chính trị thì cần điểm thi THPT bao nhiêu là ổn?"
+      ]
+    },
+    {
+      "start_idx": 1380,
+      "end_idx": 1410,
+      "refined_messages": [
+        "Hình thức xét tuyển ngành sư phạm có qua xét học bạ không?",
+        "Học bạ chỉ tiêu bao nhiêu phần trăm?",
+        "Điểm học bạ quy đổi như thế nào?",
+        "Điểm thi và điểm năng khiếu như thế nào thì đủ đậu vào ngành mầm non?"
+      ]
+    },
+    {
+      "start_idx": 1440,
+      "end_idx": 1470,
+      "refined_messages": [
+        "Hồ sơ xét học bạ gồm những gì?"
+      ]
+    },
+    {
+      "start_idx": 1470,
+      "end_idx": 1500,
+      "refined_messages": [
+        "Nna xét học bạ như thế nào?",
+        "Thi VSAT đợt 7 ở Đại học Đồng Tháp có xét được vào CTU không?",
+        "VSAT 343 điểm có xét vào ngành báo chí được không?",
+        "VSAT chỉ cho đặt 5 nguyện vọng thôi phải không?",
+        "Học bạ 25.83 khối D01 có khả năng đậu ngành nào?"
+      ]
+    },
+    {
+      "start_idx": 1500,
+      "end_idx": 1530,
+      "refined_messages": [
+        "24 điểm đậu được ngành nào không?",
+        "A00 học bạ 26,6 điểm chưa tính vùng đậu được ngành nào ổn không?",
+        "Học bạ hơn 26 điểm một chút có xét được ngành NNA không?"
+      ]
+    },
+    {
+      "start_idx": 1530,
+      "end_idx": 1560,
+      "refined_messages": [
+        "Ngành sư phạm lý thì sao ạ?",
+        "Thi THPT thấp có bị kéo điểm VSAT không?",
+        "Điểm VSAT được tính như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 1560,
+      "end_idx": 1590,
+      "refined_messages": [
+        "A01 24,87 xét ngành nào được?",
+        "Chừng nào trường mở cổng sơ tuyển?",
+        "Đợt 5 này bao nhiêu ngày có điểm trên web?"
+      ]
+    },
+    {
+      "start_idx": 1590,
+      "end_idx": 1620,
+      "refined_messages": [
+        "Học bạ A00 tầm 28,9 tới 29,4 có đậu được sư phạm T L H hoặc KHTN không?",
+        "Năm nay có thể học bạ giảm không?",
+        "Chung hội đồng là sao?"
+      ]
+    },
+    {
+      "start_idx": 1620,
+      "end_idx": 1650,
+      "refined_messages": [
+        "VSAT sư phạm năm nay điểm cỡ nhiêu?",
+        "CTU có chỉ xét được điểm cao nhất trong các đợt thi của một hội đồng không?",
+        "Kỹ thuật xây dựng công trình thủy lấy bao nhiêu điểm?",
+        "Ngành nông nghiệp có xét chung điểm không?",
+        "Ngành ngôn ngữ có xét C00 không?"
+      ]
+    },
+    {
+      "start_idx": 1650,
+      "end_idx": 1680,
+      "refined_messages": [
+        "Vsat năm nay quy về thang 30 phải không?",
+        "Điểm học bạ của Cần Thơ với Đồng Tháp thì trường nào cao hơn?",
+        "Ngành KTPM năm nay Vsat bao nhiêu thì an toàn?",
+        "CTU xét học bạ trái tổ hợp mình chọn được không?",
+        "NNA Vsat năm nay bao nhiêu thì ổn?",
+        "Nếu đậu NV3 của CTU và NV1 của CTUT thì có được chọn CTUT không?",
+        "Khi nào CTU xét học bạ?",
+        "Điểm học bạ thường thì so ra ở đâu cao hơn?",
+        "CTUT là trường gì?"
+      ]
+    },
+    {
+      "start_idx": 1680,
+      "end_idx": 1710,
+      "refined_messages": [
+        "CTU với DTH thì tính điểm học bạ bên nào dễ hơn?",
+        "Nếu đặt 2 nguyện vọng, nguyện vọng 1 rớt và nguyện vọng 2 đậu thì có cơ hội xét không hay ưu tiên nguyện vọng 1?",
+        "CTU có phổ điểm VSAT không?",
+        "Khi nào CTU xét học bạ?",
+        "Đăng ký một trường nhiều nguyện vọng được không? Nếu đậu nhiều trường thì có được chọn không?",
+        "Ngành an toàn thông tin tại CTU có tốt không?"
+      ]
+    },
+    {
+      "start_idx": 1710,
+      "end_idx": 1740,
+      "refined_messages": [
+        "Trường sẽ lấy bao nhiêu % chỉ tiêu từ Vsat?",
+        "Mỗi ngành có chỉ tiêu Vsat khác nhau không?",
+        "Đặt nguyện vọng của Vsat với THPTQG có phải cùng một cái không?",
+        "Khối A01 học bạ 25,27 có đậu ngành truyền thông đa phương tiện không?",
+        "Khối A02 27,46 có đậu ngành kỹ thuật y sinh không?",
+        "C01 340 Vsat có đậu sư phạm tiểu học không?",
+        "Xét học bạ có chia hệ trường chuyên với trường thường không?",
+        "CTU xét học bạ (A01) trái tổ hợp mình chọn (D01) được không?",
+        "Em tốt nghiệp cao đẳng QTKD có liên thông kế toán hệ vừa học vừa làm được không?"
+      ]
+    },
+    {
+      "start_idx": 1770,
+      "end_idx": 1800,
+      "refined_messages": [
+        "Nên học chương trình chất lượng cao hay đại trà?",
+        "Có nên chọn ngành An toàn thông tin ở CTU hơn CTUT không?",
+        "Trường có xét ưu tiên tỉnh không?",
+        "Chương trình chất lượng cao đầu vào dễ, đầu ra khó có phải không?"
+      ]
+    },
+    {
+      "start_idx": 1800,
+      "end_idx": 1830,
+      "refined_messages": [
+        "Năm nay CTU xét điểm như thế nào?",
+        "Bằng chất lượng cao có giống với bằng đại trà không?",
+        "Học phí của chương trình chất lượng cao là bao nhiêu?",
+        "Chương trình chất lượng cao có học hoàn toàn bằng tiếng Anh không?"
+      ]
+    },
+    {
+      "start_idx": 1860,
+      "end_idx": 1890,
+      "refined_messages": [
+        "Điểm chuẩn học bạ của CTU và ĐThU năm nay có hạ không?",
+        "Có ai có điểm chuẩn của Đại học Cần Thơ năm rồi không (ngành sư phạm)?",
+        "Hình thức xét tuyển học bạ của Đại học Cần Thơ là như thế nào?",
+        "Điểm học bạ ngành sư phạm Anh năm nay có tăng không?"
+      ]
+    },
+    {
+      "start_idx": 1920,
+      "end_idx": 1950,
+      "refined_messages": [
+        "Thi năng khiếu mầm non có mấy phần thi? Phần hát được tự chọn hay bốc thăm?",
+        "Chương trình chất lượng cao ngành TC-NH có xét tuyển tổ hợp A00 không?",
+        "Học bạ 28+ có thể vào sư phạm hóa hoặc khoa học tự nhiên không?",
+        "Ngành thủy sản cần bao nhiêu điểm?",
+        "VSAT năm nay lấy bao nhiêu phần trăm?",
+        "Điểm an toàn để vào sư phạm tin là bao nhiêu?",
+        "Xét điểm VSAT THPT hay học bạ như thế nào?",
+        "Học bạ 26,2 KV2NT có đậu ngành kỹ thuật điện không?",
+        "Điểm an toàn để đậu công nghệ thực phẩm chương trình chất lượng cao là bao nhiêu?",
+        "Không thi một môn nhưng vẫn xét tuyển được không?"
+      ]
+    },
+    {
+      "start_idx": 1980,
+      "end_idx": 2010,
+      "refined_messages": [
+        "Thủy sản thì học bạ tầm bao nhiêu điểm là ổn?",
+        "Ngành em chọn đặt ra chỉ tiêu là 180, có chia % ra theo từng phương thức riêng không hay là một cái là thi THPT với cái còn lại là phương thức khác?",
+        "Mọi năm là công bố điểm trước hay sau khi thi?",
+        "Nuôi trồng thủy sản THPT tầm bao nhiêu điểm?",
+        "Học bạ từ 26+ có khả năng đậu CTU không?",
+        "Học bạ 28,1 điểm đậu khoa học máy tính không?"
+      ]
+    },
+    {
+      "start_idx": 2040,
+      "end_idx": 2070,
+      "refined_messages": [
+        "Điểm chuẩn thi THPT là bao nhiêu?",
+        "Xét học bạ 3 năm hay chỉ năm 12?",
+        "Nếu thấp hơn điểm chuẩn thì có vào được ngành đó không?",
+        "Điểm học bạ 28+ có cơ hội không?",
+        "Nếu đúng điểm chuẩn thì có chắc đậu không?",
+        "Xét tổ hợp A01 với 26.6 điểm được không?",
+        "Ngành sư phạm Văn học bạ 26.03 điểm C00 liệu có rớt không?"
+      ]
+    },
+    {
+      "start_idx": 2280,
+      "end_idx": 2310,
+      "refined_messages": [
+        "Học bạ và VSAT sư phạm Anh cần bao nhiêu điểm?",
+        "D01 được 28,04 điểm thì có thể xét sư phạm Tiếng Anh không?",
+        "Chỉ tiêu tuyển sinh sư phạm Tiếng Anh là bao nhiêu?",
+        "Điểm chuẩn sư phạm Tiếng Anh năm trước là bao nhiêu?",
+        "Điểm chuẩn sư phạm Tiếng Anh năm nay có hạ không?"
+      ]
+    },
+    {
+      "start_idx": 2460,
+      "end_idx": 2490,
+      "refined_messages": [
+        "Trường có mở nhận hồ sơ xét tuyển thẳng chưa?"
+      ]
+    },
+    {
+      "start_idx": 2490,
+      "end_idx": 2520,
+      "refined_messages": [
+        "Thú y cần điểm cao không?",
+        "Còn xét học bạ không?",
+        "Đăng ký thi giáo dục mầm non ở đâu?",
+        "Chương trình chất lượng cao khác gì so với bình thường và tại sao điểm xét tuyển cần thấp hơn bình thường?",
+        "Năm nay xét tuyển ngành du lịch như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 2520,
+      "end_idx": 2550,
+      "refined_messages": [
+        "Năm nay xét sư phạm có cần 3 năm học sinh giỏi không?",
+        "Xét học bạ sau khi thi là như thế nào?",
+        "Ngành Ngôn ngữ Anh năm nay Đại học Cần Thơ lấy điểm cao không?"
+      ]
+    },
+    {
+      "start_idx": 2550,
+      "end_idx": 2580,
+      "refined_messages": [
+        "Mình có thể lấy điểm thi năng khiếu ở trường khác về CTU được không?",
+        "Mình không được học sinh giỏi 3 năm thì có thể học sư phạm mầm non tại CTU không?",
+        "Công nghệ thông tin thi tầm bao nhiêu điểm là đậu?",
+        "Sư phạm Anh tại CTU có xét học bạ không?",
+        "Khi nào CTU mở cổng xét tuyển học bạ?",
+        "CTU đã xét học bạ chưa?"
+      ]
+    },
+    {
+      "start_idx": 2580,
+      "end_idx": 2610,
+      "refined_messages": [
+        "Điểm VSAT bao nhiêu có thể đậu Luật Kinh tế?",
+        "Ngành Hóa khoảng 26+ học bạ có khả năng không?",
+        "Cách tính học bạ như thế nào?",
+        "Du lịch năm nay học bạ bao nhiêu là ổn?",
+        "Vật lí kỹ thuật năm nay điểm học bạ khoảng bao nhiêu là ok?",
+        "Ngành Sư phạm Lịch sử - Địa lý khoảng nhiêu điểm?",
+        "Công nghệ thực phẩm học bạ nhiêu là ổn?",
+        "Mình đăng ký gửi bảng điểm VSAT qua bưu điện để làm gì?",
+        "Bảng điểm là mình tự đi lấy hả bạn?",
+        "Năm nay không biết có giảm điểm không?"
+      ]
+    },
+    {
+      "start_idx": 2610,
+      "end_idx": 2640,
+      "refined_messages": [
+        "Thời gian đăng ký học bạ là khi nào?",
+        "CTU năm nay xét học bạ 6 kỳ hay 3 năm?",
+        "Xét học bạ trên web phải không?",
+        "Sử dụng điểm thi VSAT kết hợp giữa Cần Thơ và Đồng Tháp có được không?",
+        "Ngành Sư phạm Mầm non có cần 3 năm học sinh giỏi không?",
+        "Cần khoảng bao nhiêu điểm học bạ để được xét tuyển?",
+        "\"Điểm ưu tiên xác định thông thường\" là gì?",
+        "D01 thì xét học bạ khoảng bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 2640,
+      "end_idx": 2670,
+      "refined_messages": [
+        "Sư phạm Toán Đại học Cần Thơ năm sau có xét VSAT không?",
+        "Công nghệ Sinh học cần bao nhiêu điểm?",
+        "Thi nhiều đợt thì lấy điểm cao nhất của môn hay đợt điểm cao nhất?",
+        "A00 xét học bạ bao nhiêu?",
+        "Sư phạm Lý xét khoảng bao nhiêu điểm?",
+        "Tài chính ngân hàng xét điểm THPT bao nhiêu?",
+        "Trường khi nào nhận hồ sơ học bạ?",
+        "Xét điểm THPT là tầm bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 2670,
+      "end_idx": 2700,
+      "refined_messages": [
+        "25,8 điểm học bạ chưa cộng điểm vùng có an toàn vào ngành hệ thống thông tin chất lượng cao không?",
+        "Công nghệ thực phẩm học bạ khối B00 với 26,75 điểm có thể đậu không?",
+        "Vsat lấy bao nhiêu phần trăm trên tổng chỉ tiêu?",
+        "Ngành ngôn ngữ Pháp học bạ 22-23 điểm có thể đậu không?",
+        "320 điểm D01 thì có vào được ngành ngôn ngữ Anh không?",
+        "Khi nào trường gửi giấy điểm Vsat?",
+        "Giáo dục thể chất học bạ 27 điểm có ổn không?"
+      ]
+    },
+    {
+      "start_idx": 2700,
+      "end_idx": 2730,
+      "refined_messages": [
+        "Điểm học bạ 22.6 thì nên chọn những ngành nào?",
+        "Với 329 điểm VSAT và khối A01 có vào được ngành tự động hoá không?",
+        "Có ngành nào về mảng kinh tế không?",
+        "Điểm học bạ 23 điểm có đủ vào ngành kinh tế hay thủy sản không?",
+        "Khu Hòa An là khu ở đâu?",
+        "Ngành nuôi trồng thủy sản năm ngoái lấy bao nhiêu điểm?",
+        "Năm nay cơ điện tử thi THPTQG tầm bao nhiêu điểm?",
+        "Điểm của các ngành xem ở đâu?"
+      ]
+    },
+    {
+      "start_idx": 2730,
+      "end_idx": 2760,
+      "refined_messages": [
+        "Học phí ngành Ngôn ngữ Anh bao nhiêu?",
+        "Học bạ 26,1 điểm đủ đậu ngành Logistics không?",
+        "Ngành Kinh tế năm trước xét học bạ lấy bao nhiêu điểm? Em 28,25 có khả năng không?",
+        "20 điểm có đậu được ngành Thủy sản không?",
+        "Phương thức xét học bạ ngành Sư phạm Tiểu học là lấy 3 năm đúng không?"
+      ]
+    },
+    {
+      "start_idx": 2760,
+      "end_idx": 2790,
+      "refined_messages": [
+        "Khối B00 xét được ngành nào của trường?",
+        "Trường đã mở xét học bạ chưa?",
+        "Điểm ưu tiên được áp dụng cho khu vực nào?",
+        "Điểm xét học bạ ngành Giáo dục Thể chất là bao nhiêu?",
+        "Có phân biệt giữa trường chuyên và trường thường khi xét học bạ không? Trường chuyên có được cộng điểm thêm không?",
+        "Điểm VSAT A01 270 đủ đậu ngành kinh tế nào không?",
+        "Điểm cần thiết để đậu ngành Quản trị Du lịch và Lữ hành là bao nhiêu?",
+        "Điểm VSAT cần thiết để xét ngành Tài chính Ngân hàng là bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 2790,
+      "end_idx": 2820,
+      "refined_messages": [
+        "Trường có ngành ngôn ngữ Trung không?",
+        "An toàn thực phẩm học bạ 25,06 điểm có an toàn không? Điểm cách năm ngoái khoảng bao nhiêu?",
+        "Khoa học máy tính và an toàn thông tin điểm chuẩn như thế nào?",
+        "Thi VSAT có được cộng điểm ưu tiên không?",
+        "243 điểm VSAT đủ vào ngành thủy sản không?",
+        "370 điểm VSAT đủ vào ngành kỹ thuật hóa học không?",
+        "Cách quy đổi điểm từ thang 450 sang thang 30 như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 2820,
+      "end_idx": 2850,
+      "refined_messages": [
+        "Học bạ có cộng điểm ưu tiên không?",
+        "Khi nào mới đăng ký xét tuyển được?",
+        "Học bạ tầm bao nhiêu xét NTTS?",
+        "Thi VSAT Đại học Đồng Tháp xét Đại học Cần Thơ được không?",
+        "Trường cho đặt tối đa bao nhiêu nguyện vọng?",
+        "Trường mở cổng xét học bạ chưa?"
+      ]
+    },
+    {
+      "start_idx": 2850,
+      "end_idx": 2880,
+      "refined_messages": [
+        "Trường có ngành nhiệt lạnh hoặc liên quan đến máy lạnh không?",
+        "Với tổ hợp B08, đủ điểm xét vào ngành kỹ thuật y sinh không?",
+        "Năm nay có thể dùng môn khác ngoài 4 môn bắt buộc và tự chọn để xét học bạ không?",
+        "Ngành công nghệ thực phẩm xét học bạ bao nhiêu điểm?",
+        "Ngành du lịch xét học bạ có cao không?",
+        "Điểm tốt nghiệp có ảnh hưởng đến VSAT không?"
+      ]
+    },
+    {
+      "start_idx": 2880,
+      "end_idx": 2910,
+      "refined_messages": [
+        "Hệ giáo dục thường xuyên có được xét học bạ vào sư phạm không?",
+        "313,5 điểm có vào ngành truyền thông được không so với chuẩn năm trước thiếu 4,5 điểm?"
+      ]
+    },
+    {
+      "start_idx": 2910,
+      "end_idx": 2940,
+      "refined_messages": [
+        "SP Toán VSAT tầm bao nhiêu điểm?",
+        "Điểm cộng ưu tiên tính như thế nào?",
+        "Học bạ Sư phạm Anh tầm bao nhiêu điểm thì ổn?"
+      ]
+    },
+    {
+      "start_idx": 2970,
+      "end_idx": 3000,
+      "refined_messages": [
+        "Logicstic điểm chuẩn bao nhiêu?",
+        "Điểm chuẩn học bạ là điểm của từng khối riêng hay cả mấy tổ hợp lấy cho một ngành từ cao xuống thấp?",
+        "Sư phạm có cần 3 năm học sinh giỏi không?",
+        "Điểm học bạ 23 có đậu triết năm nay không?",
+        "Công nghệ thông tin năm trước bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 3000,
+      "end_idx": 3030,
+      "refined_messages": [
+        "Năng khiếu diễn ra vào mấy đợt?",
+        "Năm nay điểm VSAT quy ra thang điểm 30 phải không?",
+        "Cho em xin ít feedback ngành kỹ thuật công trình thủy với ạ?"
+      ]
+    },
+    {
+      "start_idx": 3030,
+      "end_idx": 3060,
+      "refined_messages": [
+        "Nếu ngành ít người xét thì điểm chuẩn có hạ không hay căn cứ theo điểm của các bạn xét?",
+        "Học bạ 25 điểm có thể đậu ngành kinh tế nông nghiệp không?",
+        "Ngành hướng dẫn viên du lịch xét D01 được không?",
+        "Trường khi nào thi năng khiếu mầm non?",
+        "Học bạ 28,3 có nên xét sư phạm toán lý hóa không?",
+        "Cách tính điểm học bạ như thế nào?",
+        "Thi năng khiếu mầm non năm nay có hát không?",
+        "VSAT C00 300+ có cơ hội vào tâm lý học giáo dục hay xã hội học không?",
+        "Khối A00 học bạ 25 có thể đậu ngành kinh tế nông nghiệp không?",
+        "Thi VSAT hoặc năng khiếu trường khác mà xét CTU được không?",
+        "Khi nào CTU mở xét học bạ?"
+      ]
+    },
+    {
+      "start_idx": 3060,
+      "end_idx": 3090,
+      "refined_messages": [
+        "Điểm Vsat có đổi về thang điểm 10 theo THPT không?",
+        "Điểm học sinh giỏi cấp tỉnh được cộng nếu tổ hợp xét có môn đó không?",
+        "Có cộng điểm học sinh giỏi vào học bạ không?",
+        "Học sinh giỏi 3 năm được cộng điểm không?",
+        "Có giải thích nào về cách cộng điểm cho các giải cấp tỉnh không?"
+      ]
+    },
+    {
+      "start_idx": 3150,
+      "end_idx": 3180,
+      "refined_messages": [
+        "Nếu 3 năm không giỏi liên tục thì không được xét sư phạm phương thức học bạ thôi đúng không? Còn phương thức lấy điểm thi THPT thì không cần điều kiện 3 năm giỏi hay sao?",
+        "VSAT có cần điều kiện 3 năm giỏi không? Hay chỉ xét học bạ?"
+      ]
+    },
+    {
+      "start_idx": 3240,
+      "end_idx": 3270,
+      "refined_messages": [
+        "Ngành kinh tế dự kiến bao nhiêu điểm?",
+        "Ngành kế toán khoảng bao nhiêu điểm thì đậu?"
+      ]
+    },
+    {
+      "start_idx": 3270,
+      "end_idx": 3300,
+      "refined_messages": [
+        "Khi nào CTU mở xét học bạ?",
+        "Điểm chuẩn các ngành kỹ thuật khoảng bao nhiêu?",
+        "Khi nào có điểm chuẩn xét tuyển năm 2025?",
+        "Xét học bạ là xét môn chọn hay xét hết?",
+        "Đại học Cần Thơ xét tuyển có phân tổ hợp ra không hay gộp chung?"
+      ]
+    },
+    {
+      "start_idx": 3300,
+      "end_idx": 3330,
+      "refined_messages": [
+        "Học bạ 25 điểm A00 có xét được ngành gì không?",
+        "Xét học bạ mấy kỳ vậy?",
+        "Bao nhiêu điểm là an toàn?"
+      ]
+    },
+    {
+      "start_idx": 3330,
+      "end_idx": 3360,
+      "refined_messages": [
+        "28.13 điểm có an toàn vào ngành Hệ thống thông tin chất lượng cao không?",
+        "370 điểm có vào được ngành Vi mạch bán dẫn không?",
+        "Có ai biết cách tính điểm cộng không ạ?",
+        "Điểm khu vực với điểm dân tộc tính như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 3390,
+      "end_idx": 3420,
+      "refined_messages": [
+        "Ngành ATT ở CTU có xét học bạ không?"
+      ]
+    },
+    {
+      "start_idx": 3480,
+      "end_idx": 3510,
+      "refined_messages": [
+        "Thi VSAT Đồng Tháp có dùng điểm đó để xét vào Đại học Cần Thơ không?",
+        "Điểm học bạ của ngành sư phạm Vật lý hay sư phạm Anh văn sẽ cao hơn?"
+      ]
+    },
+    {
+      "start_idx": 3540,
+      "end_idx": 3570,
+      "refined_messages": [
+        "Cho em hỏi học bạ 27,6 với VSat 379 nên xét cái nào ạ?"
+      ]
+    },
+    {
+      "start_idx": 3930,
+      "end_idx": 3960,
+      "refined_messages": [
+        "Ngành Tâm lý học giáo dục năm đầu tiên thì điểm chuẩn có khả năng thấp không?"
+      ]
+    },
+    {
+      "start_idx": 4110,
+      "end_idx": 4140,
+      "refined_messages": [
+        "A00 với 27+ điểm học bạ có cơ hội đậu truyền thông đa phương tiện không?",
+        "Ngành phát triển nông thôn ra làm gì?",
+        "Điểm chuẩn cấp thoát nước tầm bao nhiêu?",
+        "Với 29,5 điểm có hy vọng vào sư phạm toán không?"
+      ]
+    },
+    {
+      "start_idx": 4170,
+      "end_idx": 4200,
+      "refined_messages": [
+        "CTU xét tuyển dựa trên 6 học kỳ hay tổng của 3 năm?",
+        "Ngành Sư phạm Chính Trị cần bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 4260,
+      "end_idx": 4290,
+      "refined_messages": [
+        "Công nghệ sinh học khác Công nghệ sinh học (CTTT) chỗ nào?"
+      ]
+    },
+    {
+      "start_idx": 4290,
+      "end_idx": 4320,
+      "refined_messages": [
+        "Công nghệ sinh học khác Công nghệ sinh học (CTTT) chỗ nào?"
+      ]
+    },
+    {
+      "start_idx": 4350,
+      "end_idx": 4380,
+      "refined_messages": [
+        "Thi năng khiếu GDMN bên ĐTU có lấy kết quả để xét vào CTU được không?",
+        "Học bạ 27+ không xét sư phạm, xét khối A00 mấy ngành kỹ thuật có ổn không?"
+      ]
+    },
+    {
+      "start_idx": 4380,
+      "end_idx": 4410,
+      "refined_messages": [
+        "Học bạ 27,1 muốn vào Kinh doanh quốc tế CLC được không?",
+        "Học bạ 25,66 C00 vào được ngành gì không?",
+        "Năm nay trường tăng chỉ tiêu không?",
+        "Trường đã mở xét học bạ chưa?",
+        "Không được 3 năm học sinh giỏi có xét học bạ Giáo dục mầm non được không?",
+        "C20 với 24,8 điểm có thể học được ngành gì?"
+      ]
+    },
+    {
+      "start_idx": 4410,
+      "end_idx": 4440,
+      "refined_messages": [
+        "Có xét học bạ trường THPT không chuyên không?",
+        "Xét học bạ ngành luật có cần chỉ xét những môn trong khối D01 không?",
+        "Thi năng khiếu mầm non lấy điểm 10 được không?"
+      ]
+    },
+    {
+      "start_idx": 4440,
+      "end_idx": 4470,
+      "refined_messages": [
+        "Đại học Cần Thơ có nhận kết quả thi năng khiếu từ trường khác không?",
+        "Làm sao để đăng ký xét học bạ?"
+      ]
+    },
+    {
+      "start_idx": 4470,
+      "end_idx": 4500,
+      "refined_messages": [
+        "Thời hạn nộp học bạ là khi nào để được xét tuyển?",
+        "Tại sao không có khối A00 trong khi tờ xét tuyển nhận được lại có khối A00 (CLC + Thường)?",
+        "Điểm ngành kỹ thuật điện năm ngoái là bao nhiêu? Nếu học bạ A00 được 26,37 thì có khả năng đậu không?",
+        "Có ngành nào không có khối A00 không?"
+      ]
+    },
+    {
+      "start_idx": 4500,
+      "end_idx": 4530,
+      "refined_messages": [
+        "CTU có xét học bạ lần nào chưa hay đợt tới mới là đợt đầu?",
+        "Ngành logistic xét tổ hợp TH5 với 27.7 điểm có đậu không?",
+        "Kĩ thuật điện với điểm thi VSAT 354,5 có an toàn không?",
+        "Có khối A00 cho tất cả các ngành không?"
+      ]
+    },
+    {
+      "start_idx": 4530,
+      "end_idx": 4560,
+      "refined_messages": [
+        "Ngành du lịch và quản trị dịch vụ du lịch và lữ hành khác nhau như thế nào?",
+        "Học bạ khối A00 thì nên học ngành gì ở CTU?"
+      ]
+    },
+    {
+      "start_idx": 4560,
+      "end_idx": 4590,
+      "refined_messages": [
+        "Có xét tuyển tổ hợp A07 không?",
+        "Ngành Vật lý kỹ thuật có thông tin gì không?",
+        "Ngành Quản lý du lịch yêu cầu khối nào?",
+        "Ngành Thương mại điện tử có cạnh tranh nhiều không?"
+      ]
+    },
+    {
+      "start_idx": 4740,
+      "end_idx": 4770,
+      "refined_messages": [
+        "Đại học Cần Thơ có nhận xét học bạ không?",
+        "Điểm VSAT cho ngành sư phạm là bao nhiêu?",
+        "Có năm nào ngành sư phạm lấy điểm VSAT không?",
+        "Đại học Cần Thơ có xét tuyển bằng điểm VSAT không?",
+        "Thi VSAT để vào CTUMP có được không?"
+      ]
+    },
+    {
+      "start_idx": 4800,
+      "end_idx": 4830,
+      "refined_messages": [
+        "Chỉ tiêu cho mỗi phương thức xét tuyển là bao nhiêu?",
+        "Học bạ lấy bao nhiêu phần trăm chỉ tiêu?",
+        "Năm trước học bạ lấy bao nhiêu phần trăm chỉ tiêu?"
+      ]
+    },
+    {
+      "start_idx": 5100,
+      "end_idx": 5130,
+      "refined_messages": [
+        "Chỉ tiêu học bạ THPT tuyển thẳng và VSAT là bao nhiêu?",
+        "Sau kỳ thi THPT còn đợt thi VSAT không?",
+        "Thi VSAT là thi như thế nào?",
+        "VSAT tổ chức thêm đợt không?",
+        "VSAT tổ chức thêm đợt vào tháng mấy?"
+      ]
+    },
+    {
+      "start_idx": 5430,
+      "end_idx": 5460,
+      "refined_messages": [
+        "Điểm thi V-Sat có được xét cho sư phạm toán không?",
+        "Mình có cần nộp V-Sat chung với học bạ không?",
+        "Trường cho nộp bao nhiêu nguyện vọng?"
+      ]
+    },
+    {
+      "start_idx": 5700,
+      "end_idx": 5730,
+      "refined_messages": [
+        "Thi VSAT xong rồi cần làm gì? Làm sao để trường biết mình xét bằng điểm VSAT hay điểm học bạ, hay điểm THPT?",
+        "Marketing VSAT cỡ bao nhiêu điểm thì đậu?",
+        "VSAT có mở thêm 1 đợt nữa không?"
+      ]
+    },
+    {
+      "start_idx": 5730,
+      "end_idx": 5760,
+      "refined_messages": [
+        "Kì thi VSAT là như thế nào, có 8 môn thì mình thi cả 8 hay chỉ 3 môn mình chọn thôi?",
+        "Mình đăng kí thi VSAT ở đâu?",
+        "Điểm của mỗi môn sẽ được tính khác nhau như thế nào?",
+        "Điểm tầm bao nhiêu thì đậu vào sư phạm với tổ hợp Văn, Sử, Địa?",
+        "Môn tổ hợp mình chọn chỉ xét được các ngành trùng với tổ hợp đó thôi hay ngành nào cũng được?",
+        "Lần thi càng ở đợt sau thì đề có khó hơn không?",
+        "Khối M01 là như thế nào?",
+        "Mỗi môn tối đa là bao nhiêu điểm?",
+        "Xét kỹ thuật cấp thoát nước 326 điểm có đủ đậu không?",
+        "Ví dụ điểm thi lần 1 Toán cao hơn đợt 2, nhưng đợt 2 Lý cao hơn, mình được lấy điểm Toán lần 1 và điểm Lý lần 2 không, hay phải cùng một đợt?"
+      ]
+    },
+    {
+      "start_idx": 5820,
+      "end_idx": 5850,
+      "refined_messages": [
+        "Với môn tổ hợp, mình chọn chỉ xét được mấy ngành trùng với tổ hợp đó thôi hay ngành nào cũng được?",
+        "Nếu thi VSAT môn Văn ở đợt 1, môn Sử ở đợt 2 và môn Địa ở đợt 3, có thể dùng ba môn đó để xét tuyển tổ hợp C00 vào Đại học Cần Thơ không?",
+        "VSAT có tính điểm cao nhất không?",
+        "VSAT có tài liệu nào không?",
+        "Bao nhiêu tiền một môn thi VSAT?",
+        "Có thể thanh toán online không?",
+        "Có giải tỉnh mình thi ở CTU có được cộng điểm không?",
+        "Điểm ưu tiên được cộng như thế nào trong quá trình xét tuyển đại học?"
+      ]
+    },
+    {
+      "start_idx": 5850,
+      "end_idx": 5880,
+      "refined_messages": [
+        "Điểm học bạ năm nay có được cộng không?",
+        "Thi V-sat là thi 1 môn hay theo tổ hợp?",
+        "Tối thiểu là thi mấy môn để xét tuyển V-sat?",
+        "Thi V-sat có khó không?",
+        "Khi nào thì nộp hồ sơ tuyển sinh vào CTU?"
+      ]
+    },
+    {
+      "start_idx": 5880,
+      "end_idx": 5910,
+      "refined_messages": [
+        "Toán thi dưới 5 điểm mà nó không nằm trong tổ hợp xét đại học thì có được xét đại học không?",
+        "Mình định vào y khoa CTUMP thì thi VSAT phải bao nhiêu điểm?",
+        "VSAT lấy thang điểm 150 phải không?",
+        "130+ mỗi môn có quá khó không?",
+        "Độ khó giống thi THPT không?"
+      ]
+    },
+    {
+      "start_idx": 5910,
+      "end_idx": 5940,
+      "refined_messages": [
+        "Ngành sư phạm sinh học của CTU lấy khoảng bao nhiêu điểm?",
+        "CTU có cộng thêm điểm học sinh giỏi tỉnh hay quốc gia không?",
+        "Khi nào mở xét học bạ?",
+        "Ngành tâm lý học giáo dục ở CTU là ngành mới thì lấy điểm có cao không?",
+        "Giấy báo điểm đã về chưa?"
+      ]
+    },
+    {
+      "start_idx": 6000,
+      "end_idx": 6030,
+      "refined_messages": [
+        "Thi VSAT có áp dụng chương trình cũ năm trước không?",
+        "Biết điểm THPT rồi mới thi VSAT đợt bổ sung đúng không?",
+        "Thời gian xét học bạ của trường là khi nào?",
+        "CTU xét mấy kỳ?",
+        "Kỹ thuật hóa học cần bao nhiêu điểm VSAT để ổn?",
+        "Lấy điểm riêng từng đợt hay lấy điểm cao nhất mỗi môn các đợt?",
+        "Đăng ký xét học bạ như thế nào?",
+        "Khi nào thi năng khiếu khối V mở tại CTU?",
+        "Mầm non xét học bạ như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 6030,
+      "end_idx": 6060,
+      "refined_messages": [
+        "Trường ĐHCT có sử dụng điểm thi V-SAT do trường đại học khác tổ chức không?",
+        "Việc đăng ký nguyện vọng xét tuyển diễn ra trong thời gian nào?",
+        "Nếu thi V-SAT mỗi đợt với các môn khác nhau thì giấy chứng nhận kết quả sẽ được cấp như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 6060,
+      "end_idx": 6090,
+      "refined_messages": [
+        "Mình viết mail cho trường để xin sao?",
+        "VSAT xét CT được tính là nộp rồi không?",
+        "Xét CT thì vẫn phải nộp giấy chứng nhận được cấp từ CT không?",
+        "Có cần đăng ký thêm giấy để nộp cho bên ĐTHT không?",
+        "Nộp là nộp hết giấy từ tất cả các đợt luôn không?",
+        "Chương trình chất lượng cao khác gì mà sao điểm chuẩn thường thấp hơn mấy ngành đó ở hệ bình thường?",
+        "Chương trình chất lượng cao học bằng ngôn ngữ nào?"
+      ]
+    },
+    {
+      "start_idx": 6090,
+      "end_idx": 6120,
+      "refined_messages": [
+        "Với việc chọn điểm Toán, Văn và Anh của CTU thì có cần nộp giấy điểm của cả hai trường không?",
+        "Tòa nhà chất lượng cao có cho sinh viên ngành khác vào không?",
+        "Giờ ở trường còn có thể đi nghe giảng ké không, kiểu muốn vào nghe giảng mà không đăng ký tín chỉ thì sao?",
+        "Học đại trà nhưng muốn chuyển sang học CLC cùng ngành sau năm 1 hoặc 2 có được không?"
+      ]
+    },
+    {
+      "start_idx": 6120,
+      "end_idx": 6150,
+      "refined_messages": [
+        "NNA CLC so với đại trà dễ vào hơn không?",
+        "Khi xét học bạ, trường có thông báo kết quả duyệt hồ sơ qua đâu?",
+        "Điểm an toàn cho ngành Sư phạm Hóa là bao nhiêu?",
+        "Khi xét tuyển, điểm chuẩn có phân biệt theo từng tổ hợp khác nhau không?",
+        "Tổ hợp D01 thấp hơn so với Tổ hợp D14, vậy có được xét Tổ hợp D14 không?",
+        "Điểm an toàn cho ngành CNTT là bao nhiêu?",
+        "Bài luận Ngữ văn có được phúc khảo không?",
+        "Nếu ghép điểm Sử, Văn ở CT và Tiếng Anh ở ĐT để xét vào CT, cần làm gì?"
+      ]
+    },
+    {
+      "start_idx": 6210,
+      "end_idx": 6240,
+      "refined_messages": [
+        "Khi nào trường chính thức xét học bạ?",
+        "Điểm thi năng khiếu của trường Cần Thơ có thể dùng xét tuyển trường khác không?",
+        "Học phí ngành Marketing năm sau khoảng bao nhiêu một năm?"
+      ]
+    },
+    {
+      "start_idx": 6240,
+      "end_idx": 6270,
+      "refined_messages": [
+        "Thi ngành sư phạm mầm non tính điểm như thế nào?",
+        "Thi V-SAT có 2 môn, còn môn năng khiếu thì tính điểm như thế nào?",
+        "Có phí khi tuyển sinh vào ngành kinh tế không?"
+      ]
+    },
+    {
+      "start_idx": 6330,
+      "end_idx": 6360,
+      "refined_messages": [
+        "Nào trường mở xét học bạ vậy ạ?",
+        "Thi VSAT là đăng ký những môn mình muốn thôi hay sao ạ?",
+        "Quy chế điểm ưu tiên của trường năm nay như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 6360,
+      "end_idx": 6390,
+      "refined_messages": [
+        "Nếu thi VSAT môn ngữ văn bên DThu thì có được xét với 3 môn thi bên CTU không?",
+        "GDTG (Giáo dục tiểu học) ở CTU có ổn không?",
+        "Khoảng tháng mấy thì Đại học Cần Thơ nhập học chính thức?"
+      ]
+    },
+    {
+      "start_idx": 6600,
+      "end_idx": 6630,
+      "refined_messages": [
+        "Đại học Cần Thơ dự kiến mở xét học bạ sau khi thi tốt nghiệp xong phải không?",
+        "Ngày 16/7 mình gửi hồ sơ trực tiếp hay đăng ký online?",
+        "Học bạ 26 điểm có ổn không?",
+        "C00 tầm bao nhiêu điểm là ổn?",
+        "Với bao nhiêu điểm thì đậu ngành Thú y?",
+        "Học bạ A00 28 điểm có đậu được Kỹ thuật Cơ khí không?",
+        "Học bạ 21 điểm có đậu Vật lý Kỹ thuật không?",
+        "Trường nào xét tuyển học bạ?",
+        "Học bạ 28 điểm có an toàn vào ngành Điện tử - Viễn thông không?",
+        "Cách tính điểm xét học bạ như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 6630,
+      "end_idx": 6660,
+      "refined_messages": [
+        "Học bạ 25 điểm ngành kỹ thuật điện có ổn không?",
+        "Khi nào CTU xét tuyển?"
+      ]
+    },
+    {
+      "start_idx": 6660,
+      "end_idx": 6690,
+      "refined_messages": [
+        "21 điểm học bạ có vào ngành Vật lý kỹ thuật không?",
+        "Điểm học bạ tầm 23,5 xét ngành TTDPT được không?",
+        "Phân hiệu ở Sóc Trăng tuyển sinh như thế nào?",
+        "Ngành Y có xét học bạ không?",
+        "Với 271 điểm Vsat, có thể vào ngành Kỹ thuật điện - viễn thông không?",
+        "Học cơ khí ở Đại học Cần Thơ có ổn không?",
+        "26,6 điểm có đậu được ngành Công nghệ thực phẩm không?",
+        "Học bạ luôn điểm cộng 28 điểm có khả năng đậu Công nghệ kỹ thuật hóa học không?",
+        "26,3 điểm có đậu ngành Quản trị dịch vụ du lịch lữ hành không?"
+      ]
+    },
+    {
+      "start_idx": 6690,
+      "end_idx": 6720,
+      "refined_messages": [
+        "Cách đăng ký trực tuyến vào CTU?",
+        "Điểm Vsat 351 có thể xét truyền thông đa phương tiện không?",
+        "Xem bảng điểm V-sat ở đâu?",
+        "Làm sao để vào được nhóm Zalo của trường để nhận thông báo?",
+        "Xét học bạ và xét cổng bộ khác nhau như thế nào?",
+        "Cách thức và đề thi V-sat là gì?",
+        "Nếu đăng ký nguyện vọng 1 xét học bạ ngành Marketing, nhưng có bạn khác điểm cao hơn đăng ký ngành đó làm nguyện vọng 2, trong trường hợp chỉ còn 1 chỉ tiêu, ưu tiên xét cái nào trước?"
+      ]
+    },
+    {
+      "start_idx": 6720,
+      "end_idx": 6750,
+      "refined_messages": [
+        "Thời gian mở xét học bạ là khi nào?",
+        "Phương thức xét học bạ có điểm sàn không?",
+        "Ngành công nghệ thực phẩm cần bao nhiêu điểm để đậu?",
+        "Ngày công bố điểm là ngày nào?",
+        "Điểm sàn của VSAT năm nay là bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 6750,
+      "end_idx": 6780,
+      "refined_messages": [
+        "Cơ sở CTU ở Sóc Trăng tuyển sinh như thế nào?",
+        "Công nghệ kỹ thuật hóa học có điểm chuẩn trên 28 không?",
+        "Với khối A00, 33 điểm có ổn không?"
+      ]
+    },
+    {
+      "start_idx": 6780,
+      "end_idx": 6810,
+      "refined_messages": [
+        "Ngôn ngữ Anh Vsat tầm bao nhiêu?",
+        "Điểm học bạ có quy về một thang điểm chung không hay là xét bảng điểm riêng?",
+        "Giờ có nên mượn học bạ của trường đi công chứng trước không?",
+        "Có giáo dục mầm non không?"
+      ]
+    },
+    {
+      "start_idx": 6810,
+      "end_idx": 6840,
+      "refined_messages": [
+        "Ba năm học sinh xuất sắc có được cộng điểm không?",
+        "Học A00 với 27,6 điểm có thấp không cho ngành kinh tế?",
+        "Năm nay các phương thức xét tuyển có chia tỷ lệ phần trăm bao nhiêu không?"
+      ]
+    },
+    {
+      "start_idx": 6840,
+      "end_idx": 6870,
+      "refined_messages": [
+        "Ngành quản trị du lịch & lữ hành cần điểm Vsat tầm bao nhiêu là an toàn?",
+        "Đăng ký văn bằng 2 là học 2 ngành cùng lúc và có phải học sáng tối không?",
+        "Ngày 18/7 có phải là ngày mở cổng xét học bạ của Đại học Cần Thơ không?",
+        "Đại học Cần Thơ có thường mở lớp nghiệp vụ sư phạm không?",
+        "Vsat đợt cuối sau thời gian công bố là biết điểm ngay luôn không?",
+        "Vsat năm nay nếu xét thì chỉ tiêu là 20% không?",
+        "Học bạ 25.1 điểm A00, có điểm ưu tiên dân tộc và khu vực 1 có xét được ngành nào kinh tế không?"
+      ]
+    },
+    {
+      "start_idx": 6870,
+      "end_idx": 6900,
+      "refined_messages": [
+        "16/7 là mở cổng đăng ký online, vậy có cần nộp hồ sơ trực tiếp không?",
+        "Điểm Vsat là xét riêng hay được quy thành điểm để cộng vào xét học bạ?",
+        "A00 cần bao nhiêu điểm để đủ vào KDQT?",
+        "Trường có xét A07 không?",
+        "Vsat ĐH Cần Thơ có xét C00 không?",
+        "Xét học bạ cần những giấy tờ gì?",
+        "Vsat bên Kỹ thuật nông nghiệp lấy bao nhiêu phần trăm?"
+      ]
+    },
+    {
+      "start_idx": 6900,
+      "end_idx": 6930,
+      "refined_messages": [
+        "Mình đăng ký online xong có cần nộp trực tiếp về trường nữa không?",
+        "Trên page có đề cập C00 là ngành nào không?",
+        "Trường có xét A07 không?",
+        "Điểm D07 có khả năng đậu công nghệ thực phẩm không?",
+        "D01 có đủ đậu công nghệ thông tin không?"
+      ]
+    },
+    {
+      "start_idx": 6930,
+      "end_idx": 6960,
+      "refined_messages": [
+        "Thi xong mới có điểm xét học bạ hả?",
+        "Nếu xét học bạ đậu, thì chỉ cần thi THPT trên điểm liệt là được đúng không?",
+        "Năm nay xét học bạ tính như thế nào, là 3 năm hay 6 kỳ hay 5 kỳ?",
+        "Khi nào mở cổng xét học bạ?",
+        "Khi nào bắt đầu nộp nguyện vọng?",
+        "Nộp trước có lợi thế gì không?"
+      ]
+    },
+    {
+      "start_idx": 6960,
+      "end_idx": 6990,
+      "refined_messages": [
+        "Học bạ CTU có xét tổ hợp TH1 vào An toàn thông tin không?",
+        "Điểm chuẩn ngành Quản trị kinh doanh là bao nhiêu?",
+        "Thời gian nộp học bạ là khi nào?",
+        "VSAT có xét tổ hợp D01 không?",
+        "VSAT khi nào hết hạn đăng ký?",
+        "Nếu thi THPT thấp thì điểm VSAT có bị ảnh hưởng không?"
+      ]
+    },
+    {
+      "start_idx": 7020,
+      "end_idx": 7050,
+      "refined_messages": [
+        "A00 306.5 có đậu Quản trị Kinh doanh không?",
+        "Điểm VSAT sẽ được uy thành điểm cộng để cộng cho THPT xét chung hay VSAT xét riêng?",
+        "Một học bạ có thể xét được nhiều ngành không, hay mỗi ngành phải photo học bạ riêng?",
+        "23 điểm học bạ Kỹ Thuật Xây Dựng với Vật Lí Kỹ Thuật có ổn không?",
+        "Học khu Hòa An có giá trị bằng như ở Cần Thơ không?",
+        "Điểm VSAT lấy cao nhất mỗi môn hay mỗi đợt?",
+        "Khi nào có giấy chứng nhận đợt 4?",
+        "Học bạ sẽ nhân với bao nhiêu phần trăm để bằng với THPT?",
+        "Đề thi VSAT sai, nếu giám thị có đưa biên bản thì có được xử lý không?"
+      ]
+    },
+    {
+      "start_idx": 7050,
+      "end_idx": 7080,
+      "refined_messages": [
+        "CTU năm nay có xét học bạ không?",
+        "Ngày 16/7 trường mới nhận học bạ để xét phải không?",
+        "Bây giờ mình có nộp được học bạ chưa hay gần đến ngày đó mới nộp được?",
+        "Trường đã mở cổng nhận hồ sơ học bạ chưa?"
+      ]
+    },
+    {
+      "start_idx": 7080,
+      "end_idx": 7110,
+      "refined_messages": [
+        "Xét điểm VSAT là tổng các môn cao nhất hay ghép môn cao nhất của từng đợt?",
+        "Năm nay có xét VSAT D14 không?",
+        "Khi xét tuyển học bạ và VSAT thì cần chuẩn bị những hồ sơ gì?",
+        "Xét học bạ CTU là xét trung bình môn cả 3 năm hay xét theo 6 học kỳ?",
+        "Trường có xét kết quả thi năng khiếu của trường khác cho ngành sư phạm mầm non không?",
+        "Ngành vật lí kỹ thuật có xét VSAT khối C01 không?",
+        "Ngành kỹ thuật xây dựng năm 2024 có điểm học bạ bao nhiêu?",
+        "Trường đã công bố điểm chuẩn chưa?",
+        "Xét tuyển theo phương thức 6 là khi nào và làm sao?",
+        "Việc xét điểm chung trên thang 30 là như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 7110,
+      "end_idx": 7140,
+      "refined_messages": [
+        "Ngành kỹ thuật xây dựng năm nay có lấy thêm tổ hợp môn mới không?",
+        "Năm nay sư phạm còn xét học bạ không?",
+        "Cách đăng ký thi năng khiếu mầm non qua email viết như thế nào?",
+        "Thi 3 môn toán, hóa, sinh có thể thi chung 1 ngày không hay trường xếp 3 môn rải ra các ngày khác nhau?",
+        "Trường có cho nộp học bạ không?"
+      ]
+    },
+    {
+      "start_idx": 7140,
+      "end_idx": 7170,
+      "refined_messages": [
+        "Học bạ tầm 25,5 thì đậu ngôn ngữ Anh khu Hòa An được không?",
+        "Trường có gửi email thông báo kết quả không?",
+        "Xét học bạ là trường THPT nào cũng nhận đúng không?",
+        "CTU năm nay có bỏ xét học bạ ở ngành Triết không?",
+        "Năm sau có bỏ xét học bạ thêm nhiều ngành không?"
+      ]
+    },
+    {
+      "start_idx": 7170,
+      "end_idx": 7200,
+      "refined_messages": [
+        "Đăng ký học cùng lúc 2 ngành được không?",
+        "Nộp xét học bạ ở đâu?",
+        "VSAT thi 1 lần hết 3 môn luôn hay sao?",
+        "Có điểm chuẩn trường Đại học Cần Thơ chưa?",
+        "Xem điểm chuẩn ở đâu?"
+      ]
+    },
+    {
+      "start_idx": 7230,
+      "end_idx": 7260,
+      "refined_messages": [
+        "Có ảnh hưởng gì đến thi THPT không khi sử dụng điểm thi đánh giá năng lực quy đổi?",
+        "Điểm 430 VSAT theo tổ hợp A00 có cơ hội đậu ngành Công nghệ Ô tô không?",
+        "Trường đã có bảng quy đổi điểm chính thức chưa?",
+        "Phổ điểm VSAT có thể đánh giá được điều gì?"
+      ]
+    },
+    {
+      "start_idx": 7260,
+      "end_idx": 7290,
+      "refined_messages": [
+        "1 ngành có thể xét nhiều phương thức không?",
+        "Cách tự lưu file hồ sơ, photo và gửi bưu điện để nộp?",
+        "Xét học bạ thì gửi học bạ như thế nào?",
+        "Nhận giấy báo điểm đợt 4 như thế nào? Bưu điện có giao tận nhà không?"
+      ]
+    },
+    {
+      "start_idx": 7320,
+      "end_idx": 7350,
+      "refined_messages": [
+        "Cho mình hỏi nếu thi 20/7 thì tầm bao lâu có điểm?",
+        "CNSH tầm nhiêu điểm thì an toàn?",
+        "Điểm luận văn tầm bao nhiêu là cao?"
+      ]
+    },
+    {
+      "start_idx": 7470,
+      "end_idx": 7500,
+      "refined_messages": [
+        "Thời gian xét học bạ của trường?"
+      ]
+    },
+    {
+      "start_idx": 7500,
+      "end_idx": 7530,
+      "refined_messages": [
+        "Học bạ CTU lấy theo 6 học kỳ hay lấy trung bình 3 năm?"
+      ]
+    },
+    {
+      "start_idx": 7590,
+      "end_idx": 7620,
+      "refined_messages": [
+        "Việc xét học bạ là khi nào mình mới gửi cái học bạ cho trường?"
+      ]
+    },
+    {
+      "start_idx": 7860,
+      "end_idx": 7890,
+      "refined_messages": [
+        "Nếu thi năng khiếu của trường khác, mình có thể xét tuyển vào Đại học Cần Thơ không?",
+        "Trường Cần Thơ có lấy điểm ĐGNL của TP HCM không?",
+        "Bây giờ còn đăng ký xét tuyển online Đại học Cần Thơ được không?",
+        "Năm nay xét học bạ ở đâu?",
+        "Điểm học bạ năm nay có đổi sang điểm thi không?",
+        "Mình có cần gửi học bạ về trường không?",
+        "Sư phạm tiểu học cần 3 năm giỏi phải không?",
+        "Cách thức quy đổi điểm thì thường là sau khi thi THPTQG trường mới thông báo hay sao?"
+      ]
+    },
+    {
+      "start_idx": 7890,
+      "end_idx": 7920,
+      "refined_messages": [
+        "Đại học Cần Thơ có xét ngành Dược không?",
+        "Trường hợp ưu tiên xét tuyển có được xét ngành Dược vào Đại học Cần Thơ không?",
+        "Diện ưu tiên đã mở xét chưa?"
+      ]
+    },
+    {
+      "start_idx": 7920,
+      "end_idx": 7950,
+      "refined_messages": [
+        "Năm nay điểm chuẩn xét học bạ có cao không?",
+        "Nếu chưa nhận được giấy báo điểm VSAT đợt 1 và 3 thì làm thế nào để nhận giấy báo kết quả?",
+        "Tài liệu ôn VSAT lấy ở đâu?",
+        "Vẫn còn một đợt thi V-Sat nữa đúng không?",
+        "Có ưu tiên xét tuyển ngành sư phạm không?"
+      ]
+    },
+    {
+      "start_idx": 7950,
+      "end_idx": 7980,
+      "refined_messages": [
+        "Kỹ thuật điều khiển và tự động hoá (CLC) cần bao nhiêu điểm?",
+        "Ngành Dược cần bao nhiêu điểm mới vào được với tổ hợp B00?",
+        "Ngành Toán ứng dụng có tốt không?",
+        "Trường có ngành nào xét tuyển năm 12 không?",
+        "Link đăng ký thêm tờ VSAT ở đâu và tại sao không thấy đợt 4?"
+      ]
+    },
+    {
+      "start_idx": 7980,
+      "end_idx": 8010,
+      "refined_messages": [
+        "Có ngành nào khối B00 với điểm chuẩn 25.5 không?",
+        "Nếu học chuyên ngành hóa học và học thêm nghiệp vụ sư phạm thì việc xin việc có khó hơn so với học sư phạm hóa không?",
+        "Chương trình đào tạo của trường có thay đổi mỗi năm không?",
+        "Người dân tộc Khmer và ở vùng khó khăn được cộng bao nhiêu điểm ưu tiên?",
+        "Trường bao giờ mở cổng xét học bạ?",
+        "Tài liệu ôn VSAT có thể tìm ở đâu?",
+        "Có bảng quy đổi điểm VSAT sang điểm THPT không? Cụ thể như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 8010,
+      "end_idx": 8040,
+      "refined_messages": [
+        "Sư phạm nào xét tổ hợp C00 ngoài Sử và Địa?",
+        "Học bạ 28,3 chưa tính điểm cộng học sinh giỏi, đủ vào sư phạm Sử, Địa, và Sử-Địa không?",
+        "Học bạ 25,64 xét ngành Công nghệ Thực phẩm được không?",
+        "Xét ngành Báo chí với điểm 27+ chưa tính điểm ưu tiên có an toàn không?"
+      ]
+    },
+    {
+      "start_idx": 8040,
+      "end_idx": 8070,
+      "refined_messages": [
+        "Các ngành sư phạm của trường năm nay có xét học bạ không?",
+        "Xét học bạ là xét học bạ 3 năm hay sao?",
+        "Trường đã mở xét học bạ chưa?",
+        "Khối C00 xét học bạ 26,6 điểm được ngành nào không?",
+        "Sư phạm là phải 3 năm đạt loại giỏi phải không?",
+        "Ngành sư phạm xét học bạ lấy 27,25 mà có 27,10 thì có cơ hội nộp xét không?"
+      ]
+    },
+    {
+      "start_idx": 8070,
+      "end_idx": 8100,
+      "refined_messages": [
+        "Điểm chuẩn khu Hòa An ở đâu?",
+        "Có được xét hai hình thức song song là học bạ và điểm thi tốt nghiệp không?",
+        "Thi năng khiếu cần chuẩn bị gì?",
+        "Nguyện vọng 1 có để 3 phương thức luôn được không?",
+        "Khi nào có điểm chuẩn?",
+        "Ngành sư phạm có cần 3 năm đạt loại giỏi không?",
+        "Học bạ tầm bao nhiêu là an toàn?",
+        "25 điểm có xét được ngành trí tuệ nhân tạo không?",
+        "Ngành sư phạm mầm non có xét học bạ không và có thể lấy điểm thi năng khiếu ở HCMUE để nộp không?",
+        "Học bạ 26 điểm B00 xét ngành thú y có ổn không?",
+        "Phần trăm chỉ tiêu từng phương thức là bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 8130,
+      "end_idx": 8160,
+      "refined_messages": [
+        "Học bạ có được quy đổi sao cho tương đương với điểm thi THPT không?",
+        "Nếu đăng ký nhiều nguyện vọng vào cùng một trường, các nguyện vọng đó có được gom lại thành một nguyện vọng duy nhất không hay tính riêng biệt?"
+      ]
+    },
+    {
+      "start_idx": 8160,
+      "end_idx": 8190,
+      "refined_messages": [
+        "Ủa vậy cả 3 sẽ quy về 1 điểm thì mình không cần làm 3 bộ hồ sơ cho 3 phương thức phải không nhỉ?",
+        "Thi VSAT cần ôn những gì?",
+        "Dạng đề thi VSAT như thế nào?",
+        "Thi VSAT là trên máy tính đúng không?",
+        "Học bạ có tính bách phân vị không và có mốc để tính chưa?",
+        "Học bạ không dùng bách phân vị mà dùng cách khác để tính điểm đúng không?",
+        "Hòa An năm nay có lên hạng mục bằng không?",
+        "ĐHCT chưa nói gì về cách quy đổi học bạ đúng không?"
+      ]
+    },
+    {
+      "start_idx": 8220,
+      "end_idx": 8250,
+      "refined_messages": [
+        "Xét học bạ sư phạm mầm non có cần thi năng khiếu không?",
+        "Ngành sư phạm có cần tiêu chí 3 năm loại giỏi không?",
+        "Thời gian nộp xét tuyển học bạ từ ngày nào, hồ sơ gồm những nội dung gì?",
+        "Học bạ 27,4 điểm có đậu ngôn ngữ Anh không?",
+        "Nếu đặt nguyện vọng 2 là sư phạm mầm non thì có cần thi năng khiếu không?",
+        "Xét học bạ khi nào mở?"
+      ]
+    },
+    {
+      "start_idx": 8250,
+      "end_idx": 8280,
+      "refined_messages": [
+        "Mn ơi CTU có đào tạo hệ 2-2 không ạ? 2 năm ở đây với 2 năm nước ngoài ấy ạ?",
+        "Xét học bạ đăng ký online rồi đợi thông báo mới nộp học bạ hay sao vậy ạ?",
+        "Cho tui hỏi CLC thì điểm thi THPT với điểm VSAT bao nhiêu là ổn vậy ạ?",
+        "Trường có xét học bạ chưa ạ?",
+        "Bên năng khiếu mầm non mình có được lấy điểm của trường khác không ạ hay phải thi năng khiếu của trường vậy ạ?",
+        "Em muốn đăng ký phương thức xét tuyển bằng điểm thi THPT, phải làm như thế nào ạ?"
+      ]
+    },
+    {
+      "start_idx": 8280,
+      "end_idx": 8310,
+      "refined_messages": [
+        "CTU đã mở xét tuyển học bạ chưa?",
+        "Đăng ký thi năng khiếu giáo dục thể chất như thế nào?",
+        "Năm nay học bạ xét mấy kỳ?",
+        "Xét học bạ 2 ngành thì cần mấy bản học bạ?",
+        "Cần Thơ có đào tạo ngành tài chính ngân hàng không?",
+        "Điểm khu vực cộng vào học bạ có bị giảm không?"
+      ]
+    },
+    {
+      "start_idx": 8400,
+      "end_idx": 8430,
+      "refined_messages": [
+        "Trường có mở cổng xét học bạ sư phạm chưa ạ?"
+      ]
+    },
+    {
+      "start_idx": 8670,
+      "end_idx": 8700,
+      "refined_messages": [
+        "Thời gian xét học bạ của trường?",
+        "Điểm quy đổi giữa VSAT và thi THPT là như thế nào?",
+        "Học bạ 26.8 có cơ hội vào kỹ thuật điện không?",
+        "Ở khu vực 1 được cộng 0,75 điểm vùng, vậy có được cộng đầy đủ không?",
+        "Với 26 điểm xét học bạ, ngành thống kê có khả năng đậu không?",
+        "Khi nào mở đăng ký?",
+        "Có cách nào vào CTU nếu học kém không?",
+        "VSAT còn đợt thi cuối không?"
+      ]
+    },
+    {
+      "start_idx": 8700,
+      "end_idx": 8730,
+      "refined_messages": [
+        "Xét học bạ thì trường lấy trung bình môn 5 học kỳ hay 3 năm?",
+        "Nếu tính điểm V Sat để vào các trường thì tính điểm cao nhất của một đợt thi hay là tính môn cao nhất của từng đợt thi?",
+        "Bằng Kỹ Sư (khu 3) với bằng Cử nhân cái nào tốt hơn?",
+        "Đợt V Sat cuối này chỉ xét được cho CTU hay tất cả các trường?",
+        "Một năm trường tổ chức bao nhiêu đợt thi?"
+      ]
+    },
+    {
+      "start_idx": 8730,
+      "end_idx": 8760,
+      "refined_messages": [
+        "Điểm thi V-SAT chỉ xét cho trường Cần Thơ với một số trường nhất định thôi đúng không?",
+        "Em thi tốt nghiệp Toán Văn Hóa Sinh, thì có đăng ký điểm học bạ bằng Toán Lý Hóa được không?",
+        "Ngành trí tuệ nhân tạo có xét học bạ được không?",
+        "Trường đã mở xét học bạ chưa?",
+        "Em thuộc tổ hợp A00, năm nay có thể xét được ngành nào về kỹ thuật không?"
+      ]
+    },
+    {
+      "start_idx": 8760,
+      "end_idx": 8790,
+      "refined_messages": [
+        "Năm nay xét tuyển 6 kỳ hay 3 năm?",
+        "Trường CTU đã mở xét tuyển học bạ chưa?",
+        "CTU có mở VSAT đợt 7 không? Nếu có thì thời gian cụ thể là khi nào?",
+        "Với 24 điểm C00 xét học bạ được ngành gì?",
+        "327 điểm VSAT có cơ hội vào ngành hóa học hay sư phạm hóa không?",
+        "Với 24 điểm học bạ, nên chọn ngành nào?"
+      ]
+    },
+    {
+      "start_idx": 8820,
+      "end_idx": 8850,
+      "refined_messages": [
+        "Học bạ ngành báo chí cần bao nhiêu điểm để có khả năng đậu?",
+        "Sư phạm có yêu cầu 3 năm học sinh giỏi không?",
+        "Số nguyện vọng tối đa được đặt tại mỗi trường là bao nhiêu?",
+        "Sư phạm có giới hạn nguyện vọng không?",
+        "Điểm xét học bạ 359 điểm có đủ để đậu ngành du lịch lữ hành không?",
+        "Ngành công nghệ ô tô cần bao nhiêu điểm để đậu?"
+      ]
+    },
+    {
+      "start_idx": 8850,
+      "end_idx": 8880,
+      "refined_messages": [
+        "Thi theo tổ hợp 3 môn rồi cộng lại xét vào ngành đại học như thế nào?",
+        "Muốn đăng kí nhận thêm bảng điểm VSat thì đăng kí ở đâu?",
+        "Tài chính ngân hàng thi VSat tầm bao nhiêu là ổn?",
+        "Link đăng kí thi năng khiếu là gì?",
+        "Kinh tế nông nghiệp điểm chuẩn học bạ bao nhiêu thì an toàn?",
+        "Marketing trường lấy bao nhiêu điểm?",
+        "Cách tính điểm VSat có áp dụng cho đợt riêng bên Đồng Tháp và các đợt thi của CTU không?",
+        "Có được lấy gộp điểm cao nhất từ các đợt thi VSat khác nhau không?",
+        "Xét học bạ có bao nhiêu nguyện vọng hoặc có giới hạn không?"
+      ]
+    },
+    {
+      "start_idx": 8880,
+      "end_idx": 8910,
+      "refined_messages": [
+        "Học bạ thường dựa trên tiêu chí gì để có điểm cộng?",
+        "Trong trường hợp không đậu nguyện vọng 1, điểm vào của nguyện vọng 2 có tăng lên không?",
+        "Nếu thi được 25 điểm, nguyện vọng 1 lấy 26 điểm, nguyện vọng 2 lấy 24,5, có xét bằng điểm chuẩn của nguyện vọng 2 là 24,5 không?",
+        "Giả sử bạn thi được 25 điểm, nguyện vọng 2 của bạn là nguyện vọng 1 của người khác, người đó có được ưu tiên hơn không?"
+      ]
+    },
+    {
+      "start_idx": 8910,
+      "end_idx": 8940,
+      "refined_messages": [
+        "Thi năng khiếu mầm non có được chọn 1 trong 3 môn Múa, Hát, Kể chuyện không hay trường sẽ cho văn bản đọc diễn cảm?",
+        "Ngành Ngôn ngữ Anh có xét tuyển VSAT khối D01 không?",
+        "Ngành Du lịch lữ hành xét VSAT có chỉ xét khối A01 và A00 không hay có thêm tổ hợp khác?",
+        "Nếu dùng VSAT để xét tuyển thì có tích hợp với điểm tốt nghiệp hay học bạ không?"
+      ]
+    },
+    {
+      "start_idx": 8970,
+      "end_idx": 9000,
+      "refined_messages": [
+        "Học phí ngành sư phạm tiểu học bây giờ là bao nhiêu?",
+        "Tầm 26+ điểm học bạ có xét được ngành sư phạm sinh không?",
+        "Sư phạm ở CTU có xét điểm V-sat không?",
+        "Xem chỉ tiêu người đăng ký ngành ở đâu?"
+      ]
+    },
+    {
+      "start_idx": 9000,
+      "end_idx": 9030,
+      "refined_messages": [
+        "Học phí nhóm ngành kinh tế, marketing khoảng bao nhiêu tiền một năm?",
+        "Phương thức 6 của trường là gì?",
+        "Trường năm nay xét học bạ như thế nào?",
+        "Điểm thi năng khiếu ở Đồng Tháp có sử dụng được tại CTU không?",
+        "Điểm đánh giá năng lực (Dgnl) có được cộng điểm vùng không?",
+        "Ngôn ngữ Anh có xét tuyển bằng VSAT D01 không?",
+        "Muốn thi VSAT thì đăng ký như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 9030,
+      "end_idx": 9060,
+      "refined_messages": [
+        "CTU hiện đã nhận xét học bạ chưa?",
+        "Khi nào mở xét học bạ tại CTU?",
+        "Với ngành sư phạm toán, Vsat bao nhiêu là an toàn khi thi khối A00?",
+        "Ngành luật kinh tế với khối D01 cần bao nhiêu điểm?",
+        "Định vào ngành ngôn ngữ Anh, Vsat thi tròn 300 thì có đủ không?",
+        "Nộp học bạ bằng cách gửi bưu điện hay xuống trường?"
+      ]
+    },
+    {
+      "start_idx": 9090,
+      "end_idx": 9120,
+      "refined_messages": [
+        "Năm nay có đổi điểm học bạ ra điểm thi THPT không?",
+        "Khi nào trường nhận bảng công chứng IELTS?",
+        "Nếu nguyện vọng 1 ngành Thú y Đại học Nông Lâm bị rớt thì có được về CTU học không?"
+      ]
+    },
+    {
+      "start_idx": 9120,
+      "end_idx": 9150,
+      "refined_messages": [
+        "Có lịch công bố kết quả tất cả phương thức xét tuyển của trường chưa?",
+        "Sau khi thi THPT xong mới đăng ký thi VSAT thì còn kịp không?",
+        "Tại sao trang đăng ký VSAT lại để cập nhật dữ liệu?",
+        "Khi nào có thể đăng ký thi VSAT?",
+        "Trường khi nào mở xét học bạ?",
+        "Đại học Cần Thơ có xét học bạ không?",
+        "Phiếu này có thể ghi ngành dược được không?",
+        "Cách đăng ký thi năng khiếu sư phạm mầm non như thế nào?",
+        "Những trường nào sử dụng chung kết quả thi VSAT?",
+        "Thi năng khiếu ngành Giáo dục Mầm non có cần tự ôn không?"
+      ]
+    },
+    {
+      "start_idx": 9180,
+      "end_idx": 9210,
+      "refined_messages": [
+        "CTUMP VSAT tầm bao nhiêu mới đậu?",
+        "Năm nay có khối C không?",
+        "Trường Cần Thơ phân hiệu Sóc Trăng có tuyển sinh không?",
+        "Sư phạm Cần Thơ có xét học bạ không?",
+        "Trường đã ra đề án tuyển sinh chưa?"
+      ]
+    },
+    {
+      "start_idx": 9270,
+      "end_idx": 9300,
+      "refined_messages": [
+        "Đã có thông tin gì về cách tính điểm học bạ của CTU chưa ạ?"
+      ]
+    },
+    {
+      "start_idx": 9360,
+      "end_idx": 9390,
+      "refined_messages": [
+        "Ngành quản lý tài nguyên và môi trường có ổn không và học phí thế nào?",
+        "Ngành Hóa Dược có ổn không?",
+        "Thời gian xét học bạ là khi nào?",
+        "Vào sư phạm Sử cần bao nhiêu điểm?",
+        "Thi năng khiếu mầm non phần đọc diễn cảm và kể chuyện có được cầm giấy không?",
+        "Khi nào mở cổng đăng ký xét học bạ?",
+        "Trường có xét VSAT cho ngành Vật lý Kỹ thuật khối C01 không?"
+      ]
+    },
+    {
+      "start_idx": 9390,
+      "end_idx": 9420,
+      "refined_messages": [
+        "Thi năng khiếu bên trường có khó không?",
+        "Bây giờ có thể gửi học bạ cho trường được chưa và gửi như thế nào?",
+        "Có bạn nào có phổ điểm đợt thi VSAT mới nhất không?",
+        "300 điểm VSAT đủ đậu ngôn ngữ Anh CTU không?",
+        "Nếu thi lại 2 môn trong đợt thi VSAT, có tính điểm chung với nhau không hay phải thi lại cả 3 môn?",
+        "Sư phạm Anh thì lấy VSAT cỡ bao nhiêu?",
+        "Thi VSAT ở trường sẽ như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 9420,
+      "end_idx": 9450,
+      "refined_messages": [
+        "Dùng điểm V-SAT để đăng ký nguyện vọng thì khi nào đăng ký được? Điền hồ sơ đăng ký online hay nộp trực tiếp?",
+        "Muốn lấy điểm toán đợt 4, hóa lý đợt 5 thì lúc có bảng điểm, nộp xét tuyển như thế nào? Nộp luôn 2 bảng không?",
+        "Trường có đào tạo liên thông không?",
+        "Khi nào trường mở xét học bạ?",
+        "CTU có xét thi đánh giá năng lực chuyên biệt không?",
+        "Nếu xét học bạ thì cần bao nhiêu điểm để đậu?",
+        "Ngành du lịch cần bao nhiêu điểm để đậu?",
+        "Tìm đề V-SAT ở đâu?",
+        "Thi V-SAT xét sư phạm có yêu cầu 3 môn thi trên 8 điểm không?"
+      ]
+    },
+    {
+      "start_idx": 9450,
+      "end_idx": 9480,
+      "refined_messages": [
+        "Sư phạm tiểu học cần bao nhiêu điểm để an toàn?",
+        "Khi nào trường xét tuyển?",
+        "Điểm Vsat năm nay cho khối D01 tầm bao nhiêu thì ổn?",
+        "Sư phạm mầm non có yêu cầu hạnh kiểm 3 năm đều tốt không?",
+        "Điểm Vsat cho ngành Điện điện tử với Kỹ thuật điện năm nay có tăng nhiều không?",
+        "Phương thức xét điểm học bạ của trường có quy về thang điểm tốt nghiệp không?",
+        "Sư phạm GDCD xét học bạ tầm bao nhiêu điểm để lọt top?",
+        "Ngành Tâm lý học mới tuyển sinh có lấy điểm thấp không?"
+      ]
+    },
+    {
+      "start_idx": 9480,
+      "end_idx": 9510,
+      "refined_messages": [
+        "Sư phạm tiếng Anh thì khoảng bao nhiêu điểm?",
+        "Điểm VSat tầm bao nhiêu mới đỗ ngành du lịch?",
+        "Cổng xét học bạ đã mở chưa?",
+        "Đăng ký nhận thêm bảng điểm VSat ở đâu?",
+        "Hồ sơ đăng ký thi năng khiếu cần những điều kiện và giấy tờ gì để hợp với quy định của trường?",
+        "Phần trăm chỉ tiêu đọc ở đâu?"
+      ]
+    },
+    {
+      "start_idx": 9510,
+      "end_idx": 9540,
+      "refined_messages": [
+        "Trường Đại học Cần Thơ mở xét học bạ khi nào?",
+        "Xét học bạ ngành nào và khối nào?",
+        "Năm nay trường có xét học bạ không?",
+        "Điểm VSAT sư phạm tiểu học bao nhiêu là an toàn?",
+        "Điểm chuẩn năm ngoái của trường là bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 9570,
+      "end_idx": 9600,
+      "refined_messages": [
+        "Xét học bạ sư phạm tiểu học tiêu chí như thế nào?",
+        "Công nghệ thông tin học ở CTU và CTUT có khác biệt gì nhiều không?",
+        "VSAT đợt 6 có dùng để xét ngành nào ngoài y và răng hàm mặt không?",
+        "Điểm chuẩn các ngành năm nay có tăng không?",
+        "Có ai vào được website để đăng ký thi đợt bổ sung chưa?",
+        "Nếu đăng ký xét học bạ nhiều trường và đều đậu thì có được chọn lựa không?",
+        "Năm nay tới 30/8 mới biết mình đậu hay không đúng không?"
+      ]
+    },
+    {
+      "start_idx": 9600,
+      "end_idx": 9630,
+      "refined_messages": [
+        "Ngành du lịch xét VSAT có tổ hợp C00 không?",
+        "Bao giờ thì trường mở xét học bạ?",
+        "Sao trường để nhóm ngành công nghệ mà không thấy chỗ nhóm ngành?",
+        "VSAT mình đăng ký lúc nào cũng được đúng không?"
+      ]
+    },
+    {
+      "start_idx": 9690,
+      "end_idx": 9720,
+      "refined_messages": [
+        "Trường đã mở xét học bạ chưa? Ngành sư phạm có được xét học bạ không?"
+      ]
+    },
+    {
+      "start_idx": 9780,
+      "end_idx": 9810,
+      "refined_messages": [
+        "Khu Hòa An có xét ngành Công nghiệp Thực phẩm không?"
+      ]
+    },
+    {
+      "start_idx": 9810,
+      "end_idx": 9840,
+      "refined_messages": [
+        "Ngành sư phạm có xét học bạ chưa?",
+        "Xét học bạ có được cộng điểm ưu tiên không?",
+        "Lệ phí thi VSAT là bao nhiêu?",
+        "Du lịch với quản trị dịch vụ du lịch và lữ hành khác nhau như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 9900,
+      "end_idx": 9930,
+      "refined_messages": [
+        "Ngành Ngôn ngữ Anh có điểm chuẩn như thế nào?",
+        "Ngành Thú y có điểm chuẩn như thế nào?",
+        "Thời gian công bố điểm chuẩn của trường là bao lâu sau khi đăng ký xét tuyển?",
+        "Ngành Marketing có điểm chuẩn như thế nào?",
+        "Ngành Luật có điểm chuẩn như thế nào?",
+        "Ngành Quản lý đất đai có điểm chuẩn khoảng bao nhiêu?",
+        "Ngành Quản trị Kinh doanh có điểm chuẩn như thế nào?",
+        "Ngành Thương mại Điện tử có điểm chuẩn khoảng bao nhiêu?"
+      ]
+    },
+    {
+      "start_idx": 9930,
+      "end_idx": 9960,
+      "refined_messages": [
+        "Học bạ 27.1 có đủ để vào HTTT không?",
+        "Học bạ 29,13 có cơ hội vào ngành Toán ứng dụng không?",
+        "Năm nay CTU lấy bao nhiêu phần trăm xét học bạ?",
+        "Học bạ 28,11 có đủ để vào ngành công nghệ ô tô không?",
+        "27.33 điểm có cơ hội vào ngành Kỹ thuật phần mềm CLC không?",
+        "Khi nào trường mở xét học bạ?",
+        "Ngành Kiến trúc đã xét học bạ chưa? Cách tính điểm năng khiếu như thế nào?",
+        "Thời hạn đăng ký thi VSAT là khi nào?"
+      ]
+    },
+    {
+      "start_idx": 9960,
+      "end_idx": 9990,
+      "refined_messages": [
+        "Học bạ khối C 27 điểm xét được ngành nào?",
+        "Hệ thống thông tin VSAT năm nay khoảng bao nhiêu điểm?",
+        "Làm sao để biết đăng ký VSAT thành công?",
+        "Nếu trường đã xử lý thông tin chuyển khoản thì chỗ trạng thái đăng ký sẽ hiện lên cái gì?",
+        "Khi nào trường xét học bạ?",
+        "Ngôn ngữ Anh thi VSAT năm nay tầm bao nhiêu điểm?"
+      ]
+    },
+    {
+      "start_idx": 10020,
+      "end_idx": 10050,
+      "refined_messages": [
+        "CTU đã xét học bạ chưa?",
+        "Điểm VSAT là quy đổi điểm từng môn hay quy đổi ra thang điểm 30?",
+        "Khi xét nguyện vọng trên cổng thông tin của bộ mà muốn xét một ngành nhưng nhiều phương thức thì đăng ký như thế nào?",
+        "Điểm VSAT có trừ độ lệch so với điểm THPT không?",
+        "VSAT tầm bao nhiêu điểm thì an toàn?",
+        "Xét VSAT có tính tốp tổ hợp không, kiểu như D14 350 với D15 có khác gì nhau không?",
+        "Khi nào cần gửi học bạ về trường?"
+      ]
+    },
+    {
+      "start_idx": 10050,
+      "end_idx": 10080,
+      "refined_messages": [
+        "Điểm cộng ưu tiên VSAT là của mỗi trường mỗi khác hay giống nhau?",
+        "Xét tuyển trực tuyến hay cần mua hồ sơ nộp về trường?",
+        "Hiện giờ đã đăng ký tài khoản trên cổng thông tin chưa?",
+        "Ở KV2 NT khi xét học bạ có cộng điểm không và công thức cộng thế nào?",
+        "Khi nào mở xét học bạ?",
+        "Xem phòng thi VSAT ở đâu?",
+        "Thi tốt nghiệp rồi, có thi đánh giá năng lực được không?",
+        "Muốn xét học bạ thì xét như thế nào?",
+        "Xét học bạ có cần giấy khám sức khỏe không?",
+        "Có phương thức xét tuyển độc lập hay xét chung?",
+        "Có bảng quy đổi điểm VSAT chưa?",
+        "Có chia chỉ tiêu cho các phương thức không?",
+        "Đăng ký thi năng khiếu rồi trường có gửi giấy báo dự thi không?"
+      ]
+    },
+    {
+      "start_idx": 10080,
+      "end_idx": 10110,
+      "refined_messages": [
+        "Em có thi năng khiếu ở UAH thì điểm năng khiếu đó được xét bên CTU không?",
+        "Bảng điểm VSAT có cần đi công chứng không?",
+        "Hạn chót đợt 6 là ngày nào?",
+        "CTU có đổi điểm VSAT sang thang 30 không?",
+        "Điểm thi THPT quốc gia có ảnh hưởng gì đến VSAT không?",
+        "V-SAT đợt 6 thi vào ngày mấy?"
+      ]
+    },
+    {
+      "start_idx": 10110,
+      "end_idx": 10140,
+      "refined_messages": [
+        "Từ 16/7 mới bắt đầu xét học bạ rồi gửi hồ sơ hay sao?",
+        "Năm nay xét ngành sư phạm cần điểm tốt nghiệp phải đủ 8.0 không?",
+        "Xét CTU bằng VSAT có cần nộp điểm hay minh chứng gì lên website không?",
+        "Thi môn vẽ năng khiếu năm nay có được nhân hệ số không?",
+        "Nếu bảng điểm VSAT đợt 6 gửi về không kịp thì ngày vừa có bảng điểm mình đến trường lấy được không?",
+        "VSAT quy đổi điểm độc lập hay có kết hợp với điểm THPT không?",
+        "Em muốn đăng kí thi VSAT đợt 6 nhưng thời gian đăng kí nguyện vọng trên web của BGD là từ 16/7-28/7, nếu giấy báo điểm VSAT về không kịp thì phải làm sao?"
+      ]
+    },
+    {
+      "start_idx": 10140,
+      "end_idx": 10170,
+      "refined_messages": [
+        "Chuyển khoản đóng lệ phí thi đánh giá năng lực như thế nào?",
+        "Ngày thi sư phạm thể dục là ngày nào?",
+        "Cách đăng ký thi VSAT đợt 6 như thế nào?",
+        "Điểm học bạ năm nay có khả năng giảm hay tăng?",
+        "Có ai xét học bạ ngành kế toán - kiểm toán với 28.01 điểm không?"
+      ]
+    },
+    {
+      "start_idx": 10170,
+      "end_idx": 10200,
+      "refined_messages": [
+        "Thi VSAT đợt 6 khi nào và khi nào hết hạn đăng ký?",
+        "Giấy báo điểm VSAT có về kịp trước thời gian đăng ký nguyện vọng trên web của BGD không?",
+        "Nếu xét tuyển ở CTU thì có cần nộp lại bảng điểm VSAT không?",
+        "Photo bảng điểm 3 năm thì cần có dấu mộc của trường hay đơn vị khác cũng được?",
+        "Thi xong mới đóng lệ phí hay đăng ký rồi đóng luôn?",
+        "Không học môn Sinh có học Bệnh học thủy sản được không?"
+      ]
+    },
+    {
+      "start_idx": 10260,
+      "end_idx": 10290,
+      "refined_messages": [
+        "CTU xét học bạ như thế nào?",
+        "Thời hạn nộp hồ sơ xét học bạ là khi nào?"
+      ]
+    },
+    {
+      "start_idx": 10290,
+      "end_idx": 10320,
+      "refined_messages": [
+        "Khi nào trường mở cổng xét học bạ sư phạm?",
+        "Điểm chuẩn năm nay ước tính sẽ tăng hay giảm?"
+      ]
+    },
+    {
+      "start_idx": 10440,
+      "end_idx": 10470,
+      "refined_messages": [
+        "Thi VSat 1 đợt duy nhất có đủ để đậu CTU không?",
+        "Tín chỉ của CTU năm 2025 là bao nhiêu?",
+        "Ngành thương mại điện tử dự đoán bao nhiêu một tín chỉ?",
+        "Bút chì với bút bi có in tên trường hoặc tên cá nhân có được mang vào phòng thi không?",
+        "Điểm học bạ năm nay lấy bao nhiêu phần trăm chỉ tiêu?"
+      ]
+    },
+    {
+      "start_idx": 10470,
+      "end_idx": 10500,
+      "refined_messages": [
+        "Trường khi nào hết hạn đăng ký đợt 6?",
+        "Học bạ được quy đổi như thế nào?",
+        "Tại sao ngành Sư phạm Tin học lại có chỉ tiêu cao hơn các ngành Sư phạm Vật lý, Hóa học?",
+        "Ngôn ngữ Anh bao nhiêu một tín chỉ?"
+      ]
+    },
+    {
+      "start_idx": 11040,
+      "end_idx": 11070,
+      "refined_messages": [
+        "Học bạ 22 điểm thì có khả năng đậu không?",
+        "Các điểm sàn của CTU là 15 phải không và có thể giảm nữa không?"
+      ]
+    },
+    {
+      "start_idx": 11070,
+      "end_idx": 11100,
+      "refined_messages": [
+        "Năm nay 23 điểm đậu ngành cơ khí không?",
+        "Trường có xét học bạ không?"
+      ]
+    },
+    {
+      "start_idx": 11100,
+      "end_idx": 11130,
+      "refined_messages": [
+        "Xét học bạ có ưu tiên trường chuyên không?",
+        "Khi nào trường mở đăng ký xét học bạ?"
+      ]
+    },
+    {
+      "start_idx": 11250,
+      "end_idx": 11280,
+      "refined_messages": [
+        "Giờ nhân 3 lần điểm hóa lên xét được không?",
+        "Trường có tổ chức thi đánh giá năng lực không?",
+        "Nghe nói còn 1 đợt xét tuyển, phải không?",
+        "Xét học bạ 6 học kỳ phải không?"
+      ]
+    },
+    {
+      "start_idx": 11310,
+      "end_idx": 11340,
+      "refined_messages": [
+        "Sư phạm năm nay có giảm điểm bớt không?",
+        "Học bạ A00 28,25 có thể vào sư phạm TH không?",
+        "Khi nào CTU xét học bạ?",
+        "Xét học bạ có cùng phương thức khác không?",
+        "Mọi người nghĩ năm nay học bạ có giảm không?",
+        "Học bạ 28 D01 xét được ngành gì không?",
+        "Là 16/7 mới bắt đầu đăng ký và nộp hồ sơ phải không?"
+      ]
+    },
+    {
+      "start_idx": 11400,
+      "end_idx": 11430,
+      "refined_messages": [
+        "Xét học bạ có cần tổ hợp thi THPT không?",
+        "Khi nào Đại học Cần Thơ xét học bạ?",
+        "Cách tính điểm ưu tiên như thế nào?",
+        "Đại học Cần Thơ xét học bạ 6 kỳ hay chỉ cả năm lớp 12?"
+      ]
+    },
+    {
+      "start_idx": 11520,
+      "end_idx": 11550,
+      "refined_messages": [
+        "Mn nghĩ sư phạm Hóa điểm học bạ tầm bao nhiêu?",
+        "Mấy ngành kỹ thuật năm nay CTU xét học bạ tầm nhiêu?",
+        "Học bạ 27,1 điểm có ổn không?",
+        "Mỗi ngành mình được xét đúng một phương thức thôi hả?"
+      ]
+    },
+    {
+      "start_idx": 11760,
+      "end_idx": 11790,
+      "refined_messages": [
+        "Điểm chuẩn là vừa đủ điểm là đậu hay phải trên mức chuẩn?",
+        "22 điểm đủ đậu ngành Bác sĩ Thú y không?"
+      ]
+    },
+    {
+      "start_idx": 11970,
+      "end_idx": 12000,
+      "refined_messages": [
+        "CTU xét học bạ mấy kỳ?",
+        "Điểm học bạ 27 điểm đủ vào Tài chính Ngân hàng không?",
+        "Bên Y Dược có xét học bạ 3 môn không?",
+        "Mình biết điểm THPT trước hay sau khi trường mở cổng?",
+        "Giấy chứng nhận đợt 5 khi nào mới có?"
+      ]
+    },
+    {
+      "start_idx": 12090,
+      "end_idx": 12120,
+      "refined_messages": [
+        "Trường bao giờ xét học bạ ạ?",
+        "Điểm chuẩn học bạ năm nay có tăng không?",
+        "Có khoa học máy tính nào nhận 6 điểm toán không?"
+      ]
+    },
+    {
+      "start_idx": 12210,
+      "end_idx": 12240,
+      "refined_messages": [
+        "CNSH xét khối nào?",
+        "Có giải nhì tỉnh có được cộng gì vào học bạ khi xét tuyển vào CTU không?",
+        "Với 18.5 điểm có đủ vào ngành Quản trị Kinh doanh không (khối Anh Toán KTPL)?",
+        "Thi VSAT ở Cần Thơ có xét được vào các trường khác không?",
+        "Với 18.5 điểm có hy vọng vào ngành Sư phạm Tiểu học không?",
+        "Có khả năng trường giảm điểm xét tuyển không?"
+      ]
+    },
+    {
+      "start_idx": 12240,
+      "end_idx": 12270,
+      "refined_messages": [
+        "Sư phạm toán 26.5 điểm A00 còn hy vọng không?",
+        "Học bạ xét ở đâu?",
+        "Điểm thi THPT thì còn cơ hội không?",
+        "Dự đoán điểm sư phạm sử năm nay bao nhiêu?",
+        "VSAT có xét sư phạm được không?"
+      ]
+    },
+    {
+      "start_idx": 12270,
+      "end_idx": 12300,
+      "refined_messages": [
+        "Có khóa ôn nào không?",
+        "Điểm sư phạm năm nay có giảm không?",
+        "Ngành du lịch lấy bao nhiêu điểm?",
+        "Trường có xét liên thông không?",
+        "Học bạ A00 25 điểm thì đậu ngành nào tự nhiên ổn không?",
+        "Tầm 26 điểm vào Luật hành chính hay dân sự ổn không?",
+        "27 điểm vào Luật CTU được không?"
+      ]
+    },
+    {
+      "start_idx": 12300,
+      "end_idx": 12330,
+      "refined_messages": [
+        "25,35 điểm có đủ để đỗ ngành hóa tại CTU không?",
+        "Đăng ký nkmn ngày 19/6 nhưng chưa nhận được email, làm sao biết có trong danh sách thi?",
+        "21 điểm có đậu ngành thú y không?",
+        "Khi nào mở đăng ký VSAT đợt tiếp theo?",
+        "16 điểm có đậu bách khoa CTU không?",
+        "Đăng ký trên page trường hay ở đâu?",
+        "25 điểm có đủ đỗ sư phạm lý không?",
+        "Khi nào mở đăng ký VSAT đợt 6?",
+        "Thi VSAT là thi môn nào?"
+      ]
+    },
+    {
+      "start_idx": 12360,
+      "end_idx": 12390,
+      "refined_messages": [
+        "CTU có thông báo gì về xét học bạ chưa?",
+        "Mình xét nguyện vọng ở đâu?",
+        "Xét tuyển bằng điểm thi và học bạ cần đăng ký bên trường như thế nào?",
+        "Có chỗ nào coi hướng dẫn đăng ký không?"
+      ]
+    },
+    {
+      "start_idx": 12390,
+      "end_idx": 12420,
+      "refined_messages": [
+        "Cho mình hỏi ngày bộ mở đăng ký là ngày nào? Mình nên đăng ký ngay ngày đó hay để từ từ rồi đăng ký?",
+        "23 điểm có cơ hội đậu các ngành kinh tế không?",
+        "Xét học bạ cần những gì?",
+        "Nộp học bạ như thế nào?",
+        "Khi nào nộp học bạ?"
+      ]
+    },
+    {
+      "start_idx": 12420,
+      "end_idx": 12450,
+      "refined_messages": [
+        "Khi nào nộp học bạ cho CTU?",
+        "Ngành tài chính ngân hàng có xét học bạ không?",
+        "Xét học bạ cho tất cả các ngành luôn đúng không?",
+        "Đại học Cần Thơ đã mở xét học bạ chưa?",
+        "Khi nào mới gửi học bạ?",
+        "Cách xét học bạ như thế nào?",
+        "Thi VSAT đợt 6 có kịp gửi giấy về để xét không?"
+      ]
+    },
+    {
+      "start_idx": 12510,
+      "end_idx": 12540,
+      "refined_messages": [
+        "Khi nào nộp học bạ cho CTU được?",
+        "Nộp học bạ qua web hay sao?",
+        "D01 năm nay tầm nhiêu điểm là ổn?",
+        "CTU không xét đánh giá năng lực của Bách Khoa đúng không?",
+        "301,5 có cơ hội vô luật hành chính không?",
+        "Thi VSAT D01 thì có xét được truyền thông đa phương tiện không?"
+      ]
+    },
+    {
+      "start_idx": 12540,
+      "end_idx": 12570,
+      "refined_messages": [
+        "Vừa xét học bạ vừa thi THPTQG được không hay chỉ được chọn một phương thức?",
+        "Y Dược Cần Thơ có xét VSAT đợt 6 không?",
+        "Thi năng khiếu HCMUE có được chuyển điểm qua Trường Đại học Cần Thơ không?",
+        "340+ điểm có vào ngành Du lịch được không?",
+        "Đại học Cần Thơ đã mở xét học bạ chưa?",
+        "Công nghệ sinh học có xét khối A00 không?",
+        "Chương trình đại trà và tiên tiến khác nhau như thế nào?",
+        "Điểm VSAT, tốt nghiệp, học bạ được xét chung một điểm chuẩn hay chia làm ba?",
+        "Trường có lấy điểm thi năng khiếu ĐH Sư phạm TPHCM với ĐH Sài Gòn không?"
+      ]
+    },
+    {
+      "start_idx": 12570,
+      "end_idx": 12600,
+      "refined_messages": [
+        "Ngày nào Đại học Cần Thơ sẽ mở cổng nhận học bạ?",
+        "Thi năng khiếu có phần hát không, hay chỉ đọc chuyện với kể chuyện?",
+        "Vsat lấy đề ở đâu?"
+      ]
+    },
+    {
+      "start_idx": 12600,
+      "end_idx": 12630,
+      "refined_messages": [
+        "Mọi người ơi, em lỡ nhập sai tên với CCCD vào đăng ký thông tin, vậy em phải làm như thế nào?",
+        "C00 23,5 điểm thì được ngành nào không?",
+        "Bây giờ nộp học bạ vào CTU còn kịp không?",
+        "Trường đã mở xét học bạ chưa?",
+        "Ngày 16/7 mới mở cổng đăng ký phải không?"
+      ]
+    },
+    {
+      "start_idx": 12630,
+      "end_idx": 12660,
+      "refined_messages": [
+        "Khi nào CTU mới xét học bạ?",
+        "Trường xét học bạ 3 năm hay xét năm lớp 12 thôi?",
+        "Thi V-SAT tối thiểu bao nhiêu môn?",
+        "Xét V-SAT có cần đến giấy kết quả không hay chỉ cần tra hệ thống là được?",
+        "Sau khi đăng ký V-SAT thì thời gian thông tin có sau bao lâu?"
+      ]
+    },
+    {
+      "start_idx": 12660,
+      "end_idx": 12690,
+      "refined_messages": [
+        "Link xét học bạ đại học Cần Thơ?",
+        "Học bạ 26,25 với V-SAT 300+ có cơ hội xét tuyển không?",
+        "Có cần giấy điểm khi nộp V-SAT vào CTU không?",
+        "Nếu không xét kịp trước 30/6, dù hạn chót 16/7 thì có xét được không?",
+        "Khi xét tuyển, cần chuẩn bị gì và nộp ở đâu?"
+      ]
+    },
+    {
+      "start_idx": 12690,
+      "end_idx": 12720,
+      "refined_messages": [
+        "Hình thức thi năng khiếu tại CTU như thế nào? Có thi cả hát, đọc diễn cảm và kể chuyện không? Được tự chuẩn bị hay phải bóc thăm?",
+        "VSAT sư phạm Anh xét tổ hợp nào?",
+        "Thi VSAT tối thiểu bao nhiêu môn?",
+        "Học bạ 21 điểm thì vào được ngành nào không?",
+        "Lịch đăng ký thi năng khiếu từ ngày nào đến ngày nào?",
+        "VSAT 345 D01 xét ngôn ngữ Anh có ổn không?",
+        "Có mẫu đề ôn thi năng khiếu mầm non không?",
+        "Làm sao để biết mình có trong danh sách đi thi năng khiếu mầm non?",
+        "Nguyện vọng học bạ và nguyện vọng THPT có riêng không khi đăng ký trên hệ thống của Bộ?",
+        "Điểm VSAT 329 có khả năng đậu sư phạm tiểu học không?"
+      ]
+    },
+    {
+      "start_idx": 12720,
+      "end_idx": 12750,
+      "refined_messages": [
+        "Trường xét học bạ trên web của Bộ Giáo dục không?",
+        "Ngành luật và sư phạm có tổ hợp C00 không?",
+        "CTU có xét học bạ online không?",
+        "Xét học bạ CTU thì ở đâu?",
+        "Điểm học bạ của CTU tính như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 12750,
+      "end_idx": 12780,
+      "refined_messages": [
+        "Học bạ là CTU có ưu tiên cho 149 trường trong danh sách ưu tiên không?",
+        "Học bạ A00 với 28.8 điểm có cơ hội vào sư phạm toán không?",
+        "Ngành kế toán có xét môn toán, văn, sử không?",
+        "D07 với 19.5 điểm có cơ hội vào hóa dược không?",
+        "Điểm chuẩn năm nay có như 2018 không?"
+      ]
+    },
+    {
+      "start_idx": 12780,
+      "end_idx": 12810,
+      "refined_messages": [
+        "Dạ lấy giấy đăng ký vào học ở đâu vậy ạ?",
+        "Thi V-SAT thì chọn những môn xét trong tổ hợp để thi hay là thi hết môn vậy ạ?"
+      ]
+    },
+    {
+      "start_idx": 12840,
+      "end_idx": 12870,
+      "refined_messages": [
+        "26.5 điểm C00 THPT có đậu được ngành nào không? Hoặc chạm điểm sàn thì sao?",
+        "Trường Đại học Cần Thơ xét tuyển chung hay xét riêng theo từng phương thức?",
+        "Trường Đại học Cần Thơ sẽ xét tuyển theo điểm THPTQG và điểm V-SAT đổi ra như thế nào? Có thể lựa chọn điểm cao hơn để xét tuyển không?"
+      ]
+    },
+    {
+      "start_idx": 12870,
+      "end_idx": 12900,
+      "refined_messages": [
+        "Xét học bạ Đại học Cần Thơ khi nào nộp đơn xét?",
+        "Nếu xét học bạ môn mà không chọn thi tốt nghiệp được không?",
+        "Muốn vào ngành Giáo dục Thể chất thì cần gì?",
+        "Khi nào trường mở đăng ký nguyện vọng?",
+        "Với phương thức Vsat, trường sẽ tự xem điểm hay cần gửi bảng điểm đến trường?",
+        "Có biết trước điểm Vsat trên web không hay có bảng điểm rồi mới biết điểm?",
+        "Trường đã xét học bạ chưa?"
+      ]
+    },
+    {
+      "start_idx": 12900,
+      "end_idx": 12930,
+      "refined_messages": [
+        "Xét học bạ là mình xét online trước rồi sau đó đậu thì mới gửi học bạ về nhà trường đúng không?",
+        "Hiện tại đăng ký nguyện vọng thử được rồi đúng không?",
+        "Bao giờ trường mở xét học bạ vậy?",
+        "Giấy chứng nhận VSAT đợt 5 khi nào mới có?",
+        "Cách thức đăng ký thi VSAT đợt 6 ra sao?",
+        "Hạn VSAT đến khi nào vậy?"
+      ]
+    },
+    {
+      "start_idx": 12930,
+      "end_idx": 12960,
+      "refined_messages": [
+        "Trường đã mở cổng xét học bạ chưa?",
+        "Muốn nộp xét với nhà trường thì cần nộp gì?",
+        "Nếu nộp giấy điểm VSAT thì người ta sẽ xét điểm cao nhất đúng không?",
+        "Có thể xếp nguyện vọng xét VSAT sau để ưu tiên nguyện vọng đầu được không?",
+        "VSAT thi đợt 1 có cần học xong hết kiến thức lớp 12 không?",
+        "VSAT không dành cho sư phạm phải không?",
+        "VSAT năm rồi lấy điểm chuẩn là bao nhiêu?",
+        "VSAT đợt 6 trường còn hỗ trợ ký túc xá không?",
+        "Có thể xét học bạ, VSAT và điểm THPT cùng một lượt không?"
+      ]
+    },
+    {
+      "start_idx": 12960,
+      "end_idx": 12990,
+      "refined_messages": [
+        "Trường có xét học bạ vào ngày 30/6 không?",
+        "Điểm VSAT bao nhiêu là an toàn cho ngành Tài chính Ngân hàng?",
+        "Mình có làm hồ sơ để nộp trực tiếp vào trường luôn, hay mình đợi thông báo trúng nguyện vọng trên hệ thống?",
+        "Thi VSAT thường tầm mấy giờ?"
+      ]
+    },
+    {
+      "start_idx": 12990,
+      "end_idx": 13020,
+      "refined_messages": [
+        "Mầm non chừng nào xét?",
+        "Xét học bạ có cần photo không?",
+        "Học bạ trường lấy 25% hay 20%?",
+        "Gửi hồ sơ cho trường bằng V-SAT được chưa?",
+        "Thi năng khiếu ở khu nào?",
+        "Thi V-SAT có khó không? Ôn luyện làm sao?"
+      ]
+    },
+    {
+      "start_idx": 13020,
+      "end_idx": 13050,
+      "refined_messages": [
+        "Thi năng khiếu phần kể chuyện là kể lại câu chuyện bốc được hay tự chọn?",
+        "Nếu đã đăng ký thi năng khiếu mầm non mà quên ghi nội dung chuyển khoản, có cách nào để trường duyệt không?",
+        "Thi năng khiếu ở trường Đồng Tháp, có thể lấy kết quả gửi về trường Cần Thơ không?",
+        "Trường có hỗ trợ lấy bảng điểm ngay sau khi thi không?",
+        "VSAT trường có xét D01 ngôn ngữ Anh không?"
+      ]
+    },
+    {
+      "start_idx": 13050,
+      "end_idx": 13080,
+      "refined_messages": [
+        "Em đăng ký thi VSAT D01 thì có được không khi tổ hợp là D09 và D10?",
+        "Xét học bạ ngành Ngôn Ngữ Anh với tổ hợp Toán, Sử, Anh có được không nếu thi THPT không có môn Sử?",
+        "Điểm học bạ Toán 9,3 và điểm thi ước tính 6 thì điểm sau khi quy đổi là bao nhiêu?",
+        "Có thể không thi VSAT không?",
+        "Thời gian đăng ký VSAT từ ngày nào đến ngày nào?",
+        "Khi nào CTU mở xét học bạ?",
+        "Thi năng khiếu mầm non cần mang theo những gì?",
+        "Cách đăng ký sử dụng kết quả VSAT để đăng ký nguyện vọng của Bộ là như thế nào?",
+        "Xét học bạ ngành Kiến trúc thì tính điểm như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 13080,
+      "end_idx": 13110,
+      "refined_messages": [
+        "Khi xét học bạ, cần nộp giấy tờ gì để chứng minh điểm ưu tiên khu vực và đối tượng?",
+        "Khi nào đăng ký xét học bạ trên website?",
+        "Học bạ 28 điểm có đỗ được ngành Sư phạm Khoa học Tự nhiên, Sư phạm Tiểu học, hoặc Sư phạm Hóa không?",
+        "VSAT thi hết 8 môn hay chỉ thi các môn khối mình muốn vào?"
+      ]
+    },
+    {
+      "start_idx": 13110,
+      "end_idx": 13140,
+      "refined_messages": [
+        "Mình thi năng khiếu ở trường Đồng Tháp, vậy giờ mình đợi kết quả rồi gửi về Trường Cần Thơ được không?",
+        "Không thi THPT môn Sử thì có quy đổi điểm được không?",
+        "Kỳ thi tiếng Anh đầu vào, mình thi SPA hoặc NNA có cần thi không?",
+        "Điểm đại học có làm tròn lên không?",
+        "Chỉ làm tròn kết quả cuối cùng chứ không làm trong quá trình đúng không?",
+        "16/7 mới nộp học bạ hay sao?"
+      ]
+    },
+    {
+      "start_idx": 13140,
+      "end_idx": 13170,
+      "refined_messages": [
+        "X trong công thức là lấy học kỳ hay cả năm của học bạ?",
+        "Xem lịch thi VSAT ở đâu?",
+        "Công thức quy đổi điểm VSAT và học bạ như thế nào?",
+        "Vừa đóng tiền thì hệ thống để đã nhận tiền luôn hay phải chờ?",
+        "Sau khi đăng ký có thời hạn bao lâu để chuyển tiền?",
+        "Thi VSAT buổi sáng thường bắt đầu lúc mấy giờ?",
+        "Thi năng khiếu mầm non khó không?"
+      ]
+    },
+    {
+      "start_idx": 13170,
+      "end_idx": 13200,
+      "refined_messages": [
+        "Trường có hỗ trợ lấy bảng điểm ngay sau khi thi không?",
+        "Nếu học ở CTU và xét VSAT thì có cần bảng điểm giấy không?",
+        "Link xét học bạ Đại học Cần Thơ là gì?",
+        "CTU đã mở đăng ký xét học bạ chưa?",
+        "CTU xét học bạ 3 năm hay 6 học kỳ?",
+        "Trường có thi đầu vào tiếng Anh không?",
+        "Khu Hòa An đã mở xét tuyển chưa?"
+      ]
+    },
+    {
+      "start_idx": 13200,
+      "end_idx": 13230,
+      "refined_messages": [
+        "29,xx có khả năng đậu Sư phạm Toán Hóa không?",
+        "Làm thế nào để chỉnh sửa thông tin sau khi đã đăng ký thi năng khiếu và gửi đi?",
+        "Nếu xét điểm thi THPT quốc gia thì có cần điều kiện học sinh giỏi không?",
+        "Năm nay điểm học bạ có phụ thuộc vào điểm thi không?",
+        "Điểm học bạ có quy đổi về thang điểm 30 không?",
+        "Điểm theo hệ thống có bị giảm không?",
+        "Điểm đánh giá năng lực chuyên biệt khác điểm đánh giá năng lực như thế nào? Thi một bài thi gồm 6 môn hay không được thi lẻ như V-Sat?",
+        "Phương thức 6 học bạ lấy điểm cao không?",
+        "Giấy báo điểm VSAT có thể photo và công chứng để nộp cho trường khác được không?",
+        "A00 V-Sat đổi qua 26,65 điểm có thấp quá không?"
+      ]
+    },
+    {
+      "start_idx": 13230,
+      "end_idx": 13260,
+      "refined_messages": [
+        "Làm sao để đăng ký thi VSAT?",
+        "Giấy báo điểm VSAT có thể photo công chứng để nộp cho trường khác hay phải xin trường Cần Thơ cấp bản khác?",
+        "Kỳ thi VSAT đợt 6 có xét cho trường khác được không hay chỉ xét cho trường CTU?",
+        "Thi VSAT là thi trên máy tính đúng không?",
+        "Khi nào trường xét học bạ?",
+        "Cách tính tổng điểm học bạ như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 13260,
+      "end_idx": 13290,
+      "refined_messages": [
+        "Trường Đại học Cần Thơ có quy đổi điểm IELTS hay VSTEP thành điểm THPT không?",
+        "Năm nay có chỉ tiêu riêng cho từng phương thức xét tuyển không, hay xét chung học bạ, THPT, VSAT từ trên lấy xuống?",
+        "Trường Đại học Cần Thơ chừng nào mở xét học bạ?",
+        "Trên hệ thống của bộ có xét học bạ được không?"
+      ]
+    },
+    {
+      "start_idx": 13290,
+      "end_idx": 13320,
+      "refined_messages": [
+        "Mở cổng xét học bạ chưa?",
+        "Ngành 21 điểm mà mình 24 điểm thì vẫn rớt vì đặt nguyện vọng thấp hơn không?",
+        "21 điểm thì đậu nổi thú y không?",
+        "Với điểm VSAT 373 thì đậu được ngành nào theo tổ hợp B00?",
+        "Ngày 16/7 trường mới mở xét học bạ phải không?",
+        "Link đăng ký VSAT đợt cuối của CTU bị lag hay hết hạn?",
+        "Trường có ký túc xá qua đêm không?"
+      ]
+    },
+    {
+      "start_idx": 13320,
+      "end_idx": 13350,
+      "refined_messages": [
+        "Thi năng khiếu phần kể chuyện có được nhìn lại ngữ liệu không?",
+        "Xét học bạ thì có cần nộp minh chứng không?",
+        "Trường đã mở xét tuyển chưa?",
+        "Có cần nộp học bạ gửi trường chưa?",
+        "Vsat có cần giấy báo điểm để làm bằng chứng nộp cho trường không?"
+      ]
+    },
+    {
+      "start_idx": 13350,
+      "end_idx": 13380,
+      "refined_messages": [
+        "CTU xét học bạ có cần nộp minh chứng không?",
+        "Xét điểm là chỉ tiêu hay khối hay tổng lại các khối lấy từ trên xuống?",
+        "Phần thi năng khiếu thể chất có thi đợt 1 hồi tháng 4 không?",
+        "Ghi nguyện vọng xét học bạ là đậu nguyện vọng 1 rồi thì có bỏ các nguyện vọng 2-3-4 không hay là xét tiếp?",
+        "Ngày giờ thi V-Sat đợt 6?",
+        "Khi nào CTU xét học bạ?",
+        "Sau khi quy đổi điểm có được cộng thêm điểm đối tượng ưu tiên và khu vực ưu tiên không?"
+      ]
+    },
+    {
+      "start_idx": 13410,
+      "end_idx": 13440,
+      "refined_messages": [
+        "Năm lớp 10 không học môn Địa, nhưng 11, 12 có học thì xét học bạ có được không?",
+        "Thi năng khiếu hát và đọc diễn cảm ở Đồng Tháp thì nộp kết quả cho Đại học Cần Thơ ngành giáo dục mầm non được không?"
+      ]
+    },
+    {
+      "start_idx": 13440,
+      "end_idx": 13470,
+      "refined_messages": [
+        "Giấy dự thi năng khiếu có cần nộp lại không?",
+        "Muốn đậu ngành báo chí tại CTU thì điểm VSAT cần bao nhiêu?",
+        "Trường CTU có yêu cầu điểm sàn THPT trong xét tuyển học bạ không?",
+        "C00 26 điểm có đậu nổi ngành báo chí hay luật không?",
+        "Mình chỉ cần đăng ký nguyện vọng thôi phải không, đâu cần làm hồ sơ đúng không?",
+        "Đăng ký ký túc xá để ở thi VSAT ở đâu, mục nào?",
+        "Qua hôm nay còn đăng ký ở ký túc xá được không?",
+        "Đăng ký VSAT mấy ngày rồi chưa thấy lịch thi có sao không?",
+        "Mọi người được xoá mấy cái nguyện vọng lúc đăng ký thử chưa?"
+      ]
+    },
+    {
+      "start_idx": 13470,
+      "end_idx": 13500,
+      "refined_messages": [
+        "Điểm chuẩn có giảm nhiều không?",
+        "Điểm xét học bạ có ảnh hưởng đến điểm thi không?",
+        "Xem lịch và ca thi VSAT đợt 6 CTU ở đâu?",
+        "Mình có thể xin trường sắp lại lịch thi nếu không thể thi được không?",
+        "370,5 điểm VSAT chưa tính bài luận ngữ văn khối C00 có đậu sư phạm văn không?"
+      ]
+    },
+    {
+      "start_idx": 13500,
+      "end_idx": 13530,
+      "refined_messages": [
+        "Năm nay khi nào mới làm hồ sơ nhập học?",
+        "Kết quả VSAT nộp ở đâu để xét tuyển?",
+        "Đăng ký nguyện vọng làm online hết phải không?",
+        "Đăng ký xét học bạ trên cổng của bộ có được chọn phương thức không?",
+        "Thi A01 muốn xét học bạ B00 thì khi lên hệ thống chọn tổ hợp như thế nào?",
+        "Thi năng khiếu giáo dục mầm non khi nào có điểm?",
+        "Sư phạm Anh Văn thi VSAT cần bao nhiêu điểm để an toàn?",
+        "Trường có thi tiếng Anh đầu vào không?",
+        "Thi VSAT môn Ngữ văn là trên máy phải không?",
+        "Xét học bạ năm 2025 có cần nộp minh chứng điểm về cho trường không hay chỉ mấy bạn thi VSAT mới nộp?",
+        "33x điểm VSAT đủ học sư phạm chưa với tổ hợp A00?"
+      ]
+    },
+    {
+      "start_idx": 13530,
+      "end_idx": 13560,
+      "refined_messages": [
+        "Khi nào có lịch thi V-Sat đợt cuối?",
+        "Chỉ tiêu tuyển sinh năm nay có tăng không?",
+        "Trường có cần gửi học bạ về không?",
+        "Trường đã mở xét học bạ chưa?",
+        "Điểm V-Sat năm nay có tăng không?"
+      ]
+    },
+    {
+      "start_idx": 13560,
+      "end_idx": 13590,
+      "refined_messages": [
+        "Có thể photo bảng điểm VSAT công chứng được không?",
+        "Nên lấy tài liệu ôn thi VSAT tiếng Anh ở đâu?",
+        "Cơ hội việc làm sau khi tốt nghiệp ở Đại học Cần Thơ như thế nào?",
+        "Thời gian có kết quả sau khi đăng ký nguyện vọng là bao lâu?",
+        "26 điểm đã quy đổi có cơ hội đậu ngành Kiểm toán không?",
+        "Có thể đăng ký nhiều ngành trong một trường không?",
+        "Có bạn nào thi đợt 5 tải bảng điểm được chưa?",
+        "Có thể xem được lịch thi VSAT không?",
+        "Đăng ký PT6 có được đăng ký nguyện vọng không?",
+        "VSAT còn đợt thi nào nữa không?"
+      ]
+    },
+    {
+      "start_idx": 13590,
+      "end_idx": 13620,
+      "refined_messages": [
+        "Bao giờ có lịch thi?",
+        "Xin dời lịch VSAT như thế nào?",
+        "Cách viết mail xin dời lịch VSAT?",
+        "Đăng kí ký túc xá ở CTU để thi VSAT 1 đêm 1 người là 100k phải không?",
+        "Khi xét tốt nghiệp có cần nộp học bạ về trường không?"
+      ]
+    },
+    {
+      "start_idx": 13620,
+      "end_idx": 13650,
+      "refined_messages": [
+        "Mình gửi bảng điểm thi năng khiếu của trường khác về cho CTU thì chỉ cần gửi bảng điểm thôi hay có gửi gì nữa không?",
+        "Phần quy đổi điểm học bạ là bao nhiêu học kỳ và tính như thế nào?",
+        "Nếu có vấn đề về lệ phí thì phải làm sao?",
+        "Điểm V-SAT sau này sẽ tự có trên hệ thống của bộ để xét hay mình cần làm gì không?",
+        "Có cần nhập điểm lên website trước rồi mới gửi về trường không?"
+      ]
+    },
+    {
+      "start_idx": 13650,
+      "end_idx": 13680,
+      "refined_messages": [
+        "Trường đã xét học bạ chưa?",
+        "Trường mở nộp học bạ đợt 1 rồi chưa?"
+      ]
+    },
+    {
+      "start_idx": 13680,
+      "end_idx": 13710,
+      "refined_messages": [
+        "Điểm V-SAT có phải nộp cho trường không?",
+        "Khi nào Đại học Cần Thơ mở cổng xét tuyển?",
+        "Có cần đăng ký nguyện vọng trên hệ thống Bộ khi có đủ điểm không?",
+        "Bao giờ công bố điểm chuẩn?",
+        "CCCD mình thêm bằng ảnh hay bằng file?",
+        "Nộp minh chứng ở đâu?",
+        "Bao giờ mình nộp minh chứng?"
+      ]
+    },
+    {
+      "start_idx": 13710,
+      "end_idx": 13740,
+      "refined_messages": [
+        "Phiếu cung cấp điểm nộp cho trường là điểm học bạ THPT, sau này thi VSAT có thể bổ sung sau hay nộp chung bảng điểm cả hai một lần?",
+        "Điểm thi năng khiếu có cần nộp lại cho trường không?",
+        "Xét học bạ có cần nộp học bạ về trường không?",
+        "Ngày 16/7 có điểm thì gửi học bạ về trường luôn hay xét trên trang trường?",
+        "Cách tính điểm học bạ của web bộ như thế nào?",
+        "2k7 có cần gửi minh chứng điểm học bạ hay VSAT về trường không?",
+        "Khi đăng ký nguyện vọng thì chỉ làm một lần hay có thể điều chỉnh trong hạn?",
+        "Xét học bạ CTU có cần gửi hồ sơ cung cấp minh chứng đến trường không?",
+        "Ngành Giáo dục Mầm non CTU xét học bạ 3 năm luôn không?",
+        "Nhập điểm trên web cung cấp điểm thì có cần gửi học bạ qua bưu điện cho trường không?"
+      ]
+    },
+    {
+      "start_idx": 13740,
+      "end_idx": 13770,
+      "refined_messages": [
+        "Mình xét VSAT nên nhập VSAT có cần nhập thêm điểm học bạ không?",
+        "Thi VSAT ở trường Đại học Đồng Tháp thì có cần gửi minh chứng kết quả về Đại học Cần Thơ không?",
+        "Làm sao để xoá thông tin điểm đã cung cấp nếu không phải thí sinh tự do?",
+        "Cung cấp điểm học bạ trên web của bộ có cần thiết không nếu đã là thí sinh tự do?",
+        "Đại học Cần Thơ xét học bạ mấy năm?",
+        "Ngày 18 mới thi xong VSAT đợt 6 của CTU, thì ngày 18 mới điền nguyện vọng được không?",
+        "Đăng ký nguyện vọng trước khi có điểm thi VSAT có sao không?",
+        "Dân tộc Hoa được cộng bao nhiêu điểm ưu tiên?",
+        "Ở vùng miền sẽ cộng được bao nhiêu điểm ưu tiên?",
+        "Có cộng điểm vùng miền không?"
+      ]
+    },
+    {
+      "start_idx": 13770,
+      "end_idx": 13800,
+      "refined_messages": [
+        "Ngành không có tổ hợp môn thì chỉ có xét học bạ đúng không?",
+        "Chưa có thông báo điểm chuẩn đúng không?",
+        "Khi nào mở đăng ký nguyện vọng?",
+        "Thi được giải ba HSG cấp tỉnh thì có được cộng điểm không?",
+        "Khi nào mới có phổ điểm quy đổi học bạ?",
+        "Khi nào mới có điểm chuẩn?",
+        "Tìm trên web của Bộ không thấy điểm VSAT, vậy mình phải gửi công chứng về trường phải không?"
+      ]
+    },
+    {
+      "start_idx": 13800,
+      "end_idx": 13830,
+      "refined_messages": [
+        "Chỉ tiêu lấy bằng điểm THPT Quốc Gia của ngành Luật là bao nhiêu?",
+        "Vsat xét chung hay riêng với THPT Quốc Gia?",
+        "CTU có cần gửi học bạ trực tiếp không hay chỉ cần điền thẳng nguyện vọng?",
+        "Quy đổi điểm chuẩn Đại học Cần Thơ như thế nào?",
+        "Nộp học bạ đã mở chưa?",
+        "Quy đổi là Vsat hay học bạ đều về chung thang điểm thi?",
+        "Xét học bạ cần chuẩn bị những gì?",
+        "20 mới thi Vsat, bây giờ đăng kí được không?",
+        "Đăng ký nguyện vọng trên bộ bằng học bạ như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 13830,
+      "end_idx": 13860,
+      "refined_messages": [
+        "Khi nào biết mình đậu hay rớt đại học?",
+        "Điểm thi THPT, học bạ, VSAT quy về thang điểm 30 và xét chung một điểm chuẩn đúng không?",
+        "Chỉ thí sinh tự do mới cần nộp minh chứng VSAT đúng không?",
+        "Khi nào trường xét học bạ?",
+        "Việc đổi điểm của CTU tương đương với điểm gì?",
+        "Đặt nguyện vọng trên web của bộ, có thể đặt cho 2 trường không?",
+        "Đạt giải học sinh giỏi tỉnh được cộng 1 điểm, có cần nộp minh chứng về trường không?",
+        "Quy trình xét học bạ của Đại học Cần Thơ như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 13860,
+      "end_idx": 13890,
+      "refined_messages": [
+        "Học kế toán ở khu Sóc Trăng khác gì với Cần Thơ không?",
+        "Một nguyện vọng là bao nhiêu tiền?",
+        "26.5 điểm khối C00 có học được ngành liên quan đến giáo viên không?",
+        "Khi nào trường mở xét học bạ?",
+        "Xét học bạ thì bao nhiêu điểm trở lên là an toàn?",
+        "2k7 có cần nộp minh chứng học bạ và điểm V-Sat năm 2025 cho Trường không?"
+      ]
+    },
+    {
+      "start_idx": 13890,
+      "end_idx": 13920,
+      "refined_messages": [
+        "28 điểm có đủ để học ngành Sư phạm Lý không?",
+        "Cách tính quy đổi điểm học bạ sang điểm THPT như thế nào?",
+        "Xét học bạ có nhân hệ số không hay để vậy tính luôn?",
+        "Xét điểm VSAT cần phải đủ điểm sàn THPT mới đậu không?",
+        "Trường Đại học Cần Thơ xét học bạ 6 kỳ hay 3 năm?",
+        "Công cụ đổi điểm có sửa lại điểm sau khi có điểm THPT không hay giữ nguyên?",
+        "Có ai bị lỗi khi tải lên CCCD không?",
+        "19,25 điểm A00 còn ngành nào có thể xét tuyển không?"
+      ]
+    },
+    {
+      "start_idx": 13920,
+      "end_idx": 13950,
+      "refined_messages": [
+        "Cao đẳng Cần Thơ có đào tạo giáo dục mầm non không?",
+        "Nộp học bạ là thí sinh tốt nghiệp trở về trước, 2k7 chỉ cần đăng ký trên web bộ thôi, phải không?",
+        "Có anh chị nào học hệ thống thông tin chương trình chất lượng cao cho em xin tí tư vấn với ạ?",
+        "Mọi người cho em xin link tính điểm học bạ với ạ?",
+        "Năm nay xét học bạ trường mình như thế nào vậy ạ?",
+        "Cho mình hỏi đăng ký nguyện vọng trên web của bộ còn bên trường có cần đăng ký trên web của trường không ạ?",
+        "Kết quả thi năng khiếu của mình bị sai thông tin ngày tháng sinh thì có sao không ạ?"
+      ]
+    },
+    {
+      "start_idx": 13950,
+      "end_idx": 13980,
+      "refined_messages": [
+        "Đăng ký xét nguyện vọng bên CTU có chỉ đăng ký trên hệ thống của bộ thôi không?",
+        "Trường nhập sai từ Địa lí sang Đại lí nhưng đúng điểm thì cần liên hệ sửa không?",
+        "Thí sinh đã tốt nghiệp 2022 bây giờ xét điểm học bạ là lên trường nộp học bạ hay sao?",
+        "CTU có miễn học phí không?",
+        "Miễn học phí cho tất cả ngành hay chỉ sư phạm?",
+        "Phúc khảo trắc nghiệm nộp ở đâu?",
+        "Dự đoán điểm chuẩn học bạ năm nay có tăng không?",
+        "Tính điểm học bạ như thế nào?",
+        "Khi nào hết hạn đăng ký nguyện vọng?",
+        "Điểm VSAT quy định như thế nào?"
+      ]
+    },
+    {
+      "start_idx": 13980,
+      "end_idx": 14010,
+      "refined_messages": [
+        "Xét học bạ có đăng ký trực tuyến không hay phải nộp trực tiếp tại trường?",
+        "Khi nào xét học bạ?",
+        "Đặt nguyện vọng trên cổng thông tin xong rồi có cần nộp học bạ về trường không?",
+        "Trường đã cho nộp học bạ chưa?",
+        "Chỉ cần đặt nguyện vọng là trường sẽ chọn xét học bạ cho mình phải không?",
+        "Địa chỉ báo tin khi điền thông tin nhập điểm là điền theo địa chỉ trên CCCD hay sau khi sáp nhập?",
+        "Đăng ký xét học bạ như thế nào?",
+        "Đăng ký trên web của bộ rồi có cần đăng ký trên đường link của trường không?"
+      ]
+    },
+    {
+      "start_idx": 14010,
+      "end_idx": 14040,
+      "refined_messages": [
+        "Làm thế nào để xét học bạ tại Đại học Cần Thơ?",
+        "Trường có cần gửi bảng điểm học bạ không?",
+        "Trường sẽ gửi điểm chuẩn trong thời gian nguyện vọng hay sau khi đăng ký nguyện vọng xong?",
+        "Cách xét điểm V-SAT như thế nào?",
+        "Trường sẽ công bố điểm chuẩn khi nào?",
+        "Ngành học không có tổ hợp môn thì phải làm sao?",
+        "Điểm V-SAT có cần công chứng và gửi về trường không?",
+        "Điểm V-SAT là điểm môn nào cao nhất?",
+        "Nếu chọn sư phạm Tiếng Anh có cần bằng IELTS không?",
+        "Có cần xét học bạ trên cổng trường không?",
+        "Khi xét học bạ kết hợp V-SAT, đăng ký lên web bộ có tự chọn phương thức cao nhất không?",
+        "Có thể xét học bạ bằng khối khác khối đăng ký thi THPT không?"
+      ]
+    },
+    {
+      "start_idx": 14040,
+      "end_idx": 14070,
+      "refined_messages": [
+        "NNA Khu Hòa An có chuyên ngành biên phiên dịch không?",
+        "Nếu muốn đăng ký xét học bạ thì phải đăng ký trên web bộ như thế nào?",
+        "Đã mở hệ thống tính điểm học bạ trên Google chưa?",
+        "Trường đã mở xét học bạ chưa?",
+        "Phương thức 6 có cần đăng ký trên bộ không?",
+        "Xét học bạ chỉ cần đăng ký trên web bộ thôi phải không?",
+        "Thi VSAT ở DThU có cần nộp về CTU không?"
+      ]
+    },
+    {
+      "start_idx": 14070,
+      "end_idx": 14100,
+      "refined_messages": [
+        "Mn ơi cho mình hỏi trường có nhận điểm thi năng khiếu ở Cao đẳng Cà Mau không?",
+        "Thi VSAT đợt 6 ngày 18/7 có điểm rồi nhưng trên cổng thông tin của bộ thì chưa có, mình phải làm sao?",
+        "Ý mình là trường chưa gửi giấy chứng nhận kết quả, bảng điểm trên web mình in file ra nộp được không?",
+        "Mn ơi cho mình hỏi xét học bạ với VSAT CTU cần nộp hồ sơ gì cho trường ạ?",
+        "Mn ơi mình 2k7 đăng ký trên bộ rồi có cần đăng ký trên web trường và gửi hồ sơ giấy về trường không ạ?",
+        "Xét bằng VSAT vào trường như thế nào vậy ạ?",
+        "Mn ơi 340 VSAT D01 có đậu tâm lý học không mn?",
+        "Lấy phiếu báo điểm trực tiếp như thế nào vậy mn?",
+        "VSAT đợt 6 có trên web bộ chưa mn?",
+        "Đăng ký nguyện vọng là xét cả học bạ cả điểm thi tốt nghiệp đúng không mọi người?"
+      ]
+    },
+    {
+      "start_idx": 14100,
+      "end_idx": 14130,
+      "refined_messages": [
+        "Mình nộp minh chứng điểm VSAT cho CTUMP qua file điểm của CTU được không hay phải đợi bảng điểm chính thức?",
+        "Khi đăng ký vào trường có cần qua trường nộp hồ sơ không?",
+        "Chỉ cần đăng ký nguyện vọng trên web của bộ thôi đúng không?",
+        "Điểm IELTS là điểm cộng hay điểm quy đổi?",
+        "Điểm VSAT đợt 6 khi nào cập nhật lên hệ thống của bộ?",
+        "Thi VSAT trường khác thì có cần nộp minh chứng cho trường không?"
+      ]
+    },
+    {
+      "start_idx": 14130,
+      "end_idx": 14160,
+      "refined_messages": [
+        "Mình chỉ cần đăng ký trên web của bộ hay có cần đăng ký trên web của trường không?",
+        "Xét tuyển VSAT có được cộng điểm ưu tiên không?",
+        "Nếu muốn học trong lĩnh vực nông-lâm thì nên học ngành nào của trường? Có cơ hội việc làm sau khi học ngành đó không và làm việc ở đâu?",
+        "Nếu thi ngày 20 mà trên cổng để ngày khác thì cần báo với trường không?",
+        "Trường Cần Thơ nếu muốn xét học bạ thì đăng ký nguyện vọng trên web có nhập điểm học bạ rồi có cần nộp hồ sơ không? Hiện tại đã hết thời hạn nộp hồ sơ về trường chưa?",
+        "Điểm thi năng khiếu thi của trường khác cập nhật về trường bằng cách nào?",
+        "Phiếu điểm thi VSAT mà trường Cần Thơ gửi có tác dụng gì và có cần nộp gì không?",
+        "Trường có ngành Quản trị khách sạn không?",
+        "Ngành Văn học học thêm nghiệp vụ sư phạm thì có thể đứng lớp dạy được không?",
+        "Xét điểm VSAT ở Đồng Tháp và học bạ thì có cần gửi minh chứng về trường không?",
+        "Xét vào trường bằng học bạ thì chỉ cần nhập học bạ lên bộ rồi đặt nguyện vọng là được phải không?"
+      ]
+    },
+    {
+      "start_idx": 14160,
+      "end_idx": 14190,
+      "refined_messages": [
+        "Mọi người ơi gửi minh chứng VSAT về CTU thì gửi địa chỉ cụ thể là gì?",
+        "Thi VSAT ngày 18/7/2025, nhưng giấy chứng nhận ghi 17/7/25, có cần thiết phải liên hệ để sửa không?",
+        "Điền nguyện vọng trên web bộ thì xét điểm VSAT sao? Có cần cấp minh chứng để web quy đổi điểm VSAT về THPT không?",
+        "Nếu đăng ký trên web bộ rồi đăng ký thêm học bạ bên web của trường thì có sao không?",
+        "Đặt NV1 là vật lý kỹ thuật, NV2 là quản lý tài nguyên và môi trường có được không?",
+        "Thi VSAT ở CTU mà nguyện vọng nộp vào cũng CTU thì có cần cung cấp điểm cho CTU không?",
+        "Xét học bạ ở trường, đăng ký trên bộ rồi có cần phải nộp gấp về trường hồ sơ học bạ trước 28/7 không?",
+        "Đặt NV1 là vật lý kỹ thuật, NV2 là bảo vệ môi trường nhưng điểm năm ngoái bên môi trường cao hơn vật lý kỹ thuật, việc đặt như vậy có ổn không?"
+      ]
+    },
+    {
+      "start_idx": 14190,
+      "end_idx": 14214,
+      "refined_messages": [
+        "Học ngành Ngôn ngữ Anh ở CTU có chỉ học ở Khu II không?",
+        "Ngành sư phạm Anh ngoài học tiếng Anh ra còn học thêm ngôn ngữ nào khác không? Có thể lựa chọn bao nhiêu ngôn ngữ?",
+        "Điểm học bạ quy đổi ra điểm thi THPT, vậy nên so sánh điểm quy đổi đó với điểm thi THPT hay học bạ của năm trước?"
+      ]
+    }
+  ]
+}
