@@ -105,6 +105,10 @@ def generate_question(
 
     df = pd.read_json(args.document_sections_chunks_file)
     sections = df["sections"]
+    if args.max_sections is not None and args.max_sections > 0 and args.max_sections < len(sections):
+        logger.info(f'Max sections is set to {args.max_sections}, will process only {args.max_sections} sections out of {len(sections)}')
+        sections = sections.sample(n=args.max_sections, random_state=42)
+
     logger.info(f"Total sections: {len(sections)} | total chunks: {len(df)}")
 
     llm = get_langchain_llm(model_name=args.model, temperature=0.6)
@@ -119,8 +123,6 @@ def generate_question(
         str
     ] = []  # list of section ids that failed to generate questions
     output_data: list[dict[str, Any]] = []
-
-    sections = sections[:3]  # for testing
 
     for section in tqdm(sections, desc="Generating questions", unit="section"):
         section_id = section["id"]
@@ -155,6 +157,7 @@ def generate_question(
                     for question in content.split("\n")
                     if question.strip()
                 ]
+                logger.debug(f'{generated_questions = }')
                 output_data.append({
                     "section_id": section_id,
                     "generated_questions": generated_questions,
@@ -185,9 +188,27 @@ def generate_question(
         args.output_dir, "failed_sections.json"
     )
     with open(output_file_path, "w") as f:
-        json.dump(output_data, f, indent=2, ensure_ascii=False)
+        json.dump(
+            {
+                "model": args.model,
+                "num_questions": args.num_questions,
+                "generated_questions": output_data,
+            },
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
     with open(failed_sections_file_path, "w") as f:
-        json.dump(failed_sections, f, indent=2, ensure_ascii=False)
+        json.dump(
+            {
+                "model": args.model,
+                "num_questions": args.num_questions,
+                "failed_sections": failed_sections,
+            },
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
 
 
 def main() -> None:
@@ -212,6 +233,12 @@ def main() -> None:
         type=str,
         default="synthesize_questions_outputs",
         help="The directory to save the generated questions",
+    )
+    parser.add_argument(
+        "--max_sections",
+        type=int,
+        default=None,
+        help="The maximum number of sections to process",
     )
     parser.add_argument(
         "--num_questions",
