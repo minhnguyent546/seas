@@ -25,9 +25,16 @@ _start_time = 0
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global _start_time
+    _start_time = time.time()
+
     logger.info('"Starting application...')
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
-    _start_time = time.time()
+    if settings.RERANK_ENABLED:
+        logger.info(
+            f"Reranker is enabled, model name {settings.BAAI_RERANKER_MODEL}"
+        )
+    else:
+        logger.info("Reranker is disabled")
 
     if not os.path.isdir(settings.DOC_UPLOAD_DIR):
         os.makedirs(settings.DOC_UPLOAD_DIR)
@@ -72,7 +79,7 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["utils"])
 async def health_check():
-    return await check_health()
+    return await check_health(start_time=_start_time)
 
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)

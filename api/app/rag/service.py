@@ -384,7 +384,10 @@ class RagService:
 
             queries = [search_params.query]  # include the original query
 
-            if search_params.expand_query and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0:
+            if (
+                search_params.expand_query
+                and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0
+            ):
                 query_expansion_llm = QueryExpansionLLM()
                 expanded_queries = await query_expansion_llm.expand_query(
                     search_params.query

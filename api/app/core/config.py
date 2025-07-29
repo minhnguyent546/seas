@@ -114,15 +114,17 @@ class Settings(BaseSettings):
 
     # embeddings model
     EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
-    CHUNK_SIZE: int = 3072
-    CHUNK_OVERLAP: int = 384
+    CHUNK_SIZE: int = 2048
+    CHUNK_OVERLAP: int = 256
 
     # query expansion
     QUERY_EXPANSION_MODEL: str = "google/gemini-2.5-flash"
-    QUERY_EXPANSION_NUM_NEW_QUERIES: int = 3  # change to less than 1 to disable query expansion
+    QUERY_EXPANSION_NUM_NEW_QUERIES: int = (
+        3  # change to less than 1 to disable query expansion
+    )
 
     # reranking model
-    RERANK_ENABLED: bool = True
+    RERANK_ENABLED: bool = False
     BAAI_RERANKER_MODEL: str = "BAAI/bge-reranker-v2-m3"
 
     # doc upload dir
