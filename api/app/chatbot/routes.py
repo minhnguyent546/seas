@@ -22,3 +22,19 @@ async def query(
         current_user=current_user,
     )
     return streaming_response
+
+
+@router.post("/query-eval")
+async def query_eval(
+    chat_query: ChatQuery,
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+):
+    """Process a chat query and return complete response with evaluation metadata."""
+
+    eval_response = await chatbot_service.process_query_for_evaluation(
+        chat_query=chat_query,
+        session=session,
+        current_user=current_user,
+    )
+    return eval_response
