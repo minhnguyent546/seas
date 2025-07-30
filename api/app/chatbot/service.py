@@ -1,4 +1,5 @@
 import asyncio
+import time
 from collections.abc import AsyncGenerator
 
 from fastapi import HTTPException, status
@@ -6,9 +7,13 @@ from fastapi.responses import StreamingResponse
 from loguru import logger
 
 from app.chatbot.rag_chat_llm import RagChatLLM
-from app.chatbot.schemas import ChatQuery
+from app.chatbot.schemas import (
+    ChatEvaluationResponse,
+    ChatQuery,
+)
 from app.core.database import AsyncSession
 from app.users.models import User
+from app.utils import extract_content_from_base_message
 
 
 async def process_query(
@@ -30,29 +35,11 @@ async def process_query(
                 async for chunk in chat_llm.astream(
                     session=session, query=human_message
                 ):
-                    if isinstance(chunk, str):
-                        yield chunk
+                    chunk_content = extract_content_from_base_message(chunk)
+                    if not chunk_content:
                         continue
+                    yield chunk_content
 
-                    if not hasattr(chunk, "content") or not chunk.content:
-                        continue
-
-                    if isinstance(chunk.content, str):
-                        yield chunk.content
-                    elif isinstance(chunk.content, list):  # pyright: ignore[reportUnnecessaryIsInstance]
-                        for item in chunk.content:
-                            if isinstance(item, str):
-                                yield item
-                            elif isinstance(item, dict) and "text" in item:  # pyright: ignore[reportUnnecessaryIsInstance]
-                                yield item["text"]
-                            else:
-                                raise AssertionError(
-                                    f"Unexpected item type in chunk.content: {type(item)}. Expected str or dict with 'text' key."
-                                )
-                    else:
-                        raise AssertionError(
-                            f"Unexpected chunk type: {type(chunk.content)}. Expected str or list of str/dict."
-                        )
         except asyncio.TimeoutError as timeout_err:
             logger.error("Streaming timeout")
             raise HTTPException(
@@ -73,3 +60,75 @@ async def process_query(
             ) from err
 
     return StreamingResponse(stream_generator(), media_type="text/plain")
+
+
+async def process_query_for_evaluation(
+    chat_query: ChatQuery,
+    session: AsyncSession,
+    current_user: User,
+) -> ChatEvaluationResponse:
+    human_message = chat_query.query.strip()
+    if not human_message:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Query cannot be empty.",
+        )
+
+    start_time = time.perf_counter()
+
+    try:
+        chat_llm = RagChatLLM()
+
+        # Stream response while collecting metadata
+        (
+            similarity_search_result,
+            complete_response,
+            _llm_response_time,
+            time_to_first_chunk,
+        ) = await chat_llm.astream_for_evaluation(
+            session=session, query=human_message
+        )
+
+        end_time = time.perf_counter()
+        total_response_time = end_time - start_time
+
+        return ChatEvaluationResponse(
+            query=human_message,
+            response=complete_response,
+            retrieved_chunks=similarity_search_result.chunks,
+            num_chunks_retrieved=len(similarity_search_result.chunks),
+            reranked=similarity_search_result.reranked,
+            response_time=total_response_time,
+            time_to_first_chunk=time_to_first_chunk,
+            query_expansion_time=similarity_search_result.query_expansion_time,
+            embedding_time=similarity_search_result.embedding_time,
+            similarity_search_time=similarity_search_result.similarity_search_time,
+            chunk_retrieval_time=similarity_search_result.chunk_retrieval_time,
+            rerank_time=similarity_search_result.rerank_time,
+            success=True,
+        )
+
+    except asyncio.TimeoutError:
+        logger.error("Evaluation timeout")
+        return ChatEvaluationResponse(
+            query=human_message,
+            response="",
+            retrieved_chunks=[],
+            num_chunks_retrieved=0,
+            reranked=False,
+            response_time=time.perf_counter() - start_time,
+            success=False,
+            error="Request timeout. Please try again.",
+        )
+    except Exception as err:
+        logger.error(f"Error in evaluation: {err}")
+        return ChatEvaluationResponse(
+            query=human_message,
+            response="",
+            retrieved_chunks=[],
+            num_chunks_retrieved=0,
+            reranked=False,
+            response_time=time.perf_counter() - start_time,
+            success=False,
+            error=str(err),
+        )
