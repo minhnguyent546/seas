@@ -1,3 +1,4 @@
+import time
 from collections.abc import AsyncIterator
 from datetime import datetime
 
@@ -6,6 +7,7 @@ from langchain_core.messages import (
     HumanMessage,
     SystemMessage,
 )
+from loguru import logger
 
 import app.utils as app_utils
 from app.chatbot.schemas import DocumentTag
@@ -77,5 +79,15 @@ class RagChatLLM:
             HumanMessage(content=human_prompt),
         ]
 
+        _start_response_time = time.perf_counter()
+        _time_to_first_chunk = None
         async for chunk in self.llm.astream(input=messages):
+            if _time_to_first_chunk is None:
+                _time_to_first_chunk = (
+                    time.perf_counter() - _start_response_time
+                )
+                logger.debug(
+                    f"Time to first chunk: {_time_to_first_chunk:.2f} seconds"
+                )
+                logger.debug(f"{chunk = }")
             yield chunk

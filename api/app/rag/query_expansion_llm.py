@@ -1,6 +1,8 @@
+import time
 from datetime import datetime
 
 from langchain_core.messages import HumanMessage, SystemMessage
+from loguru import logger
 
 import app.utils as app_utils
 from app.core.config import settings
@@ -29,6 +31,8 @@ class QueryExpansionLLM:
 
     async def expand_query(self, query: str) -> list[str]:
         """Expand query by creating new queries that are similar to the original query."""
+        _start_time = time.perf_counter()
+
         human_prompt = self.human_prompt_template.render(query=query)
         messages = [
             SystemMessage(content=self.system_prompt),
@@ -36,6 +40,12 @@ class QueryExpansionLLM:
         ]
         response = await self.llm.ainvoke(input=messages)
         response_content = response.content
+
+        elapsed_time = time.perf_counter() - _start_time
+        logger.debug(
+            f"Query expansion: {elapsed_time:.2f} seconds for expanding {settings.QUERY_EXPANSION_NUM_NEW_QUERIES} queries"
+        )
+
         assert isinstance(response_content, str)
         if "IRRELEVANT" in response_content:
             return []
