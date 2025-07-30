@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 from datetime import datetime
 from typing import Any
@@ -19,6 +20,7 @@ from qdrant_client.models import (
     Distance,
     PointStruct,
     ScoredPoint,
+    SearchRequest,
     VectorParams,
 )
 from sqlalchemy import select
@@ -390,41 +392,65 @@ class RagService:
                 and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0
             ):
                 query_expansion_llm = QueryExpansionLLM()
+                logger.info(
+                    f"Expanding to {settings.QUERY_EXPANSION_NUM_NEW_QUERIES} for query: {search_params.query}"
+                )
                 expanded_queries = await query_expansion_llm.expand_query(
                     search_params.query
                 )
                 if expanded_queries:
                     queries.extend(expanded_queries)
                     logger.debug(
-                        f"Expanded {len(expanded_queries)} additional queries"
+                        f"Expanded {len(expanded_queries)} additional queries:"
                     )
+                    for i, expanded_query in enumerate(expanded_queries):
+                        logger.debug(f"{i + 1}. {expanded_query}")
                 else:
                     logger.warning(
                         f"No expanded queries provided for {search_params.query}"
                     )
 
-            # Perform similarity search for each query
-            all_search_results: list[list[ScoredPoint]] = []
-            for query in queries:
-                query_vector = await self._embeddings.aembed_query(query)
-                search_results = await self._qdrant_client.search(
-                    collection_name=settings.QDRANT_COLLECTION_NAME,
-                    query_vector=query_vector,
-                    limit=search_params.limit
-                    * 2,  # Get more results for fusion
-                    score_threshold=search_params.threshold,
-                )
-                all_search_results.append(search_results)
+            # IMPORTANT:
+            # For gemini embeddings, the vector produced by aembed_query is the same as the vector produced by aembed_documents
+            # So, we can improve the performance by using aembed_documents instead of aembed_query
+            # However, for other embeddings, this might not be the case!
+            _embeddings_start_time = time.perf_counter()
+            query_vectors = await self._embeddings.aembed_documents(queries)
+            _embeddings_end_time = time.perf_counter()
+            logger.debug(
+                f"Embeddings took: {_embeddings_end_time - _embeddings_start_time:.2f} seconds for {len(queries)} queries"
+            )
+
+            _qdrant_search_start_time = time.perf_counter()
+            qdrant_search_results = await self._qdrant_client.search_batch(
+                collection_name=settings.QDRANT_COLLECTION_NAME,
+                requests=[
+                    SearchRequest(
+                        vector=query_vector,
+                        limit=search_params.limit * 2,
+                        score_threshold=search_params.threshold,
+                    )
+                    for query_vector in query_vectors
+                ],
+            )
+            _qdrant_search_end_time = time.perf_counter()
+            logger.debug(
+                f"Qdrant search took: {_qdrant_search_end_time - _qdrant_search_start_time:.2f} seconds for {len(query_vectors)} queries"
+            )
 
             # Apply Reciprocal Rank Fusion (RRF) to combine results
-            fused_results = self._apply_reciprocal_rank_fusion(
-                all_search_results
+            fused_qdrant_search_results = self._apply_reciprocal_rank_fusion(
+                qdrant_search_results
             )
 
             # Limit to requested number of results
-            fused_results = fused_results[: search_params.limit]
+            fused_qdrant_search_results = fused_qdrant_search_results[
+                : search_params.limit
+            ]
 
-            chunk_ids = [str(result.id) for result in fused_results]
+            chunk_ids = [
+                str(result.id) for result in fused_qdrant_search_results
+            ]
             if not chunk_ids:
                 return SimilaritySearchResult(
                     num_chunks=0,
@@ -462,7 +488,8 @@ class RagService:
             ]
 
             score_map = {
-                str(result.id): result.score for result in fused_results
+                str(result.id): result.score
+                for result in fused_qdrant_search_results
             }
 
             # reranking
