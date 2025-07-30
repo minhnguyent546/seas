@@ -36,4 +36,32 @@ class SimilaritySearchResult(BaseModel):
     num_chunks: int
     reranked: bool
     query: str
+    expanded_queries: list[str] | None = None
     chunks: list[DocumentSectionChunkPublic]
+
+    query_expansion_time: Annotated[
+        float | None,
+        Field(description="Time taken to expand the query using LLM"),
+    ] = None
+    embedding_time: Annotated[
+        float | None,
+        Field(description="Time taken to embed the query using LLM"),
+    ] = None
+    similarity_search_time: Annotated[
+        float | None,
+        Field(
+            description="Time taken to search for similar chunks in the database"
+        ),
+    ] = None
+    chunk_retrieval_time: Annotated[
+        float | None,
+        Field(
+            description="Time taken to retrieve the chunks from the database"
+        ),
+    ] = None
+    rerank_time: Annotated[
+        float | None, Field(description="Time taken to rerank the chunks")
+    ] = None
+    total_time: Annotated[
+        float, Field(description="Total time taken to process the query")
+    ]
