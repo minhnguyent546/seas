@@ -9,6 +9,7 @@ import jwt
 import markdown_to_data
 from fastapi import BackgroundTasks, HTTPException, UploadFile, status
 from fastapi.routing import APIRoute
+from langchain_core.messages import BaseMessage
 from loguru import logger
 from markdown_to_data.to_md.to_md_parser import to_md_parser
 
@@ -250,3 +251,22 @@ def get_prompt(*, template_name: str, **kwargs):
     except Exception as err:
         logger.error(f"Failed to get prompt: {err}")
         raise err
+
+
+def extract_content_from_base_message(response: BaseMessage) -> str:
+    if isinstance(response, str):
+        return response
+
+    if not hasattr(response, "content") or not response.content:
+        return ""
+
+    if isinstance(response.content, str):
+        return response.content
+    elif isinstance(response.content, list):  # pyright: ignore[reportUnnecessaryIsInstance]
+        raise NotImplementedError(
+            "Not implemented for response.content as a list"
+        )
+    else:
+        raise AssertionError(
+            f"Unexpected response type: {type(response.content)}. Expected str or list of str/dict."
+        )
