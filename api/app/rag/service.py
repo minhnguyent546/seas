@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 from typing import Any
 
 import frontmatter
@@ -24,7 +25,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 import app.utils as app_utils
-from app.core.config import settings
+from app.core.config import settings, timezone_vi
 from app.core.database import AsyncSession
 from app.rag.models import (
     DocumentSection,
@@ -549,15 +550,16 @@ class RagService:
                 )
 
             doc_section_chunk_dbs: list[DocumentSectionChunk] = []
+            doc_section_dbs: list[DocumentSection] = []
             for doc_section in doc_sections:
                 doc_section_id = str(uuid.uuid4())
-                document_section_db = DocumentSection(
+                doc_section_db = DocumentSection(
                     id=doc_section_id,
                     title=doc_section.metadata.get("title"),
                     url=doc_section.metadata.get("url"),
                     description=doc_section.metadata.get("description"),
                 )
-                session.add(document_section_db)
+                doc_section_dbs.append(doc_section_db)
 
                 doc_section_chunks = self._split_document_recursive(
                     content=doc_section.page_content,
@@ -566,15 +568,15 @@ class RagService:
                 )
                 for i, doc_section_chunk in enumerate(doc_section_chunks):
                     chunk_id = str(uuid.uuid4())
-                    document_section_chunk_db = DocumentSectionChunk(
+                    doc_section_chunk_db = DocumentSectionChunk(
                         id=chunk_id,
                         document_section_id=doc_section_id,
                         content=doc_section_chunk.page_content,
                         chunk_index=i,
                         qdrant_point_id=chunk_id,
-                        metadata={},
+                        chunk_metadata={},
                     )
-                    doc_section_chunk_dbs.append(document_section_chunk_db)
+                    doc_section_chunk_dbs.append(doc_section_chunk_db)
 
             # compute embeddings for all chunks
             doc_section_chunk_vectors = (
@@ -613,6 +615,7 @@ class RagService:
                 # TODO: how to rollback if upsert fails?
                 logger.debug(f"Added {len(qdrant_points)} points to Qdrant")
 
+            session.add_all(doc_section_dbs)
             session.add_all(doc_section_chunk_dbs)
             await session.commit()
 
@@ -742,7 +745,7 @@ class RagService:
             # Step 3: Process all valid files and prepare data for batch operations
             all_qdrant_points: list[PointStruct] = []
             all_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
-            all_document_sections: list[DocumentSection] = []
+            all_doc_sections: list[DocumentSection] = []
 
             # Track total chunks to prevent memory issues
             total_estimated_chunks = 0
@@ -750,9 +753,26 @@ class RagService:
             for _, doc_sections in valid_doc_sections:
                 # Estimate chunks for memory check
                 for doc_section in doc_sections:
-                    estimated_chunks = max(
-                        1, len(doc_section.page_content) // settings.CHUNK_SIZE
-                    )
+                    content_length = len(doc_section.page_content)
+                    if content_length <= settings.CHUNK_SIZE:
+                        estimated_chunks = 1
+                    else:
+                        # Account for overlap: each chunk after the first starts at (chunk_size - overlap)
+                        effective_chunk_size = (
+                            settings.CHUNK_SIZE - settings.CHUNK_OVERLAP
+                        )
+                        if effective_chunk_size <= 0:
+                            estimated_chunks = 1
+                        else:
+                            # First chunk takes CHUNK_SIZE, remaining chunks take effective_chunk_size each
+                            remaining_content = (
+                                content_length - settings.CHUNK_SIZE
+                            )
+                            estimated_chunks = 1 + max(
+                                0,
+                                (remaining_content + effective_chunk_size - 1)
+                                // effective_chunk_size,
+                            )
                     total_estimated_chunks += estimated_chunks
 
             if (
@@ -776,13 +796,12 @@ class RagService:
                 }
 
                 try:
-                    file_qdrant_points: list[PointStruct] = []
                     file_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
-                    file_document_sections: list[DocumentSection] = []
+                    file_doc_section_dbs: list[DocumentSection] = []
 
                     for doc_section in doc_sections:
                         doc_section_id = str(uuid.uuid4())
-                        document_section_db = DocumentSection(
+                        doc_section_db = DocumentSection(
                             id=doc_section_id,
                             title=doc_section.metadata.get("title"),
                             url=doc_section.metadata.get("url"),
@@ -790,7 +809,7 @@ class RagService:
                                 "description"
                             ),
                         )
-                        file_document_sections.append(document_section_db)
+                        file_doc_section_dbs.append(doc_section_db)
 
                         doc_section_chunks = self._split_document_recursive(
                             content=doc_section.page_content,
@@ -802,28 +821,44 @@ class RagService:
                             doc_section_chunks
                         ):
                             chunk_id = str(uuid.uuid4())
-                            document_section_chunk_db = DocumentSectionChunk(
+                            doc_section_chunk_db = DocumentSectionChunk(
                                 id=chunk_id,
                                 document_section_id=doc_section_id,
                                 content=doc_section_chunk.page_content,
                                 chunk_index=i,
                                 qdrant_point_id=chunk_id,
-                                metadata={},
+                                chunk_metadata={},
                             )
                             file_doc_section_chunk_dbs.append(
-                                document_section_chunk_db
+                                doc_section_chunk_db
                             )
 
-                            # Generate embedding
-                            embedding = await self._embeddings.aembed_query(
-                                doc_section_chunk.page_content
-                            )
-                            file_qdrant_points.append(
-                                PointStruct(
-                                    id=chunk_id, vector=embedding, payload={}
-                                )
-                            )
+                    # compute embeddings for all chunks of this file
+                    file_doc_section_chunk_vectors = await self._embeddings.aembed_documents(
+                        [
+                            doc_section_chunk.content
+                            for doc_section_chunk in file_doc_section_chunk_dbs
+                        ],
+                    )
 
+                    # compute qdrant points for this file
+                    file_qdrant_points: list[PointStruct] = []
+                    for (
+                        doc_section_chunk_db,
+                        doc_section_chunk_vector,
+                    ) in zip(
+                        file_doc_section_chunk_dbs,
+                        file_doc_section_chunk_vectors,
+                        strict=True,
+                    ):
+                        assert doc_section_chunk_db.qdrant_point_id is not None
+                        file_qdrant_points.append(
+                            PointStruct(
+                                id=str(doc_section_chunk_db.qdrant_point_id),
+                                vector=doc_section_chunk_vector,
+                                payload={},
+                            )
+                        )
                     # Update file results
                     file_result["details"]["num_doc_section_chunks"] = len(
                         file_doc_section_chunk_dbs
@@ -833,7 +868,7 @@ class RagService:
                     )
 
                     # Add to batch collections
-                    all_document_sections.extend(file_document_sections)
+                    all_doc_sections.extend(file_doc_section_dbs)
                     all_doc_section_chunk_dbs.extend(
                         file_doc_section_chunk_dbs
                     )
@@ -854,7 +889,7 @@ class RagService:
             # Step 4: Batch operations (all or nothing for data consistency)
             try:
                 # Add document sections to session first
-                session.add_all(all_document_sections)
+                session.add_all(all_doc_sections)
 
                 # Add all chunks to session
                 session.add_all(all_doc_section_chunk_dbs)
@@ -960,3 +995,64 @@ class RagService:
                     logger.warning(
                         f"Failed to clean up temporary file {saved_file_path}: {cleanup_err}"
                     )
+
+    async def export_document_sections_chunks(
+        self, session: AsyncSession
+    ) -> dict[str, Any]:
+        try:
+            result = await session.execute(
+                select(DocumentSection)
+                .options(selectinload(DocumentSection.document_section_chunks))
+                .order_by(DocumentSection.created_at)
+            )
+            document_sections = result.scalars().all()
+
+            sections_list: list[dict[str, Any]] = []
+            export_data: dict[str, Any] = {
+                "exported_at": datetime.now(tz=timezone_vi).isoformat(),
+                "total_sections": len(document_sections),
+                "total_chunks": sum(
+                    len(section.document_section_chunks)
+                    for section in document_sections
+                ),
+                "sections": sections_list,
+            }
+
+            for section in document_sections:
+                chunks_list: list[dict[str, Any]] = []
+                section_data: dict[str, Any] = {
+                    "id": str(section.id),
+                    "title": section.title,
+                    "url": section.url,
+                    "description": section.description,
+                    "created_at": section.created_at.isoformat()
+                    if section.created_at
+                    else None,
+                    "chunks": chunks_list,
+                }
+
+                for chunk in section.document_section_chunks:
+                    chunk_data: dict[str, Any] = {
+                        "id": str(chunk.id),
+                        "content": chunk.content,
+                        "chunk_index": chunk.chunk_index,
+                        "chunk_metadata": chunk.chunk_metadata,
+                        "qdrant_point_id": str(chunk.qdrant_point_id)
+                        if chunk.qdrant_point_id
+                        else None,
+                        "created_at": chunk.created_at.isoformat()
+                        if chunk.created_at
+                        else None,
+                    }
+                    chunks_list.append(chunk_data)
+
+                sections_list.append(section_data)
+
+            return export_data
+
+        except Exception as err:
+            logger.error(f"Error exporting document sections chunks: {err}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to export document sections chunks: {err}",
+            ) from err
