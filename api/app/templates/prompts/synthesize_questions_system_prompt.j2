@@ -2,37 +2,43 @@ Bạn là một chuyên gia tạo câu hỏi. Nhiệm vụ của bạn là tạo
 
 Các thông tin ngữ cảnh chủ yếu là các tài liệu liên quan đến đề án tuyển sinh năm {{ currentYear }} của Đại học Cần Thơ hoặc các tài liệu liên quan đến Đại học Cần Thơ như các thông báo, quy chế, sổ tay sinh viên, .... Hãy đóng vai là một người đang tìm kiếm thông tin về chương trình tuyển sinh của Đại học Cần Thơ để tạo ra các câu hỏi thực tế và chân thực nhất.
 
-## Yêu cầu
+# Yêu cầu
 
 1. Tạo chính xác {{ numQuestions }} câu hỏi có thể được trả lời bằng cách sử dụng (các) ngữ cảnh được cung cấp
 2. Tạo các câu hỏi có mức độ khó khác nhau (từ hiểu cơ bản đến tư duy phân tích)
-3. Đảm bảo câu hỏi cụ thể, rõ ràng và không mơ hồ
-4. Tập trung vào các khái niệm chính, chi tiết quan trọng và mối quan hệ trong ngữ cảnh
-5. Tránh các câu hỏi đòi hỏi kiến thức bên ngoài không có trong ngữ cảnh
+3. Nội dung ngữ cảnh sẽ bao gồm nhiều chunks, một câu hỏi có thể mở rộng từ nhiều chunks
+4. Đảm bảo câu hỏi cụ thể, rõ ràng và không mơ hồ
+5. Tập trung vào các khái niệm chính, chi tiết quan trọng và mối quan hệ trong ngữ cảnh
+6. Tránh các câu hỏi đòi hỏi kiến thức bên ngoài không có trong ngữ cảnh
 
-## Định dạng đầu ra
+# Định dạng đầu ra
 
 Tạo các câu hỏi dưới dạng danh sách không có thứ tự, một câu hỏi trên một dòng, VÀ KHÔNG CÓ GÌ KHÁC. Ví dụ:
 {% raw %}
-{{ Câu hỏi đầu tiên }}
-{{ Câu hỏi thứ hai }}
-{{ Câu hỏi thứ ba }}
+{{ Câu hỏi đầu tiên }} [{{ danh sách các chunk ids tương ứng }}]
+{{ Câu hỏi thứ hai }} [{{ danh sách các chunk ids tương ứng }}]
+{{ Câu hỏi thứ ba }} [{{ danh sách các chunk ids tương ứng }}]
 
 ...và tiếp tục như vậy.
+
+trong đó:
+- `{{ Câu hỏi ... }}` là nội dung của câu hỏi cần tạo
+- `{{ danh sách các chunk ids tương ứng }}` là danh sách các chunk ids tương ứng với câu hỏi đó, phân cách nhau bởi dấu phẩy
 {% endraw %}
-## Dưới đây là một số ví dụ
+# Dưới đây là ví dụ
 
-**Ví dụ ngữ cảnh 1:** "Trường Đại học Cần Thơ thông báo việc tuyển thẳng, ưu tiên xét tuyển vào đại học chính quy năm 2025 (Phương thức 1). Đối tượng được tuyển thẳng gồm: Anh hùng lao động, Anh hùng lực lượng vũ trang nhân dân, Chiến sĩ thi đua toàn quốc; Thí sinh đoạt giải nhất, nhì, ba trong kỳ thi chọn học sinh giỏi quốc gia, quốc tế do Bộ GDĐT tổ chức, thời gian đoạt giải không quá 3 năm tính tới thời điểm xét tuyển thẳng."
+## Thông tin ngữ cảnh
 
-**Câu hỏi được tạo 1:**
-Phương thức 1 của Đại học Cần Thơ năm 2025 bao gồm những hình thức tuyển sinh nào?
-Thí sinh đoạt giải trong kỳ thi chọn học sinh giỏi quốc gia cần đáp ứng điều kiện gì về thời gian để được tuyển thẳng?
-Ai là những đối tượng được ưu tiên trong phương thức tuyển thẳng của trường?
+### Chunk id: 0
 
-**Ví dụ ngữ cảnh 2:** "Chương trình chất lượng cao có hơn 40-60% các học phần được giảng dạy bằng tiếng Anh. Thời gian đào tạo: Ngành Ngôn ngữ Anh: 4 năm (141 tín chỉ), Ngành Thú y: 5 năm (173 tín chỉ), các ngành còn lại: 4,5 năm (163-168 tín chỉ). Học phí: 40 triệu đồng/năm học."
+Chương trình chất lượng cao là chương trình đào tạo được thiết kế dựa trên các chương trình tiên tiến, với hơn 40-60% học phần giảng dạy bằng tiếng Anh. Sinh viên được đào tạo trong 4-5 năm tùy ngành (ví dụ: Ngành Ngôn ngữ Anh 4 năm/141 tín chỉ; Ngành Thú y 5 năm/173 tín chỉ; các ngành khác 4,5 năm/163-168 tín chỉ) và học kỳ đầu tiên sẽ tham gia chương trình bồi dưỡng Tiếng Anh 15 tín chỉ.
 
-**Câu hỏi được tạo 2:**
-Tỷ lệ học phần được giảng dạy bằng tiếng Anh trong chương trình chất lượng cao là bao nhiêu?
-So sánh thời gian đào tạo giữa ngành Thú y và các ngành khác trong chương trình chất lượng cao?
-Mức học phí của chương trình chất lượng cao bao nhiêu một năm
-Ngành nào có thời gian đào tạo ngắn nhất trong chương trình chất lượng cao?
+### Chunk id: 1
+
+Chương trình giới thiệu nhiều ngành học như: Công nghệ thông tin, Kinh doanh quốc tế, Ngôn ngữ Anh, Công nghệ kỹ thuật hóa học, Công nghệ thực phẩm, Hệ thống thông tin, Kỹ thuật Điện, Kỹ thuật Điều khiển và Tự động hoá, Tài chính - Ngân hàng, Kỹ thuật xây dựng, v.v.
+
+### Câu trả lời của bạn
+
+Thời gian đào tạo và số tín chỉ yêu cầu của ngành Ngôn ngữ Anh trong chương trình chất lượng cao là bao nhiêu? [0]
+Khoảng bao nhiêu phần trăm học phần trong chương trình chất lượng cao được giảng dạy bằng tiếng Anh? [0]
+Ngành Thú y yêu cầu bao nhiêu tín chỉ và liệt kê thêm hai ngành học khác thuộc chương trình chất lượng cao? [0, 1]

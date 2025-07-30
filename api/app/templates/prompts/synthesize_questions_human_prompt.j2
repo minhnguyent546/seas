@@ -1,9 +1,9 @@
 ## Thông tin ngữ cảnh
 
 {% for context in contexts %}
-### Ngữ cảnh {{ loop.index }}
+### Chunk id: {{ context.chunk_index }}
 ```
-{{ context }}
+{{ context.content }}
 ```
 {% endfor %}
 

@@ -105,8 +105,14 @@ def generate_question(
 
     df = pd.read_json(args.document_sections_chunks_file)
     sections = df["sections"]
-    if args.max_sections is not None and args.max_sections > 0 and args.max_sections < len(sections):
-        logger.info(f'Max sections is set to {args.max_sections}, will process only {args.max_sections} sections out of {len(sections)}')
+    if (
+        args.max_sections is not None
+        and args.max_sections > 0
+        and args.max_sections < len(sections)
+    ):
+        logger.info(
+            f"Max sections is set to {args.max_sections}, will process only {args.max_sections} sections out of {len(sections)}"
+        )
         sections = sections.sample(n=args.max_sections, random_state=42)
 
     logger.info(f"Total sections: {len(sections)} | total chunks: {len(df)}")
@@ -129,7 +135,11 @@ def generate_question(
         section_chunks = section["chunks"]
         section_chunks = sorted(section_chunks, key=itemgetter("chunk_index"))
         section_chunks_content = [
-            section_chunk["content"] for section_chunk in section_chunks
+            {
+                "chunk_index": section_chunk["chunk_index"],
+                "content": section_chunk["content"],
+            }
+            for section_chunk in section_chunks
         ]
 
         human_prompt = get_prompt(
@@ -157,10 +167,38 @@ def generate_question(
                     for question in content.split("\n")
                     if question.strip()
                 ]
-                logger.debug(f'{generated_questions = }')
+                question_data = []
+                for question in generated_questions:
+                    try:
+                        question_text, referenced_chunk_indices = (
+                            question.rsplit("[", 1)
+                        )
+                        referenced_chunk_indices = [
+                            int(index)
+                            for index in referenced_chunk_indices.strip(
+                                "[]"
+                            ).split(",")
+                        ]
+                    except ValueError:
+                        logger.error(
+                            f"Failed to parse referenced chunk indices in question: {question}. This question will be ignored."
+                        )
+                        continue
+
+                    referenced_chunk_ids = [
+                        section_chunks[i]["id"]
+                        for i in referenced_chunk_indices
+                    ]
+                    question_data.append({
+                        "question": question_text.strip(),
+                        "num_referenced_chunks": len(referenced_chunk_indices),
+                        "referenced_chunk_indices": referenced_chunk_indices,
+                        "referenced_chunk_ids": referenced_chunk_ids,
+                    })
+
                 output_data.append({
                     "section_id": section_id,
-                    "generated_questions": generated_questions,
+                    "generated_questions": question_data,
                 })
                 sleep(0.5)  # a void rate limit
                 break
