@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any
 
 import frontmatter
+import qdrant_client.models as qdrant_models
 from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 from langchain_core.documents import Document as LangchainDocument
@@ -16,13 +17,6 @@ from langchain_text_splitters import (
 )
 from loguru import logger
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import (
-    Distance,
-    PointStruct,
-    ScoredPoint,
-    SearchRequest,
-    VectorParams,
-)
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -115,9 +109,9 @@ class RagService:
             if settings.QDRANT_COLLECTION_NAME not in collection_names:
                 await self._qdrant_client.create_collection(
                     collection_name=settings.QDRANT_COLLECTION_NAME,
-                    vectors_config=VectorParams(
+                    vectors_config=qdrant_models.VectorParams(
                         size=settings.QDRANT_VECTOR_SIZE,
-                        distance=Distance.COSINE,
+                        distance=qdrant_models.Distance.COSINE,
                     ),
                 )
                 logger.info(
@@ -298,8 +292,10 @@ class RagService:
             ) from err
 
     def _apply_reciprocal_rank_fusion(
-        self, search_results_list: list[list[ScoredPoint]], k: int = 60
-    ) -> list[ScoredPoint]:
+        self,
+        search_results_list: list[list[qdrant_models.ScoredPoint]],
+        k: int = 60,
+    ) -> list[qdrant_models.ScoredPoint]:
         """Apply Reciprocal Rank Fusion to combine multiple search result lists."""
         # Handle edge case: no results from any query
         if not search_results_list or all(
@@ -330,7 +326,7 @@ class RagService:
         # Create result objects with RRF scores
         fused_results = []
         for _doc_id, data in sorted_results:
-            result: ScoredPoint = data["result"]
+            result: qdrant_models.ScoredPoint = data["result"]
             # Update the score to be the RRF score
             result.score = data["score"]
             fused_results.append(result)
@@ -425,7 +421,7 @@ class RagService:
             qdrant_search_results = await self._qdrant_client.search_batch(
                 collection_name=settings.QDRANT_COLLECTION_NAME,
                 requests=[
-                    SearchRequest(
+                    qdrant_models.SearchRequest(
                         vector=query_vector,
                         limit=search_params.limit * 2,
                         score_threshold=search_params.threshold,
@@ -616,7 +612,7 @@ class RagService:
             )
 
             # compute qdrant points
-            qdrant_points: list[PointStruct] = []
+            qdrant_points: list[qdrant_models.PointStruct] = []
             for (
                 doc_section_chunk_db,
                 doc_section_chunk_vector,
@@ -625,7 +621,7 @@ class RagService:
             ):
                 assert doc_section_chunk_db.qdrant_point_id is not None
                 qdrant_points.append(
-                    PointStruct(
+                    qdrant_models.PointStruct(
                         id=str(doc_section_chunk_db.qdrant_point_id),
                         vector=doc_section_chunk_vector,
                         payload={},
@@ -770,7 +766,7 @@ class RagService:
                 )
 
             # Step 3: Process all valid files and prepare data for batch operations
-            all_qdrant_points: list[PointStruct] = []
+            all_qdrant_points: list[qdrant_models.PointStruct] = []
             all_doc_section_chunk_dbs: list[DocumentSectionChunk] = []
             all_doc_sections: list[DocumentSection] = []
 
@@ -869,7 +865,7 @@ class RagService:
                     )
 
                     # compute qdrant points for this file
-                    file_qdrant_points: list[PointStruct] = []
+                    file_qdrant_points: list[qdrant_models.PointStruct] = []
                     for (
                         doc_section_chunk_db,
                         doc_section_chunk_vector,
@@ -880,7 +876,7 @@ class RagService:
                     ):
                         assert doc_section_chunk_db.qdrant_point_id is not None
                         file_qdrant_points.append(
-                            PointStruct(
+                            qdrant_models.PointStruct(
                                 id=str(doc_section_chunk_db.qdrant_point_id),
                                 vector=doc_section_chunk_vector,
                                 payload={},
