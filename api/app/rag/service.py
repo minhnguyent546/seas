@@ -37,11 +37,14 @@ from app.schemas import MessageResponse
 
 # Optional import for FlagEmbedding (reranking functionality)
 try:
-    from FlagEmbedding import FlagReranker
+    from FlagEmbedding import (  # pyright: ignore[reportMissingImports]
+        FlagReranker,
+    )
 
     _has_reranker = True
 except ImportError:
     FlagReranker = None  # type: ignore
+
     _has_reranker = False
 
 
@@ -91,14 +94,16 @@ class RagService:
             return None
 
         if self.__reranker is None:
-            import torch
+            import torch  # pyright: ignore[reportMissingImports]
 
             device = "cuda" if torch.cuda.is_available() else "cpu"
+            logger.info(f"Initializing reranker with device {device}...")
             self.__reranker = FlagReranker(  # type: ignore
                 model_name_or_path=settings.BAAI_RERANKER_MODEL,
                 use_fp16=True,
                 device=device,
             )
+            logger.info("Reranker initialized successfully")
         return self.__reranker
 
     async def _initialize_qdrant_collection(self) -> bool:
@@ -554,6 +559,7 @@ class RagService:
             _time_dict["total_time"] = (
                 time.perf_counter() - _time_dict["total_time"]
             )
+            logger.debug(f"{_time_dict = }")
             return SimilaritySearchResult(
                 num_chunks=len(document_section_chunks_public),
                 reranked=rerank_applied,

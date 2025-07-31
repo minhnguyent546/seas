@@ -218,22 +218,30 @@ def extract_markdown_tables(
 
 
 def get_langchain_llm(model_name: str, **kwargs):
-    if "/" not in model_name:
-        raise ValueError(
-            f"Expected model name have the format <provider>/<model_name>, got {model_name}"
-        )
+    try:
+        provider, model_name = model_name.split("/", 1)
+        if provider == "google":
+            from langchain_google_genai import ChatGoogleGenerativeAI
 
-    provider, model_name = model_name.split("/")
-    if provider == "google":
-        from langchain_google_genai import ChatGoogleGenerativeAI
+            return ChatGoogleGenerativeAI(model=model_name, **kwargs)
+        elif provider == "openai":
+            from langchain_openai import ChatOpenAI
 
-        return ChatGoogleGenerativeAI(model=model_name, **kwargs)
-    elif provider == "openai":
-        from langchain_openai import ChatOpenAI
+            return ChatOpenAI(model=model_name, **kwargs)
+        elif provider == "openrouter":
+            from langchain_openai import (
+                ChatOpenAI,  # as OpenRouter uses an OpenAI-compatible API
+            )
 
-        return ChatOpenAI(model=model_name, **kwargs)
-    else:
-        raise ValueError(f"Unsupported provider: {provider}")
+            kwargs["openai_api_base"] = settings.OPENROUTER_BASE_URL
+            kwargs["openai_api_key"] = settings.OPENROUTER_API_KEY
+
+            return ChatOpenAI(model=model_name, **kwargs)
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
+    except Exception as err:
+        logger.error(f"Failed to initialize langchain llm: {err}")
+        raise err
 
 
 def get_prompt_template(template_name: str):
