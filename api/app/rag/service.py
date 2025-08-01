@@ -300,6 +300,7 @@ class RagService:
         self,
         search_results_list: list[list[qdrant_models.ScoredPoint]],
         k: int = 60,
+        scale_factor: float | None = 25.0,
     ) -> list[qdrant_models.ScoredPoint]:
         """Apply Reciprocal Rank Fusion to combine multiple search result lists."""
         # Handle edge case: no results from any query
@@ -322,6 +323,10 @@ class RagService:
                         "score": rrf_score,
                         "result": result,
                     }
+
+        if scale_factor is not None:
+            for _doc_id, data in rrf_scores.items():
+                data["score"] = data["score"] * scale_factor
 
         # Sort by RRF score and return results
         sorted_results = sorted(
