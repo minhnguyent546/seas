@@ -3,6 +3,8 @@ FROM python:3.12-slim
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
+ENV HF_HUB_DISABLE_TELEMETRY=1
+ENV HF_HOME=/tmp/huggingface_cache
 
 ARG RERANK_ENABLED=false
 
