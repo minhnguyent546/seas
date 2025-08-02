@@ -12,6 +12,7 @@ wheels/
 .venv
 .venv.*
 .venv-*
+.venv*
 
 # local stuff
 _*
@@ -42,3 +43,4 @@ _test_crawling/
 *.bak
 *.backup
 *.bak*
+.hf_models
