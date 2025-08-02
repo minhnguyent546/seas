@@ -10,7 +10,6 @@ from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.embeddings import Embeddings
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
     RecursiveCharacterTextSplitter,
@@ -28,6 +27,7 @@ from app.rag.models import (
     DocumentSectionChunk,
 )
 from app.rag.query_expansion_llm import QueryExpansionLLM
+from app.rag.rag_models_manager import rag_models_manager
 from app.rag.schemas import (
     DocumentSectionChunkPublic,
     SimilaritySearchParams,
@@ -35,21 +35,10 @@ from app.rag.schemas import (
 )
 from app.schemas import MessageResponse
 
-# Optional import for FlagEmbedding (reranking functionality)
-try:
-    from FlagEmbedding import FlagReranker
-
-    _has_reranker = True
-except ImportError:
-    FlagReranker = None  # type: ignore
-    _has_reranker = False
-
 
 class RagService:
     def __init__(self) -> None:
         self.__qdrant_client: AsyncQdrantClient | None = None
-        self.__embeddings: Embeddings | None = None
-        self.__reranker: Any = None
 
         self.TABLE_TOK = "<table_title>"
         self.TABLE_HEADER_SYMBOL = "#######"
@@ -76,30 +65,11 @@ class RagService:
             )
         return self.__qdrant_client
 
-    @property
-    def _embeddings(self) -> Embeddings:
-        if self.__embeddings is None:
-            self.__embeddings = GoogleGenerativeAIEmbeddings(
-                model=settings.EMBEDDING_MODEL,
-                google_api_key=settings.GOOGLE_API_KEY,  # pyright: ignore[reportArgumentType]
-            )
-        return self.__embeddings
+    async def _get_embeddings(self) -> Embeddings:
+        return await rag_models_manager.get_embeddings()
 
-    @property
-    def _reranker(self) -> Any:
-        if not _has_reranker:
-            return None
-
-        if self.__reranker is None:
-            import torch
-
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-            self.__reranker = FlagReranker(  # type: ignore
-                model_name_or_path=settings.BAAI_RERANKER_MODEL,
-                use_fp16=True,
-                device=device,
-            )
-        return self.__reranker
+    async def _get_reranker(self) -> Any:
+        return await rag_models_manager.get_reranker()
 
     async def _initialize_qdrant_collection(self) -> bool:
         try:
@@ -295,6 +265,7 @@ class RagService:
         self,
         search_results_list: list[list[qdrant_models.ScoredPoint]],
         k: int = 60,
+        scale_factor: float | None = 25.0,
     ) -> list[qdrant_models.ScoredPoint]:
         """Apply Reciprocal Rank Fusion to combine multiple search result lists."""
         # Handle edge case: no results from any query
@@ -317,6 +288,11 @@ class RagService:
                         "score": rrf_score,
                         "result": result,
                     }
+
+        # Apply scaling to make scores more suitable for evaluation
+        if scale_factor is not None:
+            for _doc_id, data in rrf_scores.items():
+                data["score"] = data["score"] * scale_factor
 
         # Sort by RRF score and return results
         sorted_results = sorted(
@@ -378,7 +354,17 @@ class RagService:
     async def similarity_search(
         self, session: AsyncSession, search_params: SimilaritySearchParams
     ) -> SimilaritySearchResult:
+        _time_dict: dict[str, Any] = {
+            "query_expansion_time": None,
+            "embedding_time": None,
+            "similarity_search_time": None,
+            "chunk_retrieval_time": None,
+            "rerank_time": None,
+            "total_time": None,
+        }
+        expanded_queries: list[str] | None = None
         try:
+            _time_dict["total_time"] = time.perf_counter()
             logger.debug(f"{search_params = }")
 
             queries = [search_params.query]  # include the original query
@@ -387,12 +373,16 @@ class RagService:
                 search_params.expand_query
                 and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0
             ):
+                _time_dict["query_expansion_time"] = time.perf_counter()
                 query_expansion_llm = QueryExpansionLLM()
                 logger.info(
                     f"Expanding to {settings.QUERY_EXPANSION_NUM_NEW_QUERIES} for query: {search_params.query}"
                 )
                 expanded_queries = await query_expansion_llm.expand_query(
                     search_params.query
+                )
+                _time_dict["query_expansion_time"] = (
+                    time.perf_counter() - _time_dict["query_expansion_time"]
                 )
                 if expanded_queries:
                     queries.extend(expanded_queries)
@@ -410,28 +400,38 @@ class RagService:
             # For gemini embeddings, the vector produced by aembed_query is the same as the vector produced by aembed_documents
             # So, we can improve the performance by using aembed_documents instead of aembed_query
             # However, for other embeddings, this might not be the case!
-            _embeddings_start_time = time.perf_counter()
-            query_vectors = await self._embeddings.aembed_documents(queries)
-            _embeddings_end_time = time.perf_counter()
-            logger.debug(
-                f"Embeddings took: {_embeddings_end_time - _embeddings_start_time:.2f} seconds for {len(queries)} queries"
+            _time_dict["embedding_time"] = time.perf_counter()
+            embeddings = await self._get_embeddings()
+            query_vectors = await embeddings.aembed_documents(queries)
+            _time_dict["embedding_time"] = (
+                time.perf_counter() - _time_dict["embedding_time"]
             )
 
-            _qdrant_search_start_time = time.perf_counter()
+            _time_dict["similarity_search_time"] = time.perf_counter()
+
+            # Adaptive retrieval parameters based on query characteristics
+            base_limit = search_params.limit * 2
+            adaptive_limit = base_limit
+
+            # If we have expanded queries, we can be more selective
+            if len(queries) > 1:
+                # For expanded queries, we can retrieve fewer candidates per query
+                # since RRF will help combine the best results
+                adaptive_limit = max(base_limit // 2, search_params.limit)
+
             qdrant_search_results = await self._qdrant_client.search_batch(
                 collection_name=settings.QDRANT_COLLECTION_NAME,
                 requests=[
                     qdrant_models.SearchRequest(
                         vector=query_vector,
-                        limit=search_params.limit * 2,
+                        limit=adaptive_limit,
                         score_threshold=search_params.threshold,
                     )
                     for query_vector in query_vectors
                 ],
             )
-            _qdrant_search_end_time = time.perf_counter()
-            logger.debug(
-                f"Qdrant search took: {_qdrant_search_end_time - _qdrant_search_start_time:.2f} seconds for {len(query_vectors)} queries"
+            _time_dict["similarity_search_time"] = (
+                time.perf_counter() - _time_dict["similarity_search_time"]
             )
 
             # Apply Reciprocal Rank Fusion (RRF) to combine results
@@ -448,13 +448,18 @@ class RagService:
                 str(result.id) for result in fused_qdrant_search_results
             ]
             if not chunk_ids:
+                _time_dict["total_time"] = (
+                    time.perf_counter() - _time_dict["total_time"]
+                )
                 return SimilaritySearchResult(
                     num_chunks=0,
                     reranked=False,
                     chunks=[],
                     query=search_params.query,
+                    **_time_dict,
                 )
 
+            _time_dict["chunk_retrieval_time"] = time.perf_counter()
             document_section_chunks_result = await session.execute(
                 select(DocumentSectionChunk)
                 .where(DocumentSectionChunk.qdrant_point_id.in_(chunk_ids))
@@ -462,6 +467,9 @@ class RagService:
             )
             document_section_chunks = (
                 document_section_chunks_result.scalars().all()
+            )
+            _time_dict["chunk_retrieval_time"] = (
+                time.perf_counter() - _time_dict["chunk_retrieval_time"]
             )
 
             # Check if we got all expected chunks
@@ -491,8 +499,9 @@ class RagService:
             # reranking
             rerank_applied = False
             if search_params.rerank and settings.RERANK_ENABLED:
-                reranker = self._reranker
+                reranker = await self._get_reranker()
                 if reranker is not None:
+                    _time_dict["rerank_time"] = time.perf_counter()
                     logger.debug(
                         f"Reranking {len(document_section_chunks_public)} chunks..."
                     )
@@ -503,9 +512,18 @@ class RagService:
                     rerank_results = reranker.compute_score(
                         rerank_docs, batch_size=8, normalize=True
                     )
+                    _time_dict["rerank_time"] = (
+                        time.perf_counter() - _time_dict["rerank_time"]
+                    )
                     assert rerank_results is not None
                     for i, chunk in enumerate(document_section_chunks_public):
-                        chunk.similarity_score = rerank_results[i]
+                        rrf_score = score_map.get(chunk.id, 0.0)  # noqa: F841  # pyright: ignore[reportUnusedVariable]
+                        rerank_score = rerank_results[i]
+
+                        # final_score = 0.3 * rrf_score + 0.7 * rerank_score
+                        final_score = rerank_score
+
+                        chunk.similarity_score = final_score
 
                     rerank_applied = True
                 else:
@@ -527,11 +545,38 @@ class RagService:
                     reverse=True,
                 )
 
+            # Validate result quality
+            if document_section_chunks_public:
+                top_score = document_section_chunks_public[0].similarity_score
+                if top_score is not None:
+                    scores = [
+                        chunk.similarity_score
+                        for chunk in document_section_chunks_public
+                        if chunk.similarity_score is not None
+                    ]
+                    if scores:
+                        avg_score = sum(scores) / len(scores)
+                        logger.debug(
+                            f"Result quality - Top score: {top_score:.4f}, Avg score: {avg_score:.4f}"
+                        )
+
+                        # If scores are too low, log a warning
+                        if top_score < 0.1:
+                            logger.warning(
+                                f"Low quality results detected. Top score: {top_score:.4f}"
+                            )
+
+            _time_dict["total_time"] = (
+                time.perf_counter() - _time_dict["total_time"]
+            )
+            logger.debug(f"{_time_dict = }")
             return SimilaritySearchResult(
                 num_chunks=len(document_section_chunks_public),
                 reranked=rerank_applied,
-                chunks=document_section_chunks_public,
                 query=search_params.query,
+                expanded_queries=expanded_queries,
+                chunks=document_section_chunks_public,
+                **_time_dict,
             )
 
         except Exception as err:
@@ -602,13 +647,12 @@ class RagService:
                     doc_section_chunk_dbs.append(doc_section_chunk_db)
 
             # compute embeddings for all chunks
-            doc_section_chunk_vectors = (
-                await self._embeddings.aembed_documents(
-                    [
-                        doc_section_chunk.content
-                        for doc_section_chunk in doc_section_chunk_dbs
-                    ],
-                )
+            embeddings = await self._get_embeddings()
+            doc_section_chunk_vectors = await embeddings.aembed_documents(
+                [
+                    doc_section_chunk.content
+                    for doc_section_chunk in doc_section_chunk_dbs
+                ],
             )
 
             # compute qdrant points
@@ -857,7 +901,8 @@ class RagService:
                             )
 
                     # compute embeddings for all chunks of this file
-                    file_doc_section_chunk_vectors = await self._embeddings.aembed_documents(
+                    embeddings = await self._get_embeddings()
+                    file_doc_section_chunk_vectors = await embeddings.aembed_documents(
                         [
                             doc_section_chunk.content
                             for doc_section_chunk in file_doc_section_chunk_dbs

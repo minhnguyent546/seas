@@ -145,6 +145,10 @@ class Settings(BaseSettings):
     BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 20
     BATCH_DOCUMENT_UPLOAD_MAX_TOTAL_CHUNKS: int = 5_000
 
+    # openrouter
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+    OPENROUTER_API_KEY: str = ""
+
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
         if self.EMAILS_FROM_NAME is None:

@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from contextlib import asynccontextmanager
@@ -29,6 +30,7 @@ async def lifespan(app: FastAPI):
 
     logger.info('"Starting application...')
     logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
+
     if settings.RERANK_ENABLED:
         logger.info(
             f"Reranker is enabled, model name {settings.BAAI_RERANKER_MODEL}"
@@ -42,6 +44,15 @@ async def lifespan(app: FastAPI):
     try:
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
             await init_db(session)
+
+        # Preload models in background to avoid cold starts
+        if settings.RERANK_ENABLED:
+            logger.info("Preloading models in background...")
+            # Start model preloading in background
+
+            from app.rag.rag_models_manager import rag_models_manager
+
+            asyncio.create_task(rag_models_manager.preload_models())
 
         yield
     except Exception as e:

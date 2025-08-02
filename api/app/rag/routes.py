@@ -17,6 +17,7 @@ from app.deps import (
     get_current_superuser,
 )
 from app.rag.query_expansion_llm import QueryExpansionLLM
+from app.rag.rag_models_manager import rag_models_manager
 from app.rag.schemas import (
     SimilaritySearchParams,
     SimilaritySearchResult,
@@ -149,3 +150,17 @@ async def export_document_sections_chunks(
             "Content-Type": "application/json; charset=utf-8",
         },
     )
+
+
+@router.get(
+    "/private/rag-models-status",
+    dependencies=[Depends(get_current_superuser)],
+    response_class=JSONResponse,
+)
+async def get_rag_models_status():
+    """Get the status of RAG models initialization. Requires superuser permissions."""
+
+    return {
+        "status": rag_models_manager.get_status(),
+        "timestamp": datetime.now().isoformat(),
+    }
