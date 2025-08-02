@@ -13,7 +13,7 @@ import app.utils as app_utils
 from app.chatbot.schemas import DocumentTag
 from app.core.config import settings
 from app.core.database import AsyncSession
-from app.rag.schemas import SimilaritySearchParams, SimilaritySearchResult
+from app.rag.schemas import QueryParams, SimilaritySearchResult
 from app.rag.service import RagService
 
 
@@ -43,17 +43,11 @@ class RagChatLLM:
     async def astream(
         self,
         session: AsyncSession,
-        query: str,
+        query_params: QueryParams,
     ) -> AsyncIterator[BaseMessageChunk]:
         similarity_search_result = await self.rag_service.similarity_search(
             session=session,
-            search_params=SimilaritySearchParams(
-                query=query,
-                limit=settings.SIMILARITY_SEARCH_TOP_K,
-                threshold=settings.SIMILARITY_SEARCH_THRESHOLD,
-                rerank=settings.RERANK_ENABLED,
-                sort_by_score=True,
-            ),
+            query_params=query_params,
         )
 
         document_tags = [
@@ -71,7 +65,7 @@ class RagChatLLM:
 
         human_prompt = self.human_prompt_template.render(
             context=context_str,
-            query=query,
+            query=query_params.query,
         )
 
         messages = [
@@ -98,20 +92,14 @@ class RagChatLLM:
     async def astream_for_evaluation(
         self,
         session: AsyncSession,
-        query: str,
+        query_params: QueryParams,
     ) -> tuple[SimilaritySearchResult, str, float, float | None]:
         """Stream response while collecting evaluation metadata."""
 
         # Get similarity search results first
         similarity_search_result = await self.rag_service.similarity_search(
             session=session,
-            search_params=SimilaritySearchParams(
-                query=query,
-                limit=settings.SIMILARITY_SEARCH_TOP_K,
-                threshold=settings.SIMILARITY_SEARCH_THRESHOLD,
-                rerank=settings.RERANK_ENABLED,
-                sort_by_score=True,
-            ),
+            query_params=query_params,
         )
 
         document_tags = [
@@ -129,7 +117,7 @@ class RagChatLLM:
 
         human_prompt = self.human_prompt_template.render(
             context=context_str,
-            query=query,
+            query=query_params.query,
         )
 
         messages = [

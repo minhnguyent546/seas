@@ -13,14 +13,46 @@ import os
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Annotated, Any, Optional
 
 import httpx
 from dotenv import load_dotenv
 from loguru import logger
+from pydantic import BaseModel, Field
 from ranx import Qrels, Run, evaluate
 
 load_dotenv()
+
+
+# Copied from ~app/rag/schemas.py
+class QueryParams(BaseModel):
+    query: Annotated[
+        str,
+        Field(
+            min_length=1,
+            max_length=2048,
+            description="The user's chat query",
+            examples=[
+                "Thời gian đăng ký xét tuyển đại học chính quy năm 2025 là khi nào?"
+            ],
+        ),
+    ]
+    limit: Annotated[
+        int, Field(ge=1, le=100, description="Number of chunks to retrieve")
+    ] = 10
+    threshold: Annotated[
+        float,
+        Field(ge=0.0, le=1.0, description="Threshold for similarity search"),
+    ] = 0.4
+    num_new_queries: Annotated[
+        int,
+        Field(
+            description="Number of new queries to expand the query. Less than 1 means no expansion."
+        ),
+    ] = 3
+    rerank: Annotated[
+        bool, Field(description="Whether to rerank the retrieved chunks")
+    ] = True
 
 
 class RanxEvaluator:
@@ -66,7 +98,9 @@ class RanxEvaluator:
             logger.error(f"Authentication error: {e}")
             return False
 
-    async def send_eval_query(self, question: str) -> dict[str, Any]:
+    async def send_eval_query(
+        self, query_params: QueryParams
+    ) -> dict[str, Any]:
         """Send query to evaluation endpoint and get complete response with metadata."""
         start_time = time.perf_counter()
 
@@ -80,9 +114,10 @@ class RanxEvaluator:
             if self.access_token:
                 cookies["access_token"] = self.access_token
 
+            json_data = query_params.model_dump()
             response = await self.client.post(
                 f"{self.base_url}/api/v1/chatbot/query-eval",
-                json={"query": question},
+                json=json_data,
                 headers=headers,
                 cookies=cookies,
             )
@@ -102,7 +137,7 @@ class RanxEvaluator:
                     "success": False,
                     "error": f"HTTP {response.status_code}: {response.text}",
                     "response_time": response_time,
-                    "query": question,
+                    "query": query_params.query,
                     "response": "",
                     "retrieved_chunks": [],
                     "num_chunks_retrieved": 0,
@@ -116,7 +151,7 @@ class RanxEvaluator:
                 "success": False,
                 "error": str(e),
                 "response_time": end_time - start_time,
-                "query": question,
+                "query": query_params.query,
                 "response": "",
                 "retrieved_chunks": [],
                 "num_chunks_retrieved": 0,
@@ -175,6 +210,10 @@ class RanxEvaluator:
         questions_file: str,
         output_dir: str = "evaluation_results",
         sample_size: Optional[int] = None,
+        sim_search_limit: int = 10,
+        sim_search_threshold: float = 0.4,
+        query_expansion_num_new_queries: int = 3,
+        rerank: bool = True,
     ) -> dict[str, Any]:
         """Run evaluation using ranx metrics."""
 
@@ -228,8 +267,15 @@ class RanxEvaluator:
                 f"Question {i}/{len(all_questions)}: {question[:100]}..."
             )
 
-            result = await self.send_eval_query(question)
-
+            result = await self.send_eval_query(
+                QueryParams(
+                    query=question,
+                    limit=sim_search_limit,
+                    threshold=sim_search_threshold,
+                    num_new_queries=query_expansion_num_new_queries,
+                    rerank=rerank,
+                )
+            )
             # Add question metadata
             result.update({
                 "question_id": i,
@@ -583,7 +629,13 @@ async def main() -> int:
 
         # Run evaluation
         results = await evaluator.evaluate_with_ranx(
-            args.questions_file, args.output_dir, args.sample_size
+            questions_file=args.questions_file,
+            output_dir=args.output_dir,
+            sample_size=args.sample_size,
+            sim_search_limit=args.sim_search_limit,
+            sim_search_threshold=args.sim_search_threshold,
+            query_expansion_num_new_queries=args.query_expansion_num_new_queries,
+            rerank=args.rerank,
         )
 
         if not results:
@@ -602,18 +654,53 @@ async def main() -> int:
 
 def add_opts(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
-        "--base-url", default="http://localhost:8444", help="API base URL"
+        "--base_url",
+        type=str,
+        default="http://localhost:8444",
+        help="API base URL",
     )
     parser.add_argument(
-        "--questions-file",
+        "--questions_file",
+        type=str,
         default="app/rag/synthesized-questions-with-refs/generated_questions.json",
         help="Path to questions JSON file",
     )
     parser.add_argument(
-        "--output-dir", default="evaluation_results", help="Output directory"
+        "--output_dir",
+        type=str,
+        default="evaluation_results",
+        help="Output directory",
     )
     parser.add_argument(
-        "--sample-size", type=int, help="Limit evaluation to N questions"
+        "--sample_size",
+        type=int,
+        help="Limit evaluation to N questions",
+        default=None,
+    )
+
+    # query params
+    parser.add_argument(
+        "--sim_search_limit",
+        type=int,
+        default=10,
+        help="Limit for similarity search",
+    )
+    parser.add_argument(
+        "--sim_search_threshold",
+        type=float,
+        help="Threshold for similarity search",
+        default=0.4,
+    )
+    parser.add_argument(
+        "--rerank",
+        action="store_true",
+        help="Whether to rerank the results",
+    )
+    parser.add_argument(
+        "--query_expansion_num_new_queries",
+        type=int,
+        help="Number of new queries to expand the query. Less than 1 means no expansion.",
+        default=3,
     )
 
 

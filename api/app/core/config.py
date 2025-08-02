@@ -113,18 +113,15 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
 
     # embeddings model
-    EMBEDDING_MODEL: str = "gemini-embedding-exp-03-07"
+    BAAI_EMBEDDING_MODEL: str = "BAAI/bge-m3"
+
     CHUNK_SIZE: int = 2048
     CHUNK_OVERLAP: int = 256
 
     # query expansion
     QUERY_EXPANSION_MODEL: str = "google/gemini-2.5-flash"
-    QUERY_EXPANSION_NUM_NEW_QUERIES: int = (
-        3  # change to less than 1 to disable query expansion
-    )
 
     # reranking model
-    RERANK_ENABLED: bool = False
     BAAI_RERANKER_MODEL: str = "BAAI/bge-reranker-v2-m3"
 
     # doc upload dir
@@ -135,11 +132,7 @@ class Settings(BaseSettings):
     QDRANT_PORT: int = 6333
     QDRANT_API_KEY: str | None = None
     QDRANT_COLLECTION_NAME: str = "seas_documents"
-    QDRANT_VECTOR_SIZE: int = 3072  # Google embeddings dimension
-
-    # similarity search
-    SIMILARITY_SEARCH_TOP_K: int = 10
-    SIMILARITY_SEARCH_THRESHOLD: float = 0.6
+    QDRANT_VECTOR_SIZE: int = 1024  # embeddings dimension
 
     # config for adding document in batch
     BATCH_DOCUMENT_UPLOAD_MAX_BATCH_SIZE: int = 20
@@ -148,6 +141,9 @@ class Settings(BaseSettings):
     # openrouter
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
     OPENROUTER_API_KEY: str = ""
+
+    # Hugging Face cache directory
+    HF_HOME: str = "/app/hf_models"
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:

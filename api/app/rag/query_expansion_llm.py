@@ -9,17 +9,18 @@ from app.core.config import settings
 
 
 class QueryExpansionLLM:
-    def __init__(self):
+    def __init__(self, num_new_queries: int):
         self.llm = app_utils.get_langchain_llm(
             model_name=settings.QUERY_EXPANSION_MODEL,
             temperature=0.6,
         )
+        self.num_new_queries = num_new_queries
 
         self.system_prompt = app_utils.get_prompt(
             template_name="query_expansion_system_prompt.j2",
             currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
             currentYear=datetime.now().year,
-            numNewQueries=settings.QUERY_EXPANSION_NUM_NEW_QUERIES,
+            numNewQueries=num_new_queries,
         )
         self.human_prompt_template = app_utils.get_prompt_template(
             template_name="query_expansion_human_prompt.j2"
@@ -43,7 +44,7 @@ class QueryExpansionLLM:
 
         elapsed_time = time.perf_counter() - _start_time
         logger.debug(
-            f"Query expansion: {elapsed_time:.2f} seconds for expanding {settings.QUERY_EXPANSION_NUM_NEW_QUERIES} queries"
+            f"Query expansion: {elapsed_time:.2f} seconds for expanding {self.num_new_queries} queries"
         )
 
         assert isinstance(response_content, str)

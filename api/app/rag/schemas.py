@@ -1,6 +1,7 @@
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field
+from qdrant_client import models as qdrant_models
 
 
 class DocumentSectionChunkPublic(BaseModel):
@@ -13,22 +14,33 @@ class DocumentSectionChunkPublic(BaseModel):
     similarity_score: float | None = None
 
 
-class SimilaritySearchParams(BaseModel):
-    query: Annotated[str, Field(min_length=1, max_length=2048)]
-    limit: Annotated[int, Field(ge=1, le=100)] = 3
-    threshold: Annotated[float, Field(ge=0.0, le=1.0)] = 0.6
-    expand_query: Annotated[
-        bool,
+class QueryParams(BaseModel):
+    query: Annotated[
+        str,
         Field(
-            description="Whether to expand the query using LLM and apply query fusion with Reciprocal Rank Fusion (RRF)"
+            min_length=1,
+            max_length=2048,
+            description="The user's chat query",
+            examples=[
+                "Thời gian đăng ký xét tuyển đại học chính quy năm 2025 là khi nào?"
+            ],
         ),
-    ] = True
+    ]
+    limit: Annotated[
+        int, Field(ge=1, le=100, description="Number of chunks to retrieve")
+    ] = 10
+    threshold: Annotated[
+        float,
+        Field(ge=0.0, le=1.0, description="Threshold for similarity search"),
+    ] = 0.4
+    num_new_queries: Annotated[
+        int,
+        Field(
+            description="Number of new queries to expand the query. Less than 1 means no expansion."
+        ),
+    ] = 3
     rerank: Annotated[
         bool, Field(description="Whether to rerank the retrieved chunks")
-    ] = True
-    sort_by_score: Annotated[
-        bool,
-        Field(description="Whether to sort the retrieved chunks by score"),
     ] = True
 
 
@@ -64,4 +76,21 @@ class SimilaritySearchResult(BaseModel):
     ] = None
     total_time: Annotated[
         float, Field(description="Total time taken to process the query")
+    ]
+
+
+class RecomputeEmbeddingsParams(BaseModel):
+    qdrant_db_name: Annotated[
+        str,
+        Field(
+            description="The name of the Qdrant database to compute embeddings for"
+        ),
+    ]
+    embeddings_size: Annotated[
+        int,
+        Field(description="The size of the embeddings to compute"),
+    ]
+    distance_function: Annotated[
+        qdrant_models.Distance,
+        Field(description="The distance function to use for the embeddings"),
     ]

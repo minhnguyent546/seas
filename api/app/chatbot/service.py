@@ -9,19 +9,19 @@ from loguru import logger
 from app.chatbot.rag_chat_llm import RagChatLLM
 from app.chatbot.schemas import (
     ChatEvaluationResponse,
-    ChatQuery,
 )
 from app.core.database import AsyncSession
+from app.rag.schemas import QueryParams
 from app.users.models import User
 from app.utils import extract_content_from_base_message
 
 
 async def process_query(
-    chat_query: ChatQuery,
+    query_params: QueryParams,
     session: AsyncSession,
     current_user: User,
 ) -> StreamingResponse:
-    human_message = chat_query.query.strip()
+    human_message = query_params.query.strip()
     if not human_message:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -33,7 +33,7 @@ async def process_query(
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
                 async for chunk in chat_llm.astream(
-                    session=session, query=human_message
+                    session=session, query_params=query_params
                 ):
                     chunk_content = extract_content_from_base_message(chunk)
                     if not chunk_content:
@@ -63,11 +63,11 @@ async def process_query(
 
 
 async def process_query_for_evaluation(
-    chat_query: ChatQuery,
+    query_params: QueryParams,
     session: AsyncSession,
     current_user: User,
 ) -> ChatEvaluationResponse:
-    human_message = chat_query.query.strip()
+    human_message = query_params.query.strip()
     if not human_message:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -86,7 +86,7 @@ async def process_query_for_evaluation(
             _llm_response_time,
             time_to_first_chunk,
         ) = await chat_llm.astream_for_evaluation(
-            session=session, query=human_message
+            session=session, query_params=query_params
         )
 
         end_time = time.perf_counter()

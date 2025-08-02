@@ -19,7 +19,8 @@ from app.deps import (
 from app.rag.query_expansion_llm import QueryExpansionLLM
 from app.rag.rag_models_manager import rag_models_manager
 from app.rag.schemas import (
-    SimilaritySearchParams,
+    QueryParams,
+    RecomputeEmbeddingsParams,
     SimilaritySearchResult,
 )
 from app.rag.service import RagService
@@ -78,13 +79,13 @@ async def add_document_to_database_in_batch(
     response_model=SimilaritySearchResult,
 )
 async def similarity_search(
-    search_params: SimilaritySearchParams,
+    query_params: QueryParams,
     session: AsyncSessionDep,
     rag_service: RagServiceDep,
 ):
     """Similarity search for a query. Requires superuser permissions."""
     result = await rag_service.similarity_search(
-        session=session, search_params=search_params
+        session=session, query_params=query_params
     )
     return result
 
@@ -111,9 +112,18 @@ async def split_markdown_on_headers(
 )
 async def query_expansion(
     query: Annotated[str, Body(description="The query to expand", embed=True)],
+    num_new_queries: Annotated[
+        int,
+        Body(
+            description="Number of new queries to expand the query. Less than 1 means no expansion.",
+            ge=1,
+            le=16,
+            embed=True,
+        ),
+    ] = 3,
 ):
     """Query expansion. Requires superuser permissions."""
-    query_expansion_llm = QueryExpansionLLM()
+    query_expansion_llm = QueryExpansionLLM(num_new_queries)
     queries = await query_expansion_llm.expand_query(query)
     return {
         "original_query": query,
@@ -164,3 +174,23 @@ async def get_rag_models_status():
         "status": rag_models_manager.get_status(),
         "timestamp": datetime.now().isoformat(),
     }
+
+
+@router.post(
+    "/private/recompute-embeddings",
+    dependencies=[Depends(get_current_superuser)],
+    response_class=JSONResponse,
+)
+async def recompute_embeddings(
+    session: AsyncSessionDep,
+    rag_service: RagServiceDep,
+    recompute_embeddings_params: RecomputeEmbeddingsParams,
+):
+    """Recompute embeddings for all document sections chunks. Requires superuser permissions.
+
+    This is useful when the embeddings model is changed and we need
+    to recompute the embeddings for all document sections chunks.
+    """
+    return await rag_service.recompute_embeddings(
+        session=session, params=recompute_embeddings_params
+    )
