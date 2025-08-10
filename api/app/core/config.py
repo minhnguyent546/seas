@@ -142,8 +142,9 @@ class Settings(BaseSettings):
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
     OPENROUTER_API_KEY: str = ""
 
-    # Hugging Face cache directory
-    HF_HOME: str = "/app/hf_models"
+    # Hugging Face stuff
+    PRELOAD_HF_MODELS: bool = False
+    HF_HOME: str = "/app/.hf_models"
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:

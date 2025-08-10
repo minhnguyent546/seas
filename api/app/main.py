@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from contextlib import asynccontextmanager
@@ -28,7 +29,8 @@ async def lifespan(app: FastAPI):
     _start_time = time.time()
 
     logger.info('"Starting application...')
-    logger.info(f"CORS origins: {settings.CORS_ORIGINS}")
+    logger.debug(f"CORS origins: {settings.CORS_ORIGINS}")
+    logger.debug(f"HF_HOME: {settings.HF_HOME}")
 
     if not os.path.isdir(settings.DOC_UPLOAD_DIR):
         os.makedirs(settings.DOC_UPLOAD_DIR)
@@ -36,6 +38,12 @@ async def lifespan(app: FastAPI):
     try:
         async with AsyncSessionLocal() as session:  # pyright: ignore[reportGeneralTypeIssues]
             await init_db(session)
+
+        if settings.PRELOAD_HF_MODELS:
+            logger.info("Preloading HF models...")
+            from app.rag.rag_models_manager import rag_models_manager
+
+            asyncio.create_task(rag_models_manager.preload_models())
 
         yield
     except Exception as e:

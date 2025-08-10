@@ -91,7 +91,7 @@ class RagModelsManager:
         return self._reranker  # type: ignore
 
     async def preload_models(self) -> None:
-        """Preload embeddings and reranker concurrently at startup."""
+        """Preload embeddings and reranker concurrently."""
         tasks = [self.get_embeddings(), self.get_reranker()]
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
