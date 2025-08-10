@@ -39,6 +39,11 @@ export function UserControls() {
     .join('')
     .toUpperCase();
 
+  // Find the current language object to display its flag
+  const currentLanguageObj = availableLanguages.find(
+    (lang) => lang.code === currentLanguage
+  );
+
   return (
     <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
       {/* Language Toggle Button */}
@@ -46,11 +51,15 @@ export function UserControls() {
         align="right"
         width="w-52"
         trigger={
-          <button className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors cursor-pointer">
-            <IconLanguage
-              size={16}
-              className="text-gray-600 dark:text-gray-400"
-            />
+          <button className="h-8 w-8 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors cursor-pointer">
+            {currentLanguageObj ? (
+              <span className="text-lg">{currentLanguageObj.flag}</span>
+            ) : (
+              <IconLanguage
+                size={16}
+                className="text-gray-600 dark:text-gray-400"
+              />
+            )}
           </button>
         }
       >
