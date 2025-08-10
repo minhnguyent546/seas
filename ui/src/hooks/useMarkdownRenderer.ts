@@ -1,6 +1,8 @@
+import markdownItKatex from '@traptitech/markdown-it-katex';
 import DOMPurify from 'dompurify';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.min.css';
+import 'katex/dist/katex.min.css';
 import MarkdownIt from 'markdown-it';
 import { useMemo } from 'react';
 
@@ -23,10 +25,93 @@ const md: MarkdownIt = new MarkdownIt({
   },
 });
 
+// Add KaTeX plugin for LaTeX formula rendering
+md.use(markdownItKatex, {
+  throwOnError: false, // Don't throw on invalid LaTeX
+  errorColor: '#cc0000', // Color for invalid LaTeX
+});
+
 export const useMarkdownRenderer = (content: string) => {
   return useMemo(() => {
     const rendered = md.render(content);
-    const sanitized = DOMPurify.sanitize(rendered);
+
+    // Configure DOMPurify to allow KaTeX elements and attributes
+    const sanitized = DOMPurify.sanitize(rendered, {
+      ADD_TAGS: [
+        'span',
+        'math',
+        'semantics',
+        'mrow',
+        'mi',
+        'mo',
+        'mn',
+        'msubsup',
+        'msub',
+        'msup',
+        'mfrac',
+        'mroot',
+        'msqrt',
+        'mtext',
+        'mspace',
+        'mtable',
+        'mtr',
+        'mtd',
+        'mlabeledtr',
+        'munder',
+        'mover',
+        'munderover',
+        'annotation',
+        'annotation-xml',
+      ],
+      ADD_ATTR: [
+        'class',
+        'data-*',
+        'xmlns',
+        'style',
+        'aria-hidden',
+        'mathvariant',
+        'mathsize',
+        'mathcolor',
+        'mathbackground',
+        'displaystyle',
+        'scriptlevel',
+        'dir',
+        'lspace',
+        'rspace',
+        'stretchy',
+        'symmetric',
+        'maxsize',
+        'minsize',
+        'fence',
+        'separator',
+        'accent',
+        'accentunder',
+        'linebreak',
+        'linebreakmultchar',
+        'indentalign',
+        'indentshift',
+        'indenttarget',
+        'form',
+        'position',
+        'frame',
+        'rowspacing',
+        'columnspacing',
+        'rowlines',
+        'columnlines',
+        'framespacing',
+        'equalrows',
+        'equalcolumns',
+        'rowalign',
+        'columnalign',
+        'groupalign',
+        'alignmentscope',
+        'columnwidth',
+        'rowspan',
+        'columnspan',
+        'side',
+      ],
+    });
+
     return sanitized;
   }, [content]);
 };
