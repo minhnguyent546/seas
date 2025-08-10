@@ -2,10 +2,13 @@ import { type UserRegister } from '@/client';
 import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LanguageSelector } from '@/components/ui/language-selector';
 import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
+import { usePageMeta } from '@/hooks/usePageTitle';
 import {
   Link,
   Navigate,
@@ -22,6 +25,16 @@ function SignupComponent() {
   const { signupMutation, error, resetError, isAuthenticated, isLoading } =
     useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
+
+  // Set up page title and meta tags
+  usePageMeta({
+    titleKey: 'pages:titles.signup',
+    descriptionKey: 'pages:descriptions.signup',
+    fallbackTitle: 'Sign Up',
+    fallbackDescription: 'Sign up to ask about the CTU Enrollment Program',
+  });
+
   const {
     register,
     handleSubmit,
@@ -43,7 +56,7 @@ function SignupComponent() {
 
   // Show loading while checking authentication
   if (isLoading) {
-    return <Loading message="Checking authentication..." />;
+    return <Loading message={t('loading.checkingAuth')} />;
   }
 
   // Redirect to home if already authenticated
@@ -65,13 +78,19 @@ function SignupComponent() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
       style={{
         backgroundImage: 'url("/images/ctu-background.jpg")',
         backgroundColor: 'rgba(0,0,0,0.5)',
         backgroundBlendMode: 'overlay',
       }}
     >
+      {/* Language Selector */}
+      <LanguageSelector
+        variant="auth"
+        className="absolute top-4 right-4 z-10"
+      />
+
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-xl">
         <div className="text-center">
           <h1 className="mb-5 flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">
@@ -79,10 +98,10 @@ function SignupComponent() {
             <span>CTU SEAS</span>
           </h1>
           <h2 className="text-3xl font-bold text-gray-900">
-            Create an account
+            {t('auth.createAccount')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Join us to explore the CTU Enrollment Program
+            {t('auth.createAccountSubtext')}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -92,20 +111,20 @@ function SignupComponent() {
                 htmlFor="fullName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Full Name
+                {t('auth.fullName')}
               </label>
               <Input
                 id="fullName"
                 type="text"
                 autoComplete="name"
                 required
-                placeholder="Enter your full name"
+                placeholder={t('auth.placeholders.enterFullName')}
                 error={errors.full_name?.message}
                 {...register('full_name', {
-                  required: 'Full name is required',
+                  required: t('auth.validation.fullNameRequired'),
                   minLength: {
                     value: 3,
-                    message: 'Full name must be at least 3 characters',
+                    message: t('auth.validation.fullNameMinLength'),
                   },
                 })}
               />
@@ -115,20 +134,20 @@ function SignupComponent() {
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
               >
-                Username
+                {t('auth.username')}
               </label>
               <Input
                 id="username"
                 type="text"
                 autoComplete="username"
                 required
-                placeholder="Enter your username"
+                placeholder={t('auth.placeholders.enterUsername')}
                 error={errors.username?.message}
                 {...register('username', {
-                  required: 'Username is required',
+                  required: t('auth.validation.usernameRequired'),
                   minLength: {
                     value: 3,
-                    message: 'Username must be at least 3 characters',
+                    message: t('auth.validation.usernameMinLength'),
                   },
                 })}
               />
@@ -138,21 +157,21 @@ function SignupComponent() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <Input
                 id="email"
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="Enter your email"
+                placeholder={t('auth.placeholders.enterEmail')}
                 error={errors.email?.message}
                 {...register('email', {
-                  required: 'Email is required',
+                  required: t('auth.validation.emailRequired'),
                   pattern: {
                     value:
                       /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
-                    message: 'Invalid email address',
+                    message: t('auth.validation.emailInvalid'),
                   },
                 })}
               />
@@ -162,19 +181,19 @@ function SignupComponent() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Password
+                {t('auth.password')}
               </label>
               <PasswordInput
                 id="password"
                 autoComplete="new-password"
                 required
-                placeholder="Enter your password"
+                placeholder={t('auth.placeholders.enterPassword')}
                 error={errors.password?.message}
                 {...register('password', {
-                  required: 'Password is required',
+                  required: t('auth.validation.passwordRequired'),
                   minLength: {
                     value: 6,
-                    message: 'Password must be at least 6 characters',
+                    message: t('auth.validation.passwordMinLength'),
                   },
                 })}
               />
@@ -184,18 +203,18 @@ function SignupComponent() {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-700"
               >
-                Confirm Password
+                {t('auth.confirmPassword')}
               </label>
               <PasswordInput
                 id="confirmPassword"
                 autoComplete="new-password"
                 required
-                placeholder="Confirm your password"
+                placeholder={t('auth.placeholders.confirmPassword')}
                 error={errors.confirmPassword?.message}
                 {...register('confirmPassword', {
-                  required: 'Please confirm your password',
+                  required: t('auth.validation.confirmPasswordRequired'),
                   validate: (value) =>
-                    value === password || 'Passwords do not match',
+                    value === password || t('auth.validation.passwordsNoMatch'),
                 })}
               />
             </div>
@@ -212,14 +231,14 @@ function SignupComponent() {
             disabled={isSubmitting || signupMutation.isPending}
           >
             {isSubmitting || signupMutation.isPending
-              ? 'Creating account...'
-              : 'Create account'}
+              ? t('auth.creatingAccount')
+              : t('auth.createAccountButton')}
           </Button>
         </form>
         <div className="text-center text-sm mt-4">
-          Already have an account?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
           <Link to="/login" className="text-primary hover:underline">
-            Sign in
+            {t('auth.signIn')}
           </Link>
         </div>
       </div>

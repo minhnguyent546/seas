@@ -1,3 +1,4 @@
+import { LanguageProvider } from '@/components/providers/LanguageProvider';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
@@ -6,8 +7,8 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <>
+    <LanguageProvider>
       <Outlet />
-    </>
+    </LanguageProvider>
   );
 }

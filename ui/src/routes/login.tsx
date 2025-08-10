@@ -6,10 +6,13 @@ import {
 import { GitHubIcon, GoogleIcon, SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LanguageSelector } from '@/components/ui/language-selector';
 import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
+import { usePageMeta } from '@/hooks/usePageTitle';
 import { CircularProgress } from '@mui/material';
 import { createFileRoute, Link, Navigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
@@ -22,11 +25,20 @@ export const Route = createFileRoute('/login')({
 function Login() {
   const { loginMutation, error, resetError, isAuthenticated, isLoading } =
     useAuth();
+  const { t } = useLanguage();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
   const [isGitHubLoading, setIsGitHubLoading] = useState(false);
   const [gitHubError, setGitHubError] = useState<string | null>(null);
   const [oauthError, setOauthError] = useState<string | null>(null);
+
+  // Set up page title and meta tags
+  usePageMeta({
+    titleKey: 'pages:titles.login',
+    descriptionKey: 'pages:descriptions.login',
+    fallbackTitle: 'Sign In',
+    fallbackDescription: 'Sign in to ask about the CTU Enrollment Program',
+  });
   const {
     register,
     handleSubmit,
@@ -67,7 +79,7 @@ function Login() {
 
   // Show loading while checking authentication
   if (isLoading) {
-    return <Loading message="Checking authentication..." />;
+    return <Loading message={t('loading.checkingAuth')} />;
   }
 
   // Redirect to home if already authenticated
@@ -159,22 +171,30 @@ function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
       style={{
         backgroundImage: 'url("/images/ctu-background.jpg")',
         backgroundColor: 'rgba(0,0,0,0.5)',
         backgroundBlendMode: 'overlay',
       }}
     >
+      {/* Language Selector */}
+      <LanguageSelector
+        variant="auth"
+        className="absolute top-4 right-4 z-10"
+      />
+
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-xl">
         <div className="text-center">
           <h1 className="mb-5 flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">
             <SeasLogo size={48} className="text-primary" />
             <span>CTU SEAS</span>
           </h1>
-          <h2 className="text-3xl font-bold text-gray-900">Sign in</h2>
+          <h2 className="text-3xl font-bold text-gray-900">
+            {t('auth.signInHeading')}
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your account to continue
+            {t('auth.signInSubtext')}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -184,20 +204,20 @@ function Login() {
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
               >
-                Username
+                {t('auth.username')}
               </label>
               <Input
                 id="username"
                 type="text"
                 autoComplete="username"
                 required
-                placeholder="Enter your username"
+                placeholder={t('auth.placeholders.enterUsername')}
                 error={errors.username?.message}
                 {...register('username', {
-                  required: 'Username is required',
+                  required: t('auth.validation.usernameRequired'),
                   minLength: {
                     value: 3,
-                    message: 'Username must be at least 3 characters',
+                    message: t('auth.validation.usernameMinLength'),
                   },
                 })}
               />
@@ -207,19 +227,19 @@ function Login() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Password
+                {t('auth.password')}
               </label>
               <PasswordInput
                 id="password"
                 autoComplete="current-password"
                 required
-                placeholder="Enter your password"
+                placeholder={t('auth.placeholders.enterPassword')}
                 error={errors.password?.message}
                 {...register('password', {
-                  required: 'Password is required',
+                  required: t('auth.validation.passwordRequired'),
                   minLength: {
                     value: 6,
-                    message: 'Password must be at least 6 characters',
+                    message: t('auth.validation.passwordMinLength'),
                   },
                 })}
               />
@@ -237,8 +257,8 @@ function Login() {
             disabled={isSubmitting || loginMutation.isPending}
           >
             {isSubmitting || loginMutation.isPending
-              ? 'Signing in...'
-              : 'Sign in'}
+              ? t('auth.signingIn')
+              : t('auth.signIn')}
           </Button>
 
           <div className="relative my-6">
@@ -246,7 +266,9 @@ function Login() {
               <span className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">Or</span>
+              <span className="bg-white px-2 text-gray-500">
+                {t('auth.or')}
+              </span>
             </div>
           </div>
 
@@ -260,11 +282,11 @@ function Login() {
             <GoogleIcon className="mr-2" size={20} />
             {isGoogleLoading ? (
               <>
-                Signing in with Google
+                {t('auth.signingInWithGoogle')}
                 <CircularProgress size={16} className="ml-2" />
               </>
             ) : (
-              'Continue with Google'
+              t('auth.continueWithGoogle')
             )}
           </Button>
           <Button
@@ -277,18 +299,18 @@ function Login() {
             <GitHubIcon className="mr-2" size={20} />
             {isGitHubLoading ? (
               <>
-                Signing in with GitHub
+                {t('auth.signingInWithGitHub')}
                 <CircularProgress size={16} className="ml-2" />
               </>
             ) : (
-              'Continue with GitHub'
+              t('auth.continueWithGitHub')
             )}
           </Button>
         </form>
         <div className="text-center text-sm mt-4">
-          Don't have an account?{' '}
+          {t('auth.dontHaveAccount')}{' '}
           <Link to="/signup" className="text-primary hover:underline">
-            Sign up
+            {t('auth.signup')}
           </Link>
         </div>
       </div>
