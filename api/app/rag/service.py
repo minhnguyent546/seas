@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 import uuid
@@ -5,17 +6,19 @@ from datetime import datetime
 from typing import Any
 
 import frontmatter
+import numpy as np
 import qdrant_client.models as qdrant_models
 from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
+from FlagEmbedding import BGEM3FlagModel, FlagReranker
 from langchain_core.documents import Document as LangchainDocument
-from langchain_core.embeddings import Embeddings
 from langchain_text_splitters import (
     MarkdownHeaderTextSplitter,
     RecursiveCharacterTextSplitter,
 )
 from loguru import logger
 from qdrant_client import AsyncQdrantClient
+from sqlalchemy import func as sql_func
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -30,7 +33,8 @@ from app.rag.query_expansion_llm import QueryExpansionLLM
 from app.rag.rag_models_manager import rag_models_manager
 from app.rag.schemas import (
     DocumentSectionChunkPublic,
-    SimilaritySearchParams,
+    QueryParams,
+    RecomputeEmbeddingsParams,
     SimilaritySearchResult,
 )
 from app.schemas import MessageResponse
@@ -65,10 +69,10 @@ class RagService:
             )
         return self.__qdrant_client
 
-    async def _get_embeddings(self) -> Embeddings:
+    async def _get_embeddings(self) -> BGEM3FlagModel:
         return await rag_models_manager.get_embeddings()
 
-    async def _get_reranker(self) -> Any:
+    async def _get_reranker(self) -> FlagReranker:
         return await rag_models_manager.get_reranker()
 
     async def _initialize_qdrant_collection(self) -> bool:
@@ -352,7 +356,7 @@ class RagService:
                 os.remove(saved_file_path)
 
     async def similarity_search(
-        self, session: AsyncSession, search_params: SimilaritySearchParams
+        self, session: AsyncSession, query_params: QueryParams
     ) -> SimilaritySearchResult:
         _time_dict: dict[str, Any] = {
             "query_expansion_time": None,
@@ -360,26 +364,25 @@ class RagService:
             "similarity_search_time": None,
             "chunk_retrieval_time": None,
             "rerank_time": None,
-            "total_time": None,
+            "total_sim_search_time": None,
         }
         expanded_queries: list[str] | None = None
         try:
-            _time_dict["total_time"] = time.perf_counter()
-            logger.debug(f"{search_params = }")
+            _time_dict["total_sim_search_time"] = time.perf_counter()
+            logger.debug(f"{query_params = }")
 
-            queries = [search_params.query]  # include the original query
+            queries = [query_params.query]  # include the original query
 
-            if (
-                search_params.expand_query
-                and settings.QUERY_EXPANSION_NUM_NEW_QUERIES > 0
-            ):
+            if query_params.num_new_queries > 0:
                 _time_dict["query_expansion_time"] = time.perf_counter()
-                query_expansion_llm = QueryExpansionLLM()
+                query_expansion_llm = QueryExpansionLLM(
+                    query_params.num_new_queries
+                )
                 logger.info(
-                    f"Expanding to {settings.QUERY_EXPANSION_NUM_NEW_QUERIES} for query: {search_params.query}"
+                    f"Expanding to {query_params.num_new_queries} for query: {query_params.query}"
                 )
                 expanded_queries = await query_expansion_llm.expand_query(
-                    search_params.query
+                    query_params.query
                 )
                 _time_dict["query_expansion_time"] = (
                     time.perf_counter() - _time_dict["query_expansion_time"]
@@ -393,39 +396,29 @@ class RagService:
                         logger.debug(f"{i + 1}. {expanded_query}")
                 else:
                     logger.warning(
-                        f"No expanded queries provided for {search_params.query}"
+                        f"No expanded queries provided for {query_params.query}"
                     )
 
-            # IMPORTANT:
-            # For gemini embeddings, the vector produced by aembed_query is the same as the vector produced by aembed_documents
-            # So, we can improve the performance by using aembed_documents instead of aembed_query
-            # However, for other embeddings, this might not be the case!
             _time_dict["embedding_time"] = time.perf_counter()
             embeddings = await self._get_embeddings()
-            query_vectors = await embeddings.aembed_documents(queries)
+            query_vectors: np.ndarray = embeddings.encode(  # pyright: ignore[reportAssignmentType, reportMissingTypeArgument]
+                queries,
+                batch_size=16,
+                return_dense=True,
+            )["dense_vecs"]
             _time_dict["embedding_time"] = (
                 time.perf_counter() - _time_dict["embedding_time"]
             )
 
             _time_dict["similarity_search_time"] = time.perf_counter()
 
-            # Adaptive retrieval parameters based on query characteristics
-            base_limit = search_params.limit * 2
-            adaptive_limit = base_limit
-
-            # If we have expanded queries, we can be more selective
-            if len(queries) > 1:
-                # For expanded queries, we can retrieve fewer candidates per query
-                # since RRF will help combine the best results
-                adaptive_limit = max(base_limit // 2, search_params.limit)
-
             qdrant_search_results = await self._qdrant_client.search_batch(
                 collection_name=settings.QDRANT_COLLECTION_NAME,
                 requests=[
                     qdrant_models.SearchRequest(
                         vector=query_vector,
-                        limit=adaptive_limit,
-                        score_threshold=search_params.threshold,
+                        limit=int(query_params.limit * 1.5),
+                        score_threshold=query_params.threshold,
                     )
                     for query_vector in query_vectors
                 ],
@@ -441,21 +434,21 @@ class RagService:
 
             # Limit to requested number of results
             fused_qdrant_search_results = fused_qdrant_search_results[
-                : search_params.limit
+                : query_params.limit
             ]
 
             chunk_ids = [
                 str(result.id) for result in fused_qdrant_search_results
             ]
             if not chunk_ids:
-                _time_dict["total_time"] = (
-                    time.perf_counter() - _time_dict["total_time"]
+                _time_dict["total_sim_search_time"] = (
+                    time.perf_counter() - _time_dict["total_sim_search_time"]
                 )
                 return SimilaritySearchResult(
                     num_chunks=0,
                     reranked=False,
                     chunks=[],
-                    query=search_params.query,
+                    query=query_params.query,
                     **_time_dict,
                 )
 
@@ -497,53 +490,40 @@ class RagService:
             }
 
             # reranking
-            rerank_applied = False
-            if search_params.rerank and settings.RERANK_ENABLED:
+            if query_params.rerank:
                 reranker = await self._get_reranker()
-                if reranker is not None:
-                    _time_dict["rerank_time"] = time.perf_counter()
-                    logger.debug(
-                        f"Reranking {len(document_section_chunks_public)} chunks..."
-                    )
-                    rerank_docs = [
-                        (search_params.query, chunk.content)
-                        for chunk in document_section_chunks_public
-                    ]
-                    rerank_results = reranker.compute_score(
-                        rerank_docs, batch_size=8, normalize=True
-                    )
-                    _time_dict["rerank_time"] = (
-                        time.perf_counter() - _time_dict["rerank_time"]
-                    )
-                    assert rerank_results is not None
-                    for i, chunk in enumerate(document_section_chunks_public):
-                        rrf_score = score_map.get(chunk.id, 0.0)  # noqa: F841  # pyright: ignore[reportUnusedVariable]
-                        rerank_score = rerank_results[i]
+                _time_dict["rerank_time"] = time.perf_counter()
+                logger.debug(
+                    f"Reranking {len(document_section_chunks_public)} chunks..."
+                )
+                rerank_docs = [
+                    (query_params.query, chunk.content)
+                    for chunk in document_section_chunks_public
+                ]
+                rerank_results = reranker.compute_score(
+                    rerank_docs, batch_size=8, normalize=True
+                )
+                _time_dict["rerank_time"] = (
+                    time.perf_counter() - _time_dict["rerank_time"]
+                )
+                assert rerank_results is not None
+                for i, chunk in enumerate(document_section_chunks_public):
+                    rrf_score = score_map.get(chunk.id, 0.0)  # noqa: F841  # pyright: ignore[reportUnusedVariable]
+                    rerank_score = rerank_results[i]
 
-                        # final_score = 0.3 * rrf_score + 0.7 * rerank_score
-                        final_score = rerank_score
+                    # final_score = 0.3 * rrf_score + 0.7 * rerank_score
+                    final_score = rerank_score
 
-                        chunk.similarity_score = final_score
-
-                    rerank_applied = True
-                else:
-                    logger.warning(
-                        "Reranking requested but FlagEmbedding not available. "
-                        "Install with: uv add --group rerank FlagEmbedding. "
-                        "Falling back to fusion scores."
-                    )
-                    for chunk in document_section_chunks_public:
-                        chunk.similarity_score = score_map.get(chunk.id, 0.0)
+                    chunk.similarity_score = final_score
             else:
                 # Use fusion scores (no reranking)
                 for chunk in document_section_chunks_public:
                     chunk.similarity_score = score_map.get(chunk.id, 0.0)
 
-            if search_params.sort_by_score:
-                document_section_chunks_public.sort(
-                    key=lambda doc_section_chunk: doc_section_chunk.similarity_score,  # pyright: ignore[reportArgumentType]
-                    reverse=True,
-                )
+            document_section_chunks_public.sort(
+                key=lambda doc_section_chunk: doc_section_chunk.similarity_score,  # pyright: ignore[reportArgumentType]
+                reverse=True,
+            )
 
             # Validate result quality
             if document_section_chunks_public:
@@ -566,14 +546,14 @@ class RagService:
                                 f"Low quality results detected. Top score: {top_score:.4f}"
                             )
 
-            _time_dict["total_time"] = (
-                time.perf_counter() - _time_dict["total_time"]
+            _time_dict["total_sim_search_time"] = (
+                time.perf_counter() - _time_dict["total_sim_search_time"]
             )
             logger.debug(f"{_time_dict = }")
             return SimilaritySearchResult(
                 num_chunks=len(document_section_chunks_public),
-                reranked=rerank_applied,
-                query=search_params.query,
+                reranked=query_params.rerank,
+                query=query_params.query,
                 expanded_queries=expanded_queries,
                 chunks=document_section_chunks_public,
                 **_time_dict,
@@ -648,12 +628,14 @@ class RagService:
 
             # compute embeddings for all chunks
             embeddings = await self._get_embeddings()
-            doc_section_chunk_vectors = await embeddings.aembed_documents(
+            doc_section_chunk_vectors: np.ndarray = embeddings.encode(  # pyright: ignore[reportAssignmentType, reportMissingTypeArgument]
                 [
                     doc_section_chunk.content
                     for doc_section_chunk in doc_section_chunk_dbs
                 ],
-            )
+                batch_size=16,
+                return_dense=True,
+            )["dense_vecs"]
 
             # compute qdrant points
             qdrant_points: list[qdrant_models.PointStruct] = []
@@ -902,12 +884,14 @@ class RagService:
 
                     # compute embeddings for all chunks of this file
                     embeddings = await self._get_embeddings()
-                    file_doc_section_chunk_vectors = await embeddings.aembed_documents(
+                    file_doc_section_chunk_vectors: np.ndarray = embeddings.encode(  # pyright: ignore[reportAssignmentType, reportMissingTypeArgument]
                         [
                             doc_section_chunk.content
                             for doc_section_chunk in file_doc_section_chunk_dbs
                         ],
-                    )
+                        batch_size=16,
+                        return_dense=True,
+                    )["dense_vecs"]
 
                     # compute qdrant points for this file
                     file_qdrant_points: list[qdrant_models.PointStruct] = []
@@ -1124,3 +1108,158 @@ class RagService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to export document sections chunks: {err}",
             ) from err
+
+    async def recompute_embeddings(
+        self,
+        session: AsyncSession,
+        params: RecomputeEmbeddingsParams,
+    ) -> JSONResponse:
+        collections = await self._qdrant_client.get_collections()
+        collection_names = [c.name for c in collections.collections]
+
+        if params.qdrant_db_name not in collection_names:
+            await self._qdrant_client.create_collection(
+                collection_name=params.qdrant_db_name,
+                vectors_config=qdrant_models.VectorParams(
+                    size=params.embeddings_size,
+                    distance=params.distance_function,
+                ),
+            )
+            logger.info(f"Created Qdrant collection: {params.qdrant_db_name}")
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Collection {params.qdrant_db_name} already exists",
+            )
+
+        # Get embeddings model
+        embeddings = await self._get_embeddings()
+
+        # Batch processing configuration
+        BATCH_SIZE = 100  # Number of chunks to process per batch
+        EMBEDDING_BATCH_SIZE = 16  # Batch size for embedding computation
+
+        total_processed = 0
+        total_embeddings_created = 0
+        total_chunks = 0
+
+        try:
+            # Get total count of all chunks
+            total_chunks_result = await session.execute(
+                select(sql_func.count(DocumentSectionChunk.id))
+            )
+            total_chunks = total_chunks_result.scalar_one()
+
+            if total_chunks == 0:
+                return JSONResponse(
+                    status_code=status.HTTP_200_OK,
+                    content={
+                        "message": "No chunks found to recompute embeddings",
+                        "total_chunks": 0,
+                        "total_processed": 0,
+                        "total_embeddings_created": 0,
+                    },
+                )
+
+            logger.info(f"Found {total_chunks} chunks to recompute embeddings")
+
+            # Process chunks in batches
+            offset = 0
+            while True:
+                # Fetch batch of all chunks
+                query = (
+                    select(DocumentSectionChunk)
+                    .order_by(DocumentSectionChunk.created_at)
+                    .limit(BATCH_SIZE)
+                    .offset(offset)
+                )
+
+                result = await session.execute(query)
+                chunks_batch = result.scalars().all()
+
+                if not chunks_batch:
+                    break
+
+                logger.info(
+                    f"Recomputing embeddings for batch {offset // BATCH_SIZE + 1}: {len(chunks_batch)} chunks"
+                )
+
+                # Extract content for embedding
+                chunk_contents = [chunk.content for chunk in chunks_batch]
+
+                # Compute embeddings for this batch
+                chunk_vectors = embeddings.encode(
+                    chunk_contents,
+                    batch_size=EMBEDDING_BATCH_SIZE,
+                    return_dense=True,
+                )["dense_vecs"]
+
+                # Create Qdrant points
+                qdrant_points = []
+                for chunk, vector in zip(
+                    chunks_batch, chunk_vectors, strict=True
+                ):
+                    # Generate new unique point ID for recomputation
+                    chunk.qdrant_point_id = str(uuid.uuid4())  # pyright: ignore
+
+                    qdrant_points.append(
+                        qdrant_models.PointStruct(
+                            id=str(chunk.qdrant_point_id),
+                            vector=vector.tolist(),
+                            payload={},
+                        )
+                    )
+
+                # Insert embeddings into Qdrant
+                if qdrant_points:
+                    await self._qdrant_client.upsert(
+                        collection_name=params.qdrant_db_name,
+                        points=qdrant_points,
+                    )
+                    logger.info(
+                        f"Inserted {len(qdrant_points)} embeddings into Qdrant"
+                    )
+
+                # Commit database changes for this batch
+                session.add_all(chunks_batch)
+                await session.commit()
+
+                total_processed += len(chunks_batch)
+                total_embeddings_created += len(qdrant_points)
+
+                logger.info(
+                    f"Recomputed embeddings for {total_processed}/{total_chunks} chunks"
+                )
+
+                offset += BATCH_SIZE
+
+                # Add a small delay to prevent overwhelming the system
+                await asyncio.sleep(0.1)
+
+            logger.info(
+                f"Completed embedding recomputation: {total_embeddings_created} embeddings created"
+            )
+
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "message": "Embeddings recomputed and stored successfully",
+                    "total_chunks": total_chunks,
+                    "total_processed": total_processed,
+                    "total_embeddings_created": total_embeddings_created,
+                    "collection_name": params.qdrant_db_name,
+                    "embedding_size": params.embeddings_size,
+                    "distance_function": params.distance_function.value,
+                },
+            )
+
+        except Exception as e:
+            logger.error(f"Error recomputing embeddings: {e}")
+            # Rollback any uncommitted database changes
+            await session.rollback()
+            # Note: Qdrant changes cannot be rolled back automatically
+            # The collection may contain partial embeddings from successful batches
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to recompute embeddings: {str(e)}. Some embeddings may have been created in Qdrant.",
+            ) from e

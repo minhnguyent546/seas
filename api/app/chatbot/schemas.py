@@ -6,20 +6,6 @@ from pydantic import BaseModel, Field
 from app.rag.schemas import DocumentSectionChunkPublic
 
 
-class ChatQuery(BaseModel):
-    query: Annotated[
-        str,
-        Field(
-            min_length=1,
-            max_length=2048,
-            description="The user's chat query",
-            examples=[
-                "Thời gian đăng ký xét tuyển đại học chính quy năm 2025 là khi nào?"
-            ],
-        ),
-    ]
-
-
 class DocumentTag(BaseModel):
     title: str
     url: str

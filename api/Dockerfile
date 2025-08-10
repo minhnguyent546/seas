@@ -4,9 +4,10 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
 ENV HF_HUB_DISABLE_TELEMETRY=1
-ENV HF_HOME=/tmp/huggingface_cache
+ENV HF_HOME=/app/hf_models
 
-ARG RERANK_ENABLED=false
+# disable tokenizers parallelism to avoid overloading the CPU
+ENV TOKENIZERS_PARALLELISM=false
 
 RUN apt update && apt install -y --no-install-recommends \
     gcc \
@@ -34,12 +35,7 @@ ENV UV_LINK_MODE=copy
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    if [ "$RERANK_ENABLED" = "true" ]; then \
-        echo "Installing with rerank dependencies..." && \
-        uv sync --frozen --no-install-project --group rerank; \
-    else \
-        uv sync --frozen --no-install-project; \
-    fi
+    uv sync --frozen --no-install-project;
 
 ENV PYTHONPATH=/app
 
@@ -47,11 +43,7 @@ COPY . /app
 
 # sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    if [ "$RERANK_ENABLED" = "true" ]; then \
-        uv sync --group rerank; \
-    else \
-        uv sync; \
-    fi
+    uv sync;
 
 EXPOSE 8444
 
