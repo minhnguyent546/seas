@@ -1,0 +1,16 @@
+SEAS Chatbot Context Response Collection Summary
+=======================================================
+
+Collection Date: 2025-08-03T01:39:13.604951
+Refined Messages File: app/rag/chat-data/refined_messages.json
+Base URL: http://localhost:8444
+Total Questions: 300
+Sample Size: 300
+
+Basic Statistics:
+--------------------
+Success Rate: 100.0%
+Successful Responses: 300
+Failed Responses: 0
+Average Response Time: 4.77s
+

@@ -49,7 +49,7 @@ jobs:
 
       - name: Lint with ruff
         run: |
-          uv run ruff check app tests
+          uv run ruff check --output-format=github app tests
 
       - name: run tests with pytest
         env:
