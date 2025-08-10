@@ -1,8 +1,38 @@
+# editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
 # node modules
 node_modules/
+dist
+dist-ssr
+*.local
 
 # vite pre-bundled deps
 .vite/
+
+# yarn
+# see: https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# tanstack
+.tanstack
 
 # python stuff
 .ipynb_checkpoints
@@ -22,11 +52,18 @@ wheels/
 # local stuff
 _*
 !__init__.py
+!/ui/src/routes/_*.tsx
 *.local
 
 # log files
 *.log
 *.logs
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # cache files
 .ruff_cache
@@ -49,5 +86,4 @@ htmlcov/
 *.bak*
 
 api/app/rag/ctu-docs/pdf-docs/*.pdf
-*.Identifier
 .hf_models
