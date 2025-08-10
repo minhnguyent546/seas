@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Advanced evaluation script using ranx for ranking metrics.
+Script for evaluation using ranx for retrieval and ranking metrics.
 
 Example of usage:
     python scripts/evaluate_with_ranx.py
