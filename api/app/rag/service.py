@@ -364,11 +364,11 @@ class RagService:
             "similarity_search_time": None,
             "chunk_retrieval_time": None,
             "rerank_time": None,
-            "total_time": None,
+            "total_sim_search_time": None,
         }
         expanded_queries: list[str] | None = None
         try:
-            _time_dict["total_time"] = time.perf_counter()
+            _time_dict["total_sim_search_time"] = time.perf_counter()
             logger.debug(f"{query_params = }")
 
             queries = [query_params.query]  # include the original query
@@ -441,8 +441,8 @@ class RagService:
                 str(result.id) for result in fused_qdrant_search_results
             ]
             if not chunk_ids:
-                _time_dict["total_time"] = (
-                    time.perf_counter() - _time_dict["total_time"]
+                _time_dict["total_sim_search_time"] = (
+                    time.perf_counter() - _time_dict["total_sim_search_time"]
                 )
                 return SimilaritySearchResult(
                     num_chunks=0,
@@ -546,8 +546,8 @@ class RagService:
                                 f"Low quality results detected. Top score: {top_score:.4f}"
                             )
 
-            _time_dict["total_time"] = (
-                time.perf_counter() - _time_dict["total_time"]
+            _time_dict["total_sim_search_time"] = (
+                time.perf_counter() - _time_dict["total_sim_search_time"]
             )
             logger.debug(f"{_time_dict = }")
             return SimilaritySearchResult(

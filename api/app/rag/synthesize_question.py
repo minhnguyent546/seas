@@ -4,15 +4,28 @@
 
 Example usage:
 
+1. Using OpenAI
+
 ```bash
 # from the root of the api directory (i.e. seas/api)
-OPENAI_API_KEY=<your-openai-api-key> python -m app.rag.synthesize_question \
+export OPENAI_API_KEY=<your-openai-api-key>
+python -m app.rag.synthesize_question \
     --document_sections_chunks_file app/rag/document_sections_chunks_export_20250728_162327.json \
     --model openai/gpt-4o \
     --num_questions 5 \
     --retries 3
 ```
 
+2. Using models from OpenRouter
+
+```bash
+export OPENAI_API_KEY=<your-openrouter-api-key>
+export OPENAI_API_BASE=https://openrouter.ai/api/v1
+python -m app.rag.synthesize_question \
+    --document_sections_chunks_file app/rag/document_sections_chunks_export_20250728_162327.json \
+    --model openrouter/gemini-2.5-flash \
+    --num_questions 5 \
+    --retries 3
 """
 
 import argparse
@@ -58,32 +71,27 @@ def get_prompt(*, template_name: str, **kwargs):
 
 def get_langchain_llm(model_name: str, **kwargs):
     """Copied from ~app/utils.py."""
-    if "/" not in model_name:
-        raise ValueError(
-            f"Expected model name have the format <provider>/<model_name>, got {model_name}"
-        )
+    try:
+        provider, model_name = model_name.split("/", 1)
+        if provider == "google":
+            from langchain_google_genai import ChatGoogleGenerativeAI
 
-    provider, model_name = model_name.split("/")
-    if provider == "google":
-        from langchain_google_genai import ChatGoogleGenerativeAI
+            return ChatGoogleGenerativeAI(model=model_name, **kwargs)
+        elif provider == "openai":
+            from langchain_openai import ChatOpenAI
 
-        google_api_key = os.getenv("GOOGLE_API_KEY")
-        if not google_api_key:
-            raise ValueError("GOOGLE_API_KEY is not set")
+            return ChatOpenAI(model=model_name, **kwargs)
+        elif provider == "openrouter":
+            from langchain_openai import (
+                ChatOpenAI,  # as OpenRouter uses an OpenAI-compatible API
+            )
 
-        return ChatGoogleGenerativeAI(
-            model=model_name, api_key=google_api_key, **kwargs
-        )  # pyright: ignore[reportArgumentType]
-    elif provider == "openai":
-        from langchain_openai import ChatOpenAI
-
-        openai_api_key = os.getenv("OPENAI_API_KEY")
-        if not openai_api_key:
-            raise ValueError("OPENAI_API_KEY is not set")
-
-        return ChatOpenAI(model=model_name, api_key=openai_api_key, **kwargs)  # pyright: ignore[reportArgumentType]
-    else:
-        raise ValueError(f"Unsupported provider: {provider}")
+            return ChatOpenAI(model=model_name, **kwargs)
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
+    except Exception as err:
+        logger.error(f"Failed to initialize langchain llm: {err}")
+        raise err
 
 
 def generate_question(
@@ -102,6 +110,8 @@ def generate_question(
         )
 
     os.makedirs(args.output_dir, exist_ok=True)
+    log_file_path = os.path.join(args.output_dir, "logs.log")
+    logger.add(log_file_path)
 
     df = pd.read_json(args.document_sections_chunks_file)
     sections = df["sections"]
@@ -113,7 +123,7 @@ def generate_question(
         logger.info(
             f"Max sections is set to {args.max_sections}, will process only {args.max_sections} sections out of {len(sections)}"
         )
-        sections = sections.sample(n=args.max_sections, random_state=42)
+        sections = sections.sample(n=args.max_sections, random_state=13)
 
     logger.info(f"Total sections: {len(sections)} | total chunks: {len(df)}")
 
@@ -126,13 +136,15 @@ def generate_question(
     )
 
     failed_sections: list[
-        str
+        dict[str, Any]
     ] = []  # list of section ids that failed to generate questions
     output_data: list[dict[str, Any]] = []
+    NUM_CONSECUTIVE_CHUNKS = 3
 
     for section in tqdm(sections, desc="Generating questions", unit="section"):
         section_id = section["id"]
         section_chunks = section["chunks"]
+        logger.debug(f"Number of chunks: {len(section_chunks)}")
         section_chunks = sorted(section_chunks, key=itemgetter("chunk_index"))
         section_chunks_content = [
             {
@@ -142,75 +154,97 @@ def generate_question(
             for section_chunk in section_chunks
         ]
 
-        human_prompt = get_prompt(
-            template_name="synthesize_questions_human_prompt.j2",
-            contexts=section_chunks_content,
-        )
-
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessage(content=human_prompt),
-        ]
-
-        retries_remaining = max(args.retries, 0)
-        while retries_remaining >= 0:
-            try:
-                response = llm.invoke(input=messages)
-
-                content = response.content
-                assert isinstance(content, str), (  # actually it should be!
-                    "Expected response.content to be a string"
+        for k in range(0, len(section_chunks_content), NUM_CONSECUTIVE_CHUNKS):
+            chunk_indices = list(
+                range(
+                    k,
+                    min(
+                        k + NUM_CONSECUTIVE_CHUNKS, len(section_chunks_content)
+                    ),
                 )
+            )
+            human_prompt = get_prompt(
+                template_name="synthesize_questions_human_prompt.j2",
+                contexts=[section_chunks_content[i] for i in chunk_indices],
+            )
 
-                generated_questions = [
-                    question.strip()
-                    for question in content.split("\n")
-                    if question.strip()
-                ]
-                question_data = []
-                for question in generated_questions:
-                    try:
-                        question_text, referenced_chunk_indices = (
-                            question.rsplit("[", 1)
-                        )
-                        referenced_chunk_indices = [
-                            int(index)
-                            for index in referenced_chunk_indices.strip(
-                                "[]"
-                            ).split(",")
-                        ]
-                    except ValueError:
-                        logger.error(
-                            f"Failed to parse referenced chunk indices in question: {question}. This question will be ignored."
-                        )
-                        continue
+            messages = [
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=human_prompt),
+            ]
 
-                    referenced_chunk_ids = [
-                        section_chunks[i]["id"]
-                        for i in referenced_chunk_indices
-                    ]
-                    question_data.append({
-                        "question": question_text.strip(),
-                        "num_referenced_chunks": len(referenced_chunk_indices),
-                        "referenced_chunk_indices": referenced_chunk_indices,
-                        "referenced_chunk_ids": referenced_chunk_ids,
-                    })
+            retries_remaining = max(args.retries, 0)
+            while retries_remaining >= 0:
+                try:
+                    response = llm.invoke(input=messages)
 
-                output_data.append({
-                    "section_id": section_id,
-                    "generated_questions": question_data,
-                })
-                sleep(0.5)  # a void rate limit
-                break
-            except Exception as err:
-                retries_remaining -= 1
-                if retries_remaining >= 0:
-                    continue
-                else:
-                    logger.error(
-                        f"Failed to generate questions after {args.retries} retries: {err}"
+                    content = response.content
+                    assert isinstance(
+                        content, str
+                    ), (  # actually it should be!
+                        "Expected response.content to be a string"
                     )
-                    failed_sections.append(section_id)
+
+                    generated_questions = [
+                        question.strip()
+                        for question in content.split("\n")
+                        if question.strip()
+                    ]
+                    generated_questions = [
+                        question.lstrip("-")
+                        for question in generated_questions
+                    ]
+                    logger.debug(f"{generated_questions = }")
+                    question_data = []
+                    for question in generated_questions:
+                        try:
+                            question_text, referenced_chunk_indices = (
+                                question.rsplit("[", 1)
+                            )
+                            referenced_chunk_indices = [
+                                int(index)
+                                for index in referenced_chunk_indices.strip(
+                                    "[]"
+                                ).split(",")
+                            ]
+                        except ValueError:
+                            logger.error(
+                                f"Failed to parse referenced chunk indices in question: {question}. This question will be ignored."
+                            )
+                            continue
+
+                        referenced_chunk_ids = [
+                            section_chunks[i]["id"]
+                            for i in referenced_chunk_indices
+                        ]
+                        question_data.append({
+                            "question": question_text.strip(),
+                            "num_referenced_chunks": len(
+                                referenced_chunk_indices
+                            ),
+                            "referenced_chunk_indices": referenced_chunk_indices,
+                            "referenced_chunk_ids": referenced_chunk_ids,
+                        })
+
+                    output_data.append({
+                        "section_id": section_id,
+                        "generated_questions": question_data,
+                    })
+                    sleep(0.5)  # a void rate limit
+                    break
+                except Exception as err:
+                    retries_remaining -= 1
+                    if retries_remaining >= 0:
+                        continue
+                    else:
+                        logger.error(
+                            f"Failed to generate questions after {args.retries} retries: {err}"
+                        )
+                        failed_sections.append({
+                            "section_id": section_id,
+                            "chunk_indices": chunk_indices,
+                            "error": str(err),
+                        })
 
     logger.info("*** Summary ***")
     logger.info(f"  Total sections: {len(sections)}")

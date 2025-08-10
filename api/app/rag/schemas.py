@@ -74,7 +74,7 @@ class SimilaritySearchResult(BaseModel):
     rerank_time: Annotated[
         float | None, Field(description="Time taken to rerank the chunks")
     ] = None
-    total_time: Annotated[
+    total_sim_search_time: Annotated[
         float, Field(description="Total time taken to process the query")
     ]
 
