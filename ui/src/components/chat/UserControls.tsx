@@ -4,15 +4,15 @@ import {
   DropdownItem,
   DropdownSeparator,
 } from '@/components/ui/dropdown';
+import { LanguageSelector } from '@/components/ui/language-selector';
 import useAuth from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { IconLanguage, IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconLogout, IconSettings } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export function UserControls() {
   const { user, logout } = useAuth();
-  const { currentLanguage, changeLanguage, availableLanguages, t } =
-    useLanguage();
+  const { t } = useLanguage();
   const [testUser] = useState({
     id: '1',
     name: 'Test user',
@@ -22,10 +22,6 @@ export function UserControls() {
   const handleSettings = () => {
     console.log('Settings clicked');
     // Implementation would open settings panel
-  };
-
-  const handleLanguageChange = async (languageCode: string) => {
-    await changeLanguage(languageCode as 'en' | 'vi');
   };
 
   if (!user) {
@@ -39,48 +35,10 @@ export function UserControls() {
     .join('')
     .toUpperCase();
 
-  // Find the current language object to display its flag
-  const currentLanguageObj = availableLanguages.find(
-    (lang) => lang.code === currentLanguage
-  );
-
   return (
     <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
       {/* Language Toggle Button */}
-      <Dropdown
-        align="right"
-        width="w-52"
-        trigger={
-          <button className="h-8 w-8 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors cursor-pointer">
-            {currentLanguageObj ? (
-              <span className="text-lg">{currentLanguageObj.flag}</span>
-            ) : (
-              <IconLanguage
-                size={16}
-                className="text-gray-600 dark:text-gray-400"
-              />
-            )}
-          </button>
-        }
-      >
-        <div className="px-4 py-2 text-sm font-medium text-gray-900 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
-          {t('nav.selectLanguage')}
-        </div>
-        {availableLanguages.map((language) => (
-          <DropdownItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-lg">{language.flag}</span>
-              <span className="flex-1">{language.name}</span>
-              {currentLanguage === language.code && (
-                <div className="w-2 h-2 bg-primary rounded-full" />
-              )}
-            </div>
-          </DropdownItem>
-        ))}
-      </Dropdown>
+      <LanguageSelector />
 
       {/* User Avatar Dropdown */}
       <Dropdown

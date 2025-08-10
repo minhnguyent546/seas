@@ -6,6 +6,7 @@ import {
 import { GitHubIcon, GoogleIcon, SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LanguageSelector } from '@/components/ui/language-selector';
 import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
@@ -170,13 +171,19 @@ function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
       style={{
         backgroundImage: 'url("/images/ctu-background.jpg")',
         backgroundColor: 'rgba(0,0,0,0.5)',
         backgroundBlendMode: 'overlay',
       }}
     >
+      {/* Language Selector */}
+      <LanguageSelector
+        variant="auth"
+        className="absolute top-4 right-4 z-10"
+      />
+
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-xl">
         <div className="text-center">
           <h1 className="mb-5 flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">

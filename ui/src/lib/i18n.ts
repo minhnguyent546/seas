@@ -29,7 +29,7 @@ i18n
     supportedLngs: ['en', 'vi'],
 
     // Default language
-    fallbackLng: 'en',
+    fallbackLng: 'vi',
 
     // Language detection options
     detection: {
