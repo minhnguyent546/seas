@@ -1,0 +1,57 @@
+SEAS Chatbot Ranx Evaluation Summary
+==================================================
+
+Evaluation Date: 2025-08-02T15:16:37.413718
+Questions File: synthesize_questions_outputs_conse-2_gpt-4-1_final/generated_questions.json
+Base URL: http://localhost:8444
+Total Questions: 258
+
+Basic Statistics:
+--------------------
+Success Rate: 100.0%
+Successful Responses: 258
+Failed Responses: 0
+Average Response Time: 2.69s
+Queries with Relevance Judgments: 258
+
+Timing Metrics (Averages):
+-------------------------
+Time to First Chunk: 0.962s
+Query Expansion Time: 0.000s
+Embedding Time: 0.011s
+Similarity Search Time: 0.031s
+Chunk Retrieval Time: 0.182s
+Rerank Time: 0.091s
+
+Ranking Metrics (Ranx):
+-------------------------
+Mean Average Precision (MAP):
+  map@1: 0.6318
+  map@3: 0.6838
+  map@5: 0.6873
+  map@10: 0.6876
+
+Mean Reciprocal Rank (MRR):
+  mrr@1: 0.6589
+  mrr@3: 0.6977
+  mrr@5: 0.7002
+  mrr@10: 0.7008
+
+Recall:
+  recall@1: 0.6318
+  recall@3: 0.7326
+  recall@5: 0.7461
+  recall@10: 0.7481
+
+Normalized Discounted Cumulative Gain (NDCG):
+  ndcg@1: 0.6589
+  ndcg@3: 0.6997
+  ndcg@5: 0.7054
+  ndcg@10: 0.7062
+
+Precision:
+  precision@1: 0.6589
+  precision@3: 0.2597
+  precision@5: 0.1589
+  precision@10: 0.0798
+
