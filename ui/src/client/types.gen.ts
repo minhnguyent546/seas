@@ -9,6 +9,38 @@ export type Body_auth_login = {
     client_secret?: (string | null);
 };
 
+export type Body_rag_add_document_to_database = {
+    /**
+     * The document to add to the database
+     */
+    file: (Blob | File);
+};
+
+export type Body_rag_add_document_to_database_in_batch = {
+    /**
+     * The documents to add to the database
+     */
+    files: Array<((Blob | File))>;
+};
+
+export type Body_rag_query_expansion = {
+    /**
+     * The query to expand
+     */
+    query: string;
+    /**
+     * Number of new queries to expand the query. Less than 1 means no expansion.
+     */
+    num_new_queries?: number;
+};
+
+export type Body_rag_split_markdown_on_headers = {
+    /**
+     * The document to split on headers
+     */
+    file: (Blob | File);
+};
+
 export type ChatMessageCreate = {
     sender: Sender;
     content: string;
@@ -20,10 +52,6 @@ export type ChatMessagePublic = {
     sender: Sender;
     content: string;
     created_at: string;
-};
-
-export type ChatQuery = {
-    query: string;
 };
 
 export type ChatSessionCreate = {
@@ -50,6 +78,21 @@ export type ChatSessionUpdate = {
 } | null);
 };
 
+/**
+ * Type of internal tags, build from payload Distance function types used to compare vectors
+ */
+export type Distance = 'Cosine' | 'Euclid' | 'Dot' | 'Manhattan';
+
+export type DocumentSectionChunkPublic = {
+    id: string;
+    content: string;
+    chunk_index: number;
+    chunk_metadata: {
+        [key: string]: unknown;
+    };
+    similarity_score?: (number | null);
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -63,6 +106,9 @@ export type LoginResponse = {
 export type MessageResponse = {
     status?: MessageStatus;
     message: string;
+    extra?: {
+        [key: string]: unknown;
+    };
 };
 
 export type MessageStatus = 'SUCCESS' | 'ERROR';
@@ -74,7 +120,77 @@ export type NewPassword = {
 
 export type OAuthProvider = 'GOOGLE' | 'GITHUB' | 'LOCAL';
 
+export type QueryParams = {
+    /**
+     * The user's chat query
+     */
+    query: string;
+    /**
+     * Number of chunks to retrieve
+     */
+    limit?: number;
+    /**
+     * Threshold for similarity search
+     */
+    threshold?: number;
+    /**
+     * Number of new queries to expand the query. Less than 1 means no expansion.
+     */
+    num_new_queries?: number;
+    /**
+     * Whether to rerank the retrieved chunks
+     */
+    rerank?: boolean;
+};
+
+export type RecomputeEmbeddingsParams = {
+    /**
+     * The name of the Qdrant database to compute embeddings for
+     */
+    qdrant_db_name: string;
+    /**
+     * The size of the embeddings to compute
+     */
+    embeddings_size: number;
+    /**
+     * The distance function to use for the embeddings
+     */
+    distance_function: Distance;
+};
+
 export type Sender = 'USER' | 'BOT' | 'SYSTEM';
+
+export type SimilaritySearchResult = {
+    num_chunks: number;
+    reranked: boolean;
+    query: string;
+    expanded_queries?: (Array<(string)> | null);
+    chunks: Array<DocumentSectionChunkPublic>;
+    /**
+     * Time taken to expand the query using LLM
+     */
+    query_expansion_time?: (number | null);
+    /**
+     * Time taken to embed the query using LLM
+     */
+    embedding_time?: (number | null);
+    /**
+     * Time taken to search for similar chunks in the database
+     */
+    similarity_search_time?: (number | null);
+    /**
+     * Time taken to retrieve the chunks from the database
+     */
+    chunk_retrieval_time?: (number | null);
+    /**
+     * Time taken to rerank the chunks
+     */
+    rerank_time?: (number | null);
+    /**
+     * Total time taken to process the query
+     */
+    total_sim_search_time: number;
+};
 
 export type UpdatePassword = {
     current_password: string;
@@ -178,10 +294,16 @@ export type AuthRecoverPasswordHtmlContentData = {
 export type AuthRecoverPasswordHtmlContentResponse = (string);
 
 export type ChatbotQueryData = {
-    requestBody: ChatQuery;
+    requestBody: QueryParams;
 };
 
 export type ChatbotQueryResponse = (unknown);
+
+export type ChatbotQueryEvalData = {
+    requestBody: QueryParams;
+};
+
+export type ChatbotQueryEvalResponse = (unknown);
 
 export type ChatsGetChatSessionsResponse = (Array<ChatSessionPublic>);
 
@@ -216,6 +338,46 @@ export type ChatsCreateNewMessageData = {
 };
 
 export type ChatsCreateNewMessageResponse = (ChatMessagePublic);
+
+export type RagAddDocumentToDatabaseData = {
+    formData: Body_rag_add_document_to_database;
+};
+
+export type RagAddDocumentToDatabaseResponse = (MessageResponse);
+
+export type RagAddDocumentToDatabaseInBatchData = {
+    formData: Body_rag_add_document_to_database_in_batch;
+};
+
+export type RagAddDocumentToDatabaseInBatchResponse = (MessageResponse);
+
+export type RagSimilaritySearchData = {
+    requestBody: QueryParams;
+};
+
+export type RagSimilaritySearchResponse = (SimilaritySearchResult);
+
+export type RagSplitMarkdownOnHeadersData = {
+    formData: Body_rag_split_markdown_on_headers;
+};
+
+export type RagSplitMarkdownOnHeadersResponse = (unknown);
+
+export type RagQueryExpansionData = {
+    requestBody: Body_rag_query_expansion;
+};
+
+export type RagQueryExpansionResponse = (unknown);
+
+export type RagExportDocumentSectionsChunksResponse = (unknown);
+
+export type RagGetRagModelsStatusResponse = (unknown);
+
+export type RagRecomputeEmbeddingsData = {
+    requestBody: RecomputeEmbeddingsParams;
+};
+
+export type RagRecomputeEmbeddingsResponse = (unknown);
 
 export type UsersGetUsersData = {
     limit?: number;
@@ -266,8 +428,6 @@ export type UsersDeleteUserByIdData = {
 export type UsersDeleteUserByIdResponse = (MessageResponse);
 
 export type UtilsHealthCheckResponse = (unknown);
-
-export type UtilsHtmlResponse = (string);
 
 export type UtilsTestSendEmailData = {
     emailTo: string;
