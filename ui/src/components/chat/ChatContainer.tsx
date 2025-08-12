@@ -5,26 +5,90 @@ import { SeasLogo } from '@/components/icons';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 import { useChat } from '@/hooks/useChat';
 import { useLanguage } from '@/hooks/useLanguage';
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 interface ChatContainerProps {
   userName: string;
+  sessionId?: string;
+  onFirstMessage?: (message: string) => Promise<void>;
 }
 
-export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
-  const { messages, isLoading, handleSendMessage } = useChat();
+export const ChatContainer: React.FC<ChatContainerProps> = ({
+  userName,
+  sessionId,
+  onFirstMessage,
+}) => {
+  const {
+    messages,
+    isLoading,
+    isLoadingMessages,
+    isLoadingFromBackend,
+    handleSendMessage,
+  } = useChat({ sessionId });
   const { scrollRef } = useAutoScroll(messages);
   const { t } = useLanguage();
+  const hasHandledFirstMessage = useRef(false);
+
+  // Scroll to bottom when messages are loaded from backend (session switching)
+  useEffect(() => {
+    if (
+      !isLoadingMessages &&
+      messages.length > 0 &&
+      isLoadingFromBackend === false
+    ) {
+      // Use a small delay to ensure messages are rendered
+      const timer = setTimeout(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoadingMessages, messages.length, isLoadingFromBackend, scrollRef]);
+
+  const handleMessageSend = useCallback(
+    async (message: string) => {
+      // Handle first message update for existing sessions (non-blocking)
+      if (
+        sessionId &&
+        !hasHandledFirstMessage.current &&
+        messages.length === 0 &&
+        onFirstMessage
+      ) {
+        hasHandledFirstMessage.current = true;
+        // Let it run in background to avoid blocking UI
+        onFirstMessage(message).catch((error) => {
+          console.error('Failed to handle first message:', error);
+        });
+      }
+
+      // Send the message normally
+      await handleSendMessage(message);
+    },
+    [sessionId, messages.length, onFirstMessage, handleSendMessage],
+  );
+
+  React.useEffect(() => {
+    hasHandledFirstMessage.current = false;
+  }, [sessionId]);
 
   const handleQuestionClick = (question: string) => {
-    handleSendMessage(question);
+    handleMessageSend(question);
   };
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto p-4 min-h-0">
         <div className="mx-auto w-full max-w-[var(--content-max-width)] h-full">
-          {messages.length === 0 ? (
+          {isLoadingMessages ? (
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <div className="mb-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-primary"></div>
+              </div>
+              <p className="text-lg text-gray-500 dark:text-gray-400">
+                {t('chat.loadingConversation')}
+              </p>
+            </div>
+          ) : messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full">
                 <SeasLogo size={80} className="text-primary" />
@@ -47,6 +111,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
                   message={message}
                   isLastMessage={index === messages.length - 1}
                   isLoading={isLoading && index === messages.length - 1}
+                  isLoadingFromBackend={isLoadingFromBackend}
                 />
               ))}
               <div
@@ -61,8 +126,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ userName }) => {
       </div>
 
       <div className="pb-4 rounded-b-xl flex-shrink-0">
-        <div className="mx-auto w-full max-w-[var(--content-max-width)]">
-          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+        <div className="mx-auto w-full max-w-[var(--content-max-width)] px-4">
+          <ChatInput onSendMessage={handleMessageSend} isLoading={isLoading} />
         </div>
       </div>
     </div>

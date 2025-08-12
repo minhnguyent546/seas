@@ -54,6 +54,27 @@ async def create_chat_session(
 
 
 @router.get(
+    "/chat_sessions/latest-chat-session", response_model=ChatSessionPublic
+)
+async def get_latest_chat_session(
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+):
+    """
+    Get the latest chat session for the current user.
+    """
+    chat_session = await chats_service.get_latest_chat_session(
+        session=session, user_id=str(current_user.id)
+    )
+    if chat_session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No chat session found",
+        )
+    return chat_session
+
+
+@router.get(
     "/chat_sessions/{chat_session_id}", response_model=ChatSessionPublic
 )
 async def get_chat_session(

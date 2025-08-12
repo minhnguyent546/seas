@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, field_serializer
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas import Sender
-from app.utils import serialize_datetime
 
 
 class ChatSessionPublic(BaseModel):
@@ -15,14 +14,6 @@ class ChatSessionPublic(BaseModel):
     created_at: datetime
     updated_at: datetime
     session_metadata: dict[str, Any]
-
-    @field_serializer("created_at")
-    def serialize_created_at(self, value: datetime, _info):
-        return serialize_datetime(value)
-
-    @field_serializer("updated_at")
-    def serialize_updated_at(self, value: datetime, _info):
-        return serialize_datetime(value)
 
 
 class ChatSessionCreate(BaseModel):
@@ -46,7 +37,3 @@ class ChatMessagePublic(BaseModel):
     sender: Sender
     content: str
     created_at: datetime
-
-    @field_serializer("created_at")
-    def serialize_created_at(self, value: datetime, _info):
-        return serialize_datetime(value)
