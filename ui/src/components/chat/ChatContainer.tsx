@@ -5,7 +5,7 @@ import { SeasLogo } from '@/components/icons';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 import { useChat } from '@/hooks/useChat';
 import { useLanguage } from '@/hooks/useLanguage';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 interface ChatContainerProps {
   userName: string;
@@ -28,6 +28,22 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   const { scrollRef } = useAutoScroll(messages);
   const { t } = useLanguage();
   const hasHandledFirstMessage = useRef(false);
+
+  // Scroll to bottom when messages are loaded from backend (session switching)
+  useEffect(() => {
+    if (
+      !isLoadingMessages &&
+      messages.length > 0 &&
+      isLoadingFromBackend === false
+    ) {
+      // Use a small delay to ensure messages are rendered
+      const timer = setTimeout(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoadingMessages, messages.length, isLoadingFromBackend, scrollRef]);
 
   const handleMessageSend = useCallback(
     async (message: string) => {
