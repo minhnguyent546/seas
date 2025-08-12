@@ -15,7 +15,15 @@
     "welcomeGreeting": "Hi, {{name}}!",
     "welcomeMessage": "Ask me anything about the CTU Enrollment Program!",
     "loadingSessions": "Loading chat sessions...",
-    "loadingConversation": "Loading conversation..."
+    "loadingConversation": "Loading conversation...",
+    "recommendedQuestions": {
+      "admissionRequirements": "What are the admission requirements?",
+      "scholarships": "How do I apply for scholarships?",
+      "programs": "What programs do you offer?",
+      "campusLife": "Tell me about campus life.",
+      "tuitionFees": "What are the tuition fees?",
+      "applicationDeadline": "When is the application deadline?"
+    }
   },
   "auth": {
     "login": "Login",
@@ -101,9 +109,14 @@
     "collapseSidebar": "Collapse Sidebar",
     "newChat": "New Chat",
     "rename": "Rename",
+    "sessionName": "Session name",
     "pinSession": "Pin session",
     "unpinSession": "Unpin session",
-    "delete": "Delete"
+    "delete": "Delete",
+    "deleteSession": "Delete Session",
+    "deleteSessionConfirm": "Are you sure you want to delete '{{sessionName}}'? This action cannot be undone.",
+    "sessionPinned": "Session pinned successfully",
+    "sessionUnpinned": "Session unpinned successfully"
   },
   "loading": {
     "checkingAuth": "Checking authentication...",
