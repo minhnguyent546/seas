@@ -38,6 +38,19 @@ async def get_chat_sessions_by_user_id(
     return list(chat_sessions)
 
 
+async def get_latest_chat_session(
+    session: AsyncSession, user_id: str
+) -> ChatSession | None:
+    chat_sessions_result = await session.execute(
+        select(ChatSession)
+        .where(ChatSession.user_id == user_id)
+        .order_by(ChatSession.created_at.desc())
+        .limit(1)
+    )
+    chat_session = chat_sessions_result.scalar_one_or_none()
+    return chat_session
+
+
 async def create_chat_session(
     session: AsyncSession,
     chat_session_create: ChatSessionCreate,

@@ -313,6 +313,8 @@ export type ChatsCreateChatSessionData = {
 
 export type ChatsCreateChatSessionResponse = (ChatSessionPublic);
 
+export type ChatsGetLatestChatSessionResponse = (ChatSessionPublic);
+
 export type ChatsGetChatSessionData = {
     chatSessionId: string;
 };

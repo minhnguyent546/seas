@@ -16,13 +16,13 @@ class ChatSessionPublic(BaseModel):
     updated_at: datetime
     session_metadata: dict[str, Any]
 
-    @field_serializer("created_at")
-    def serialize_created_at(self, value: datetime, _info):
-        return serialize_datetime(value)
+    # @field_serializer("created_at")
+    # def serialize_created_at(self, value: datetime, _info):
+    #     return serialize_datetime(value)
 
-    @field_serializer("updated_at")
-    def serialize_updated_at(self, value: datetime, _info):
-        return serialize_datetime(value)
+    # @field_serializer("updated_at")
+    # def serialize_updated_at(self, value: datetime, _info):
+    #     return serialize_datetime(value)
 
 
 class ChatSessionCreate(BaseModel):
@@ -47,6 +47,6 @@ class ChatMessagePublic(BaseModel):
     content: str
     created_at: datetime
 
-    @field_serializer("created_at")
-    def serialize_created_at(self, value: datetime, _info):
-        return serialize_datetime(value)
+    # @field_serializer("created_at")
+    # def serialize_created_at(self, value: datetime, _info):
+    #     return serialize_datetime(value)
