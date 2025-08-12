@@ -33,7 +33,7 @@ export function Chat() {
     ) {
       // Filter sessions that have a firstMessage (non-empty sessions)
       const nonEmptySessions = rawSessions.filter(
-        (session) => session.session_metadata?.firstMessage
+        (session) => session.session_metadata?.firstMessage,
       );
 
       if (nonEmptySessions.length > 0) {

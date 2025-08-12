@@ -45,6 +45,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [pendingSaves, setPendingSaves] = useState(0);
+  const [isLoadingFromBackend, setIsLoadingFromBackend] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Cleanup function to abort ongoing requests
@@ -74,6 +75,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
     if (!chatSessionId) return;
 
     setIsLoadingMessages(true);
+    setIsLoadingFromBackend(true);
     try {
       const response = await ChatsService.getChatMessages({ chatSessionId });
 
@@ -100,6 +102,10 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
       // Don't clear messages on error, keep current state
     } finally {
       setIsLoadingMessages(false);
+      // Clear the flag after a short delay to ensure typing effect doesn't trigger
+      setTimeout(() => {
+        setIsLoadingFromBackend(false);
+      }, 100);
     }
   };
 
@@ -297,6 +303,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
     isLoadingMessages,
     isSavingMessages: pendingSaves > 0,
     pendingSaves,
+    isLoadingFromBackend,
     handleSendMessage,
     clearMessages,
     loadMessages,

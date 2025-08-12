@@ -132,7 +132,9 @@ export const useChatSessions = () => {
 
   // Filter out empty sessions (sessions without a firstMessage in metadata)
   const nonEmptySessions = transformedSessions.filter((session) => {
-    const originalSession = sessionsQuery.data?.find((s) => s.id === session.id);
+    const originalSession = sessionsQuery.data?.find(
+      (s) => s.id === session.id,
+    );
     if (!originalSession) return false;
 
     // Only show sessions that have a firstMessage in their metadata

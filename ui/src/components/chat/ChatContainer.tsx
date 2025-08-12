@@ -18,9 +18,13 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   sessionId,
   onFirstMessage,
 }) => {
-  const { messages, isLoading, isLoadingMessages, handleSendMessage } = useChat(
-    { sessionId },
-  );
+  const {
+    messages,
+    isLoading,
+    isLoadingMessages,
+    isLoadingFromBackend,
+    handleSendMessage,
+  } = useChat({ sessionId });
   const { scrollRef } = useAutoScroll(messages);
   const { t } = useLanguage();
   const hasHandledFirstMessage = useRef(false);
@@ -91,6 +95,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
                   message={message}
                   isLastMessage={index === messages.length - 1}
                   isLoading={isLoading && index === messages.length - 1}
+                  isLoadingFromBackend={isLoadingFromBackend}
                 />
               ))}
               <div
