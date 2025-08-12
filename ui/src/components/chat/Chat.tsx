@@ -31,18 +31,34 @@ export function Chat() {
       !hasAutoLoaded &&
       !currentSessionId
     ) {
-      // Sort raw sessions by last updated date (most recently active first)
-      // Backend now returns ISO datetime format like "2025-08-11T16:34:53.066705Z"
-      const sortedSessions = [...rawSessions].sort((a, b) => {
-        // Use updated_at to show most recently active sessions first
-        const dateA = new Date(a.updated_at);
-        const dateB = new Date(b.updated_at);
-        return dateB.getTime() - dateA.getTime(); // Most recent first
-      });
+      // Filter sessions that have a firstMessage (non-empty sessions)
+      const nonEmptySessions = rawSessions.filter(
+        (session) => session.session_metadata?.firstMessage
+      );
 
-      if (sortedSessions.length > 0) {
+      if (nonEmptySessions.length > 0) {
+        // Sort non-empty sessions by last updated date (most recently active first)
+        const sortedSessions = [...nonEmptySessions].sort((a, b) => {
+          const dateA = new Date(a.updated_at);
+          const dateB = new Date(b.updated_at);
+          return dateB.getTime() - dateA.getTime(); // Most recent first
+        });
+
         setCurrentSessionId(sortedSessions[0].id);
         setHasAutoLoaded(true);
+      } else {
+        // If no non-empty sessions exist, auto-load the most recent session (even if empty)
+        // This handles the case where user just logged in and only has the auto-created empty session
+        const sortedSessions = [...rawSessions].sort((a, b) => {
+          const dateA = new Date(a.updated_at);
+          const dateB = new Date(b.updated_at);
+          return dateB.getTime() - dateA.getTime(); // Most recent first
+        });
+
+        if (sortedSessions.length > 0) {
+          setCurrentSessionId(sortedSessions[0].id);
+          setHasAutoLoaded(true);
+        }
       }
     }
   }, [rawSessions, isLoadingSessions, hasAutoLoaded, currentSessionId]);
