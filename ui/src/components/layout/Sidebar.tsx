@@ -5,8 +5,10 @@ import {
   DropdownItem,
   DropdownSeparator,
 } from '@/components/ui/dropdown';
+import { useChatSessions, type ChatSessionItem } from '@/hooks/useChatSessions';
 import { useLanguage } from '@/hooks/useLanguage';
 import {
+  IconAlertCircle,
   IconChevronLeft,
   IconDots,
   IconEdit,
@@ -20,11 +22,9 @@ import React, { useState } from 'react';
 
 interface SidebarProps {
   onNewChat: () => void;
-}
-
-interface ChatItem {
-  id: string;
-  label: string;
+  onSelectSession?: (sessionId: string) => void;
+  isCreatingNewChat?: boolean;
+  currentSessionId?: string;
 }
 
 interface SidebarHeaderProps {
@@ -35,42 +35,25 @@ interface SidebarHeaderProps {
 interface ActionButtonsProps {
   isCollapsed: boolean;
   onNewChat: () => void;
+  isCreatingSession: boolean;
+  isCreatingNewChat?: boolean;
 }
 
 interface ChatItemProps {
-  item: ChatItem;
+  item: ChatSessionItem;
   isPinned?: boolean;
+  onSelect?: (sessionId: string) => void;
+  isSelected?: boolean;
 }
 
 interface ChatSectionProps {
   title: string;
-  items: ChatItem[];
+  items: ChatSessionItem[];
   isPinned?: boolean;
+  isLoading?: boolean;
+  onSelectSession?: (sessionId: string) => void;
+  currentSessionId?: string;
 }
-
-const historyItems: ChatItem[] = [
-  { id: 'new-project-1', label: 'New Project' },
-  { id: 'pricing-section-1', label: 'Pricing Section' },
-  { id: 'design-guidelines-1', label: 'Design Guidelines' },
-  { id: 'design-brief-1', label: 'Design Brief' },
-  { id: 'marketing-1', label: 'Marketing' },
-  { id: 'long-title-1', label: 'A very long title and it should be clipped' },
-  { id: 'new-project-2', label: 'New Project' },
-  { id: 'pricing-section-2', label: 'Pricing Section' },
-  { id: 'design-guidelines-2', label: 'Design Guidelines' },
-  { id: 'design-brief-2', label: 'Design Brief' },
-  { id: 'marketing-2', label: 'Marketing' },
-  { id: 'long-title-2', label: 'A very long title and it should be clipped' },
-  { id: 'new-project-3', label: 'New Project' },
-  { id: 'pricing-section-3', label: 'Pricing Section' },
-  { id: 'design-guidelines-3', label: 'Design Guidelines' },
-  { id: 'design-brief-3', label: 'Design Brief' },
-];
-
-const pinnedItems: ChatItem[] = [
-  { id: 'important-meeting', label: 'Important Meeting Notes' },
-  { id: 'project-specs', label: 'Project Specifications Specifications' },
-];
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   isCollapsed,
@@ -113,6 +96,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
 const ActionButtons: React.FC<ActionButtonsProps> = ({
   isCollapsed,
   onNewChat,
+  isCreatingSession,
+  isCreatingNewChat,
 }) => {
   const { t } = useLanguage();
 
@@ -123,9 +108,14 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           <Button
             onClick={onNewChat}
             variant="ghost"
-            className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1 cursor-pointer"
+            disabled={isCreatingSession || isCreatingNewChat}
+            className="flex w-full items-center justify-start gap-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl px-2 py-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <IconMessage size={16} />
+            {isCreatingSession || isCreatingNewChat ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600" />
+            ) : (
+              <IconMessage size={16} />
+            )}
             <span>{t('sidebar.newChat')}</span>
           </Button>
           <Button
@@ -142,10 +132,15 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             onClick={onNewChat}
             variant="ghost"
             size="icon"
-            className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
+            disabled={isCreatingSession || isCreatingNewChat}
+            className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             title={t('sidebar.newChat')}
           >
-            <IconPlus size={16} />
+            {isCreatingSession || isCreatingNewChat ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600" />
+            ) : (
+              <IconPlus size={16} />
+            )}
           </Button>
           <Button
             variant="ghost"
@@ -164,11 +159,24 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 const ChatItemComponent: React.FC<ChatItemProps> = ({
   item,
   isPinned = false,
+  onSelect,
+  isSelected = false,
 }) => {
   const { t } = useLanguage();
 
+  const handleClick = () => {
+    onSelect?.(item.id);
+  };
+
   return (
-    <div className="flex w-full items-center justify-between rounded-xl px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 group cursor-pointer relative">
+    <div
+      className={`flex w-full items-center justify-between rounded-xl px-2 py-1.5 text-sm group cursor-pointer relative transition-colors ${
+        isSelected
+          ? 'bg-primary/15 text-primary dark:bg-primary/25 dark:text-primary-light'
+          : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+      }`}
+      onClick={handleClick}
+    >
       <div className="flex items-center gap-2 min-w-0 flex-1">
         {isPinned && (
           <IconPin
@@ -215,25 +223,90 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   title,
   items,
   isPinned = false,
-}) => (
-  <div className="pl-2 pr-3 py-4 border-t border-gray-200">
-    <div className="mb-2 px-2 text-xs font-medium text-gray-500 dark:text-gray-400">
-      {title}
-    </div>
-    <div>
-      {items.map((item) => (
-        <ChatItemComponent key={item.id} item={item} isPinned={isPinned} />
-      ))}
-    </div>
-  </div>
-);
+  isLoading = false,
+  onSelectSession,
+  currentSessionId,
+}) => {
+  if (isLoading) {
+    return (
+      <div className="pl-2 pr-3 py-4 border-t border-gray-200">
+        <div className="mb-2 px-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+          {title}
+        </div>
+        <div className="space-y-2">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse flex items-center gap-2 px-2 py-1.5"
+            >
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded flex-1"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="pl-2 pr-3 py-4 border-t border-gray-200">
+      <div className="mb-2 px-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+        {title}
+      </div>
+      <div>
+        {items.map((item) => (
+          <ChatItemComponent
+            key={item.id}
+            item={item}
+            isPinned={isPinned}
+            onSelect={onSelectSession}
+            isSelected={currentSessionId === item.id}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ErrorState: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
+  return (
+    <div className="flex flex-col items-center justify-center p-4 text-center">
+      <IconAlertCircle size={32} className="text-red-500 mb-2" />
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+        Failed to load chat sessions
+      </p>
+      <Button onClick={onRetry} variant="ghost" size="sm" className="text-xs">
+        Try again
+      </Button>
+    </div>
+  );
+};
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  onNewChat,
+  onSelectSession,
+  isCreatingNewChat,
+  currentSessionId,
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { t } = useLanguage();
 
+  const { pinnedSessions, regularSessions, isLoading, isError, isCreating } =
+    useChatSessions();
+
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  // Remove the duplicate handleNewChat - use the prop from parent instead!
+  // The parent Chat component has the proper empty session validation
+
+  const handleRetry = () => {
+    // Force a page reload as a simple retry mechanism
+    window.location.reload();
   };
 
   return (
@@ -242,25 +315,40 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
     >
       <SidebarHeader isCollapsed={isCollapsed} onToggle={toggleSidebar} />
 
-      <ActionButtons isCollapsed={isCollapsed} onNewChat={onNewChat} />
+      <ActionButtons
+        isCollapsed={isCollapsed}
+        onNewChat={onNewChat}
+        isCreatingSession={isCreating}
+        isCreatingNewChat={isCreatingNewChat}
+      />
 
       {!isCollapsed && (
         <div className="flex-1 overflow-y-auto min-h-0">
-          {/* Pinned Section */}
-          {pinnedItems.length > 0 && (
-            <ChatSection
-              title={t('sidebar.pinned')}
-              items={pinnedItems}
-              isPinned={true}
-            />
-          )}
+          {isError ? (
+            <ErrorState onRetry={handleRetry} />
+          ) : (
+            <>
+              {/* Pinned Section */}
+              <ChatSection
+                title={t('sidebar.pinned')}
+                items={pinnedSessions}
+                isPinned={true}
+                isLoading={isLoading}
+                onSelectSession={onSelectSession}
+                currentSessionId={currentSessionId}
+              />
 
-          {/* History Section */}
-          <ChatSection
-            title={t('sidebar.history')}
-            items={historyItems}
-            isPinned={false}
-          />
+              {/* History Section */}
+              <ChatSection
+                title={t('sidebar.history')}
+                items={regularSessions}
+                isPinned={false}
+                isLoading={isLoading}
+                onSelectSession={onSelectSession}
+                currentSessionId={currentSessionId}
+              />
+            </>
+          )}
 
           {/* Bottom padding space */}
           <div className="p-1"></div>

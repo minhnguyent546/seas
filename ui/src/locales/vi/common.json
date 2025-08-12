@@ -13,7 +13,9 @@
     "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "welcomeTitle": "Chào mừng đến với SEAS",
     "welcomeGreeting": "Xin chào, {{name}}!",
-    "welcomeMessage": "Hỏi tôi bất kỳ câu hỏi nào liên quan đến Chương trình Tuyển sinh của CTU!"
+    "welcomeMessage": "Hỏi tôi bất kỳ câu hỏi nào liên quan đến Chương trình Tuyển sinh của CTU!",
+    "loadingSessions": "Đang tải phiên trò chuyện...",
+    "loadingConversation": "Đang tải cuộc hội thoại..."
   },
   "auth": {
     "login": "Đăng nhập",

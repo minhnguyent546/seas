@@ -13,7 +13,9 @@
     "error": "Something went wrong. Please try again.",
     "welcomeTitle": "Welcome to SEAS",
     "welcomeGreeting": "Hi, {{name}}!",
-    "welcomeMessage": "Ask me anything about the CTU Enrollment Program!"
+    "welcomeMessage": "Ask me anything about the CTU Enrollment Program!",
+    "loadingSessions": "Loading chat sessions...",
+    "loadingConversation": "Loading conversation..."
   },
   "auth": {
     "login": "Login",
