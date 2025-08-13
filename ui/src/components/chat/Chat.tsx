@@ -37,10 +37,10 @@ export function Chat() {
       );
 
       if (nonEmptySessions.length > 0) {
-        // Sort non-empty sessions by last updated date (most recently active first)
+        // Sort non-empty sessions by created date
         const sortedSessions = [...nonEmptySessions].sort((a, b) => {
-          const dateA = new Date(a.updated_at);
-          const dateB = new Date(b.updated_at);
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
           return dateB.getTime() - dateA.getTime(); // Most recent first
         });
 
@@ -50,8 +50,8 @@ export function Chat() {
         // If no non-empty sessions exist, auto-load the most recent session (even if empty)
         // This handles the case where user just logged in and only has the auto-created empty session
         const sortedSessions = [...rawSessions].sort((a, b) => {
-          const dateA = new Date(a.updated_at);
-          const dateB = new Date(b.updated_at);
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
           return dateB.getTime() - dateA.getTime(); // Most recent first
         });
 

@@ -209,8 +209,8 @@ export const useChatSessions = () => {
 
     if (!sessionA || !sessionB) return 0;
 
-    const dateA = new Date(sessionA.updated_at);
-    const dateB = new Date(sessionB.updated_at);
+    const dateA = new Date(sessionA.created_at);
+    const dateB = new Date(sessionB.created_at);
     return dateB.getTime() - dateA.getTime();
   });
 
