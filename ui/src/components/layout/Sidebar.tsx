@@ -1,4 +1,5 @@
 import { SeasLogo } from '@/components/icons';
+import { SidebarFooter } from '@/components/layout/SidebarFooter';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/dialog';
 import {
@@ -122,7 +123,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   const { t } = useLanguage();
 
   return (
-    <div className="flex flex-col gap-2 p-2 mb-4">
+    <div className="flex flex-col gap-1 p-2 mb-2">
       {!isCollapsed ? (
         <>
           <Button
@@ -332,7 +333,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="pl-2 pr-3 py-4 border-t border-gray-200">
+      <div className="pl-2 pr-3 py-2 border-t border-gray-200">
         <div className="mb-2 px-2 text-xs font-medium text-gray-500 dark:text-gray-400">
           {title}
         </div>
@@ -355,7 +356,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   }
 
   return (
-    <div className="pl-2 pr-3 py-4 border-t border-gray-200">
+    <div className="pl-2 pr-3 py-2 border-t border-gray-200">
       <div className="mb-2 px-2 text-xs font-medium text-gray-500 dark:text-gray-400">
         {title}
       </div>
@@ -410,6 +411,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     sessionName: null,
   });
   const { t } = useLanguage();
+  const reportIssueUrl = import.meta.env.VITE_REPORT_ISSUE_LINK as
+    | string
+    | undefined;
 
   const {
     pinnedSessions,
@@ -558,6 +562,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="p-1"></div>
         </div>
       )}
+
+      <SidebarFooter
+        isCollapsed={isCollapsed}
+        reportIssueUrl={reportIssueUrl}
+      />
 
       {/* Delete Confirmation Dialog - Keep only this dialog */}
       <ConfirmDialog

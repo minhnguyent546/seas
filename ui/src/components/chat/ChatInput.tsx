@@ -71,7 +71,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             variant="ghost"
             size="icon"
             type="button"
-            className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Voice input"
           >
             <IconMicrophone size={20} />
@@ -80,7 +80,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             onClick={handleSendMessage}
             disabled={!input.trim() || isLoading}
             size="icon"
-            className="h-8 w-8 rounded-full bg-primary text-white hover:bg-primary-700"
+            className="h-8 w-8 rounded-full bg-primary text-white hover:bg-primary-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Send message"
           >
             {isLoading ? (
