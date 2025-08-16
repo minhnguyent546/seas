@@ -49,7 +49,10 @@ export function formatDate(
     minute: '2-digit',
   };
 
-  return dateObj.toLocaleDateString('en-US', { ...defaultOptions, ...options });
+  return new Intl.DateTimeFormat('en-US', {
+    ...defaultOptions,
+    ...options,
+  }).format(dateObj);
 }
 
 /**

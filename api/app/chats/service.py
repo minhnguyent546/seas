@@ -186,7 +186,6 @@ async def create_new_message(
     chat_message_create: ChatMessageCreate,
     user_id: str,
 ) -> ChatMessage:
-    message_created_at = datetime.now(tz=timezone_vi)
     chat_session_result = await session.execute(
         select(ChatSession)
         .where(ChatSession.id == chat_session_id)
@@ -207,13 +206,14 @@ async def create_new_message(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this chat session.",
         )
+    message_created_at = datetime.now(tz=timezone_vi)
     chat_message = ChatMessage(
         **chat_message_create.model_dump(),
         chat_session_id=chat_session_id,
-        created_at=datetime.now(tz=timezone_vi),
+        created_at=message_created_at,
     )
-    session.add(chat_message)
     chat_session.updated_at = message_created_at
+    session.add(chat_message)
     await session.commit()
     await session.refresh(chat_message)
     return chat_message

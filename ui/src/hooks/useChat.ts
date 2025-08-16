@@ -1,3 +1,4 @@
+import type { ChatMessagePublic } from '@/client';
 import { ChatsService, OpenAPI } from '@/client';
 import { generateId, getErrorMessage } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
@@ -7,7 +8,17 @@ interface UseChatProps {
   sessionId?: string;
 }
 
-export const useChat = ({ sessionId }: UseChatProps = {}) => {
+type UseChatReturn = {
+  messages: MessageType[];
+  isLoading: boolean;
+  isLoadingMessages: boolean;
+  isLoadingFromBackend: boolean;
+  handleSendMessage: (content: string) => Promise<void>;
+  clearMessages: () => void;
+  loadMessages: (chatSessionId: string) => Promise<void>;
+};
+
+export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
@@ -46,9 +57,11 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
       const response = await ChatsService.getChatMessages({ chatSessionId });
 
       // Convert backend messages to our message format
-      const backendMessages = Array.isArray(response) ? response : [];
+      const backendMessages = (
+        Array.isArray(response) ? response : []
+      ) as ChatMessagePublic[];
       const convertedMessages: MessageType[] = backendMessages.map(
-        (msg: any) => ({
+        (msg: ChatMessagePublic) => ({
           id: msg.id || generateId(),
           role:
             msg.sender === 'USER'
@@ -144,6 +157,18 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
           );
         }
 
+        // Flush decoder to capture any pending multi-byte sequence at chunk boundaries
+        const tail = decoder.decode();
+        if (tail) {
+          accumulatedContent += tail;
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === botResponse.id
+                ? { ...msg, content: accumulatedContent }
+                : msg,
+            ),
+          );
+        }
         // Set final timestamp when response completes
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>

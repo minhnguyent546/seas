@@ -18,7 +18,7 @@ export function generateId() {
 /**
  * Formats a date for message timestamps
  */
-export function formatDate(date: Date): string {
+export function formatMessageDate(date: Date): string {
   const now = new Date();
   const messageDate = new Date(date);
 

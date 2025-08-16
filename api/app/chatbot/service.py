@@ -25,8 +25,8 @@ async def process_query(
     session: AsyncSession,
     current_user: User,
 ) -> StreamingResponse:
-    human_message = query_params.query.strip()
-    if not human_message:
+    query_params.query = query_params.query.strip()
+    if not query_params.query:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
@@ -75,7 +75,7 @@ async def process_query(
         except asyncio.TimeoutError as timeout_err:
             logger.error("Streaming timeout")
             raise HTTPException(
-                status_code=504,
+                status_code=status.HTTP_504_GATEWAY_TIMEOUT,
                 detail="Request timeout. Please try again.",
             ) from timeout_err
         except Exception as err:
@@ -83,11 +83,11 @@ async def process_query(
             # More specific error handling
             if "quota" in str(err).lower():
                 raise HTTPException(
-                    status_code=429,
+                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                     detail="API quota exceeded. Please try again later.",
                 ) from err
             raise HTTPException(
-                status_code=500,
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="An error occurred while processing your request.",
             ) from err
         finally:
@@ -101,8 +101,8 @@ async def process_query_for_evaluation(
     session: AsyncSession,
     current_user: User,
 ) -> ChatEvaluationResponse:
-    human_message = query_params.query.strip()
-    if not human_message:
+    query_params.query = query_params.query.strip()
+    if not query_params.query:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
@@ -127,7 +127,7 @@ async def process_query_for_evaluation(
         total_response_time = end_time - start_time
 
         return ChatEvaluationResponse(
-            query=human_message,
+            query=query_params.query,
             response=complete_response,
             retrieved_chunks=similarity_search_result.chunks,
             num_chunks_retrieved=len(similarity_search_result.chunks),
@@ -145,7 +145,7 @@ async def process_query_for_evaluation(
     except asyncio.TimeoutError:
         logger.error("Evaluation timeout")
         return ChatEvaluationResponse(
-            query=human_message,
+            query=query_params.query,
             response="",
             retrieved_chunks=[],
             num_chunks_retrieved=0,
@@ -157,7 +157,7 @@ async def process_query_for_evaluation(
     except Exception as err:
         logger.error(f"Error in evaluation: {err}")
         return ChatEvaluationResponse(
-            query=human_message,
+            query=query_params.query,
             response="",
             retrieved_chunks=[],
             num_chunks_retrieved=0,
