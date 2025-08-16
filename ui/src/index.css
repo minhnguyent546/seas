@@ -34,6 +34,7 @@
   --content-max-width: 48rem;
 }
 
+/* Global base styles */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,7 +67,8 @@ body {
   min-height: 100vh;
 }
 
-h1 {
+/* Only apply base size to bare h1 without any class, so Tailwind utilities can control sized headings */
+h1:not([class]) {
   font-size: 3.2em;
   line-height: 1.1;
 }
