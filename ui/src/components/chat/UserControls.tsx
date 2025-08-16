@@ -7,14 +7,22 @@ import {
 import { LanguageSelector } from '@/components/ui/language-selector';
 import useAuth from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconLogout, IconPlus, IconSettings } from '@tabler/icons-react';
 import { useState } from 'react';
 
 interface UserControlsProps {
   inline?: boolean;
+  showNewChatButton?: boolean;
+  onNewChat?: () => void;
+  isNewChatLoading?: boolean;
 }
 
-export function UserControls({ inline = false }: UserControlsProps) {
+export function UserControls({
+  inline = false,
+  showNewChatButton = false,
+  onNewChat,
+  isNewChatLoading = false,
+}: UserControlsProps) {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
   const [testUser] = useState({
@@ -47,6 +55,23 @@ export function UserControls({ inline = false }: UserControlsProps) {
           : 'absolute top-4 right-4 z-10 flex items-center gap-3'
       }
     >
+      {showNewChatButton && (
+        <button
+          type="button"
+          onClick={onNewChat}
+          disabled={isNewChatLoading}
+          title={t('sidebar.newChat')}
+          aria-label={t('sidebar.newChat')}
+          className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+        >
+          {isNewChatLoading ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600" />
+          ) : (
+            <IconPlus size={18} />
+          )}
+        </button>
+      )}
+
       {/* Language Toggle Button */}
       <LanguageSelector />
 

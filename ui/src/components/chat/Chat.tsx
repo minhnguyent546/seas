@@ -7,7 +7,7 @@ import { LOCAL_STORAGE_KEYS } from '@/constants/localStorageKeys';
 import useAuth from '@/hooks/useAuth';
 import { useChatSessions } from '@/hooks/useChatSessions';
 import { useLanguage } from '@/hooks/useLanguage';
-import { IconMenu2 } from '@tabler/icons-react';
+import { IconMenu2, IconPlus } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
 // Utility functions for session persistence
@@ -164,13 +164,28 @@ export function Chat() {
     <div className="flex h-screen w-screen overflow-hidden bg-white dark:bg-gray-950 relative">
       {/* Mobile Header */}
       <div className="md:hidden absolute top-0 left-0 right-0 z-30 h-12 bg-white/80 dark:bg-gray-950/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 flex items-center px-3">
-        <button
-          aria-label="Open sidebar"
-          className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-          onClick={() => setIsMobileSidebarOpen(true)}
-        >
-          <IconMenu2 size={20} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            aria-label="Open sidebar"
+            className="h-9 w-9 flex items-center justify-center rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={() => setIsMobileSidebarOpen(true)}
+          >
+            <IconMenu2 size={20} />
+          </button>
+          <button
+            aria-label={t('sidebar.newChat')}
+            title={t('sidebar.newChat')}
+            className="h-9 w-9 flex items-center justify-center rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50"
+            onClick={handleNewChat}
+            disabled={isCreatingNewChat}
+          >
+            {isCreatingNewChat ? (
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-gray-600" />
+            ) : (
+              <IconPlus size={20} />
+            )}
+          </button>
+        </div>
         <div className="flex-1 flex items-center justify-center">
           <span className="text-lg font-semibold text-primary">SEAS</span>
         </div>
