@@ -1,6 +1,7 @@
 import asyncio
 import time
 from collections.abc import AsyncGenerator
+from io import StringIO
 
 from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
@@ -10,8 +11,11 @@ from app.chatbot.rag_chat_llm import RagChatLLM
 from app.chatbot.schemas import (
     ChatEvaluationResponse,
 )
+from app.chats.schemas import ChatMessageCreate
+from app.chats.service import create_new_message
 from app.core.database import AsyncSession
 from app.rag.schemas import QueryParams
+from app.schemas import Sender
 from app.users.models import User
 from app.utils import extract_content_from_base_message
 
@@ -27,9 +31,21 @@ async def process_query(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
         )
+
+    if query_params.chat_session_id is not None:
+        await create_new_message(
+            session=session,
+            chat_session_id=str(query_params.chat_session_id),
+            chat_message_create=ChatMessageCreate(
+                sender=Sender.USER, content=query_params.query
+            ),
+            user_id=str(current_user.id),
+        )
+
     chat_llm = RagChatLLM()
 
     async def stream_generator() -> AsyncGenerator[str, None]:
+        response_buffer = StringIO()
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
                 async for chunk in chat_llm.astream(
@@ -39,6 +55,22 @@ async def process_query(
                     if not chunk_content:
                         continue
                     yield chunk_content
+
+                    response_buffer.write(chunk_content)
+
+            final_response = response_buffer.getvalue()
+            if (
+                query_params.chat_session_id is not None
+                and final_response.strip()
+            ):
+                await create_new_message(
+                    session=session,
+                    chat_session_id=str(query_params.chat_session_id),
+                    chat_message_create=ChatMessageCreate(
+                        sender=Sender.BOT, content=final_response
+                    ),
+                    user_id=str(current_user.id),
+                )
 
         except asyncio.TimeoutError as timeout_err:
             logger.error("Streaming timeout")
@@ -58,6 +90,8 @@ async def process_query(
                 status_code=500,
                 detail="An error occurred while processing your request.",
             ) from err
+        finally:
+            response_buffer.close()
 
     return StreamingResponse(stream_generator(), media_type="text/plain")
 
