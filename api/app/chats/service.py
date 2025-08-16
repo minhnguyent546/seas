@@ -12,6 +12,7 @@ from app.chats.schemas import (
 )
 from app.core.config import timezone_vi
 from app.core.database import AsyncSession
+from app.schemas import MessageResponse
 from app.users.models import User
 
 
@@ -100,6 +101,31 @@ async def update_chat_session(
     await session.commit()
     await session.refresh(chat_session)
     return chat_session
+
+
+async def delete_chat_session(
+    session: AsyncSession,
+    chat_session_id: str,
+    current_user: User,
+) -> MessageResponse:
+    chat_session_result = await session.execute(
+        select(ChatSession).where(ChatSession.id == chat_session_id)
+    )
+    chat_session = chat_session_result.scalars().first()
+    if chat_session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat session not found.",
+        )
+    if chat_session.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to delete this chat session.",
+        )
+
+    await session.delete(chat_session)
+    await session.commit()
+    return MessageResponse(message="Chat session deleted successfully")
 
 
 async def get_chat_messages_by_chat_session_id(

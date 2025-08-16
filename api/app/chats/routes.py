@@ -14,6 +14,7 @@ from app.deps import (
     AsyncSessionDep,
     CurrentActiveUserDep,
 )
+from app.schemas import MessageResponse
 
 router = APIRouter(prefix="/chats", tags=["chats"])
 
@@ -118,6 +119,23 @@ async def update_chat_session(
         current_user=current_user,
     )
     return chat_session
+
+
+@router.delete(
+    "/chat_sessions/{chat_session_id}", response_model=MessageResponse
+)
+async def delete_chat_session(
+    chat_session_id: uuid.UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+):
+    """Delete a chat session by ID."""
+    message_response = await chats_service.delete_chat_session(
+        session=session,
+        chat_session_id=str(chat_session_id),
+        current_user=current_user,
+    )
+    return message_response
 
 
 @router.get("/chat_sessions/{chat_session_id}/messages")
