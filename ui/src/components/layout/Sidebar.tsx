@@ -291,7 +291,7 @@ const ChatItemComponent: React.FC<ChatItemProps> = ({
             trigger={
               <button
                 type="button"
-                className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer flex-shrink-0"
+                className="p-1 rounded-md opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer flex-shrink-0"
               >
                 <IconDots size={16} />
               </button>
