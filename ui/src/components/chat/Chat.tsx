@@ -3,10 +3,24 @@ import { ChatContainer } from '@/components/chat/ChatContainer';
 import { UserControls } from '@/components/chat/UserControls';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Loading } from '@/components/ui/loading';
+import { LOCAL_STORAGE_KEYS } from '@/constants/localStorageKeys';
 import useAuth from '@/hooks/useAuth';
 import { useChatSessions } from '@/hooks/useChatSessions';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useEffect, useState } from 'react';
+
+// Utility functions for session persistence
+const saveSelectedSessionId = (sessionId: string | undefined) => {
+  if (sessionId) {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.SELECTED_SESSION_ID, sessionId);
+  } else {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.SELECTED_SESSION_ID);
+  }
+};
+
+const getSelectedSessionId = (): string | null => {
+  return localStorage.getItem(LOCAL_STORAGE_KEYS.SELECTED_SESSION_ID);
+};
 
 export function Chat() {
   const { user } = useAuth();
@@ -20,35 +34,24 @@ export function Chat() {
   const [currentSessionId, setCurrentSessionId] = useState<
     string | undefined
   >();
-  const [hasAutoLoaded, setHasAutoLoaded] = useState(false);
   const [isCreatingNewChat, setIsCreatingNewChat] = useState(false);
 
-  // Auto-load the most recent session on startup
+  // Auto-load the previously selected session on startup
   useEffect(() => {
-    if (
-      !isLoadingSessions &&
-      rawSessions.length > 0 &&
-      !hasAutoLoaded &&
-      !currentSessionId
-    ) {
-      // Filter sessions that have a firstMessage (non-empty sessions)
-      const nonEmptySessions = rawSessions.filter(
-        (session) => session.session_metadata?.firstMessage,
-      );
+    if (!isLoadingSessions && rawSessions.length > 0 && !currentSessionId) {
+      // Try to restore the previously selected session
+      const savedSessionId = getSelectedSessionId();
 
-      if (nonEmptySessions.length > 0) {
-        // Sort non-empty sessions by created date
-        const sortedSessions = [...nonEmptySessions].sort((a, b) => {
-          const dateA = new Date(a.created_at);
-          const dateB = new Date(b.created_at);
-          return dateB.getTime() - dateA.getTime(); // Most recent first
-        });
+      // Check if the saved session still exists
+      const savedSessionExists =
+        savedSessionId &&
+        rawSessions.some((session) => session.id === savedSessionId);
 
-        setCurrentSessionId(sortedSessions[0].id);
-        setHasAutoLoaded(true);
+      if (savedSessionExists) {
+        // Restore the previously selected session
+        setCurrentSessionId(savedSessionId);
       } else {
-        // If no non-empty sessions exist, auto-load the most recent session (even if empty)
-        // This handles the case where user just logged in and only has the auto-created empty session
+        // If no valid saved session, load the most recent session as fallback
         const sortedSessions = [...rawSessions].sort((a, b) => {
           const dateA = new Date(a.created_at);
           const dateB = new Date(b.created_at);
@@ -57,13 +60,24 @@ export function Chat() {
 
         if (sortedSessions.length > 0) {
           setCurrentSessionId(sortedSessions[0].id);
-          setHasAutoLoaded(true);
         }
       }
     }
-  }, [rawSessions, isLoadingSessions, hasAutoLoaded, currentSessionId]);
+  }, [rawSessions, isLoadingSessions, currentSessionId]);
 
-  const isMostRecentSessionEmpty = async (): Promise<boolean> => {
+  // Save selected session ID to localStorage whenever it changes
+  useEffect(() => {
+    // Only save when we have a valid session ID
+    // Don't clear localStorage when currentSessionId is undefined during initialization
+    if (currentSessionId) {
+      saveSelectedSessionId(currentSessionId);
+    }
+  }, [currentSessionId]);
+
+  const checkLatestSession = async (): Promise<{
+    isEmpty: boolean;
+    session: any | null;
+  }> => {
     try {
       const latestSession = await ChatsService.getLatestChatSession();
 
@@ -72,15 +86,18 @@ export function Chat() {
       });
       const messages = Array.isArray(response) ? response : [];
 
-      return messages.length === 0;
+      return {
+        isEmpty: messages.length === 0,
+        session: latestSession,
+      };
     } catch (error: any) {
       // Handle 404 error when user has no chat sessions
       if (error?.status === 404) {
-        return false;
+        return { isEmpty: false, session: null };
       }
 
-      console.error('Error checking if latest session is empty:', error);
-      return false;
+      console.error('Error checking latest session:', error);
+      return { isEmpty: false, session: null };
     }
   };
 
@@ -94,10 +111,13 @@ export function Chat() {
     setIsCreatingNewChat(true);
 
     try {
-      // Check if the most recent session is empty before creating a new one
-      const isRecentEmpty = await isMostRecentSessionEmpty();
+      // Check if the latest session is empty before creating a new one
+      const { isEmpty: isLatestEmpty, session: latestSession } =
+        await checkLatestSession();
 
-      if (isRecentEmpty) {
+      if (isLatestEmpty && latestSession) {
+        // If latest session is already empty, switch to it instead of creating new one
+        setCurrentSessionId(latestSession.id);
         return;
       }
 

@@ -32,27 +32,7 @@ const getSessionTitle = (session: ChatSessionPublic): string => {
     return truncated || 'New Chat';
   }
 
-  let date: Date;
-
-  try {
-    date = new Date(session.created_at);
-
-    if (isNaN(date.getTime())) {
-      date = new Date();
-    }
-  } catch (error) {
-    date = new Date();
-  }
-
-  const timeString = date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
-
-  return `Chat ${timeString}`;
+  return 'New Chat';
 };
 
 export interface ChatSessionItem {
@@ -190,20 +170,9 @@ export const useChatSessions = () => {
       isPinned: session.is_favorite,
     })) || [];
 
-  // Filter out empty sessions (sessions without a firstMessage in metadata)
-  const nonEmptySessions = transformedSessions.filter((session) => {
-    const originalSession = sessionsQuery.data?.find(
-      (s) => s.id === session.id,
-    );
-    if (!originalSession) return false;
-
-    // Only show sessions that have a firstMessage in their metadata
-    // This means the user has sent at least one message
-    return originalSession.session_metadata?.firstMessage;
-  });
-
-  // Sort all sessions by updated_at (most recently active first)
-  const sortedSessions = [...nonEmptySessions].sort((a, b) => {
+  // Sort all sessions by created_at (most recently active first)
+  // Show all sessions, including empty ones
+  const sortedSessions = [...transformedSessions].sort((a, b) => {
     const sessionA = sessionsQuery.data?.find((s) => s.id === a.id);
     const sessionB = sessionsQuery.data?.find((s) => s.id === b.id);
 
