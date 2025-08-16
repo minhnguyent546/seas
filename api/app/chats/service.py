@@ -210,10 +210,10 @@ async def create_new_message(
     chat_message = ChatMessage(
         **chat_message_create.model_dump(),
         chat_session_id=chat_session_id,
-        created_at=datetime.now(tz=timezone_vi),
+        created_at=message_created_at,
     )
-    session.add(chat_message)
     chat_session.updated_at = message_created_at
+    session.add(chat_message)
     await session.commit()
     await session.refresh(chat_message)
     return chat_message

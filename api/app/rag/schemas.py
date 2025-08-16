@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -42,6 +43,12 @@ class QueryParams(BaseModel):
     rerank: Annotated[
         bool, Field(description="Whether to rerank the retrieved chunks")
     ] = True
+    chat_session_id: Annotated[
+        uuid.UUID | None,
+        Field(
+            description="The ID of the chat session. If provided, the query and response will be added to the chat session as new messages."
+        ),
+    ] = None
 
 
 class SimilaritySearchResult(BaseModel):

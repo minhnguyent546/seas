@@ -141,6 +141,10 @@ export type QueryParams = {
      * Whether to rerank the retrieved chunks
      */
     rerank?: boolean;
+    /**
+     * The ID of the chat session. If provided, the query and response will be added to the chat session as new messages.
+     */
+    chat_session_id?: (string | null);
 };
 
 export type RecomputeEmbeddingsParams = {
