@@ -1,17 +1,7 @@
-import i18n from './i18n';
+import i18n from '@/lib/i18n';
 
 /**
- * Translation utility function that can be used outside of React components
- * @param key Translation key
- * @param options Translation options (interpolation, etc.)
- * @returns Translated string
- */
-export function t(key: string, options?: any): string {
-  return i18n.t(key, options) as string;
-}
-
-/**
- * Get the current language code
+ * Get current language code
  * @returns Current language code
  */
 export function getCurrentLanguage(): string {
@@ -28,16 +18,16 @@ export async function changeLanguage(languageCode: string): Promise<void> {
 }
 
 /**
- * Check if a translation key exists
+ * Check if a translation exists for the given key
  * @param key Translation key to check
- * @returns True if key exists, false otherwise
+ * @returns True if translation exists
  */
 export function translationExists(key: string): boolean {
   return i18n.exists(key);
 }
 
 /**
- * Format a date according to the current locale
+ * Format a date according to en-US locale
  * @param date Date to format
  * @param options Intl.DateTimeFormatOptions
  * @returns Formatted date string
@@ -50,7 +40,6 @@ export function formatDate(
     typeof date === 'string' || typeof date === 'number'
       ? new Date(date)
       : date;
-  const locale = getCurrentLanguage() === 'vi' ? 'vi-VN' : 'en-US';
 
   const defaultOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -60,11 +49,11 @@ export function formatDate(
     minute: '2-digit',
   };
 
-  return dateObj.toLocaleDateString(locale, { ...defaultOptions, ...options });
+  return dateObj.toLocaleDateString('en-US', { ...defaultOptions, ...options });
 }
 
 /**
- * Format a number according to the current locale
+ * Format a number according to en-US locale
  * @param number Number to format
  * @param options Intl.NumberFormatOptions
  * @returns Formatted number string
@@ -73,12 +62,11 @@ export function formatNumber(
   number: number,
   options?: Intl.NumberFormatOptions,
 ): string {
-  const locale = getCurrentLanguage() === 'vi' ? 'vi-VN' : 'en-US';
-  return number.toLocaleString(locale, options);
+  return number.toLocaleString('en-US', options);
 }
 
 /**
- * Format currency according to the current locale
+ * Format currency according to en-US locale
  * @param amount Amount to format
  * @param currency Currency code (default: USD)
  * @returns Formatted currency string
@@ -87,8 +75,7 @@ export function formatCurrency(
   amount: number,
   currency: string = 'USD',
 ): string {
-  const locale = getCurrentLanguage() === 'vi' ? 'vi-VN' : 'en-US';
-  return amount.toLocaleString(locale, {
+  return amount.toLocaleString('en-US', {
     style: 'currency',
     currency,
   });
