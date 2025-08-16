@@ -1,5 +1,5 @@
 services:
-  db:
+  postgres:
     image: postgres:17.5-bookworm
     restart: always
     healthcheck:
@@ -17,7 +17,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
     networks:
-      - seas
+      - seas-network
 
   qdrant:
     image: qdrant/qdrant:latest
@@ -27,32 +27,42 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - seas-qdrant-data:/qdrant/storage
+      - seas-qdrant-data-prod:/qdrant/storage
     environment:
       - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY?Variable not set}
     networks:
-      - seas
+      - seas-network
 
   adminer:
     image: adminer:5.3.0
     restart: always
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
     environment:
       - ADMINER_DESIGN=rmsoft
     networks:
-      - seas
+      - seas-network
 
   api:
     image: "${API_IMAGE}:${API_TAG-latest}"
     restart: always
+    ports:
+      - "8444:8444"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
     env_file:
       - .env
     environment:
       - API_PORT=8444
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=postgres
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+      - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - FIRST_USER_PASSWORD=${FIRST_USER_PASSWORD?Variable not set}
@@ -63,15 +73,15 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
       qdrant:
         condition: service_healthy
     networks:
-      - seas
+      - seas-network
 
 volumes:
   seas-db-data:
-  seas-qdrant-data:
+  seas-qdrant-data-prod:
 networks:
-  seas:
+  seas-network:

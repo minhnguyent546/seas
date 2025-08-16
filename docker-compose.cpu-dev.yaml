@@ -1,0 +1,15 @@
+# This compose file overrides the default compose file for CPU-only deployment in development mode.
+
+# To run docker compose for development with CPU-only, run the following command:
+# ```bash
+# docker compose -f docker-compose.yaml -f docker-compose.cpu-dev.yaml up
+# ```
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.cpu
+    deploy:
+      resources:
+        reservations: {}

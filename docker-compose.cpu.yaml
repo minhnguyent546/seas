@@ -1,0 +1,14 @@
+# This compose file overrides the default compose file for CPU-only deployment.
+
+# To run docker compose for CPU-only deployment, run the following command:
+# ```bash
+# docker compose -f docker-compose.yaml -f docker-compose.cpu.yaml up
+# ```
+
+services:
+  api:
+    image: "${API_IMAGE}:${API_TAG-latest}"
+    restart: always
+    deploy:
+      resources:
+        reservations: {}
