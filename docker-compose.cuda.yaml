@@ -1,0 +1,11 @@
+services:
+  api:
+    image: "${API_IMAGE}:${API_TAG-latest}"
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]

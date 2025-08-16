@@ -1,3 +1,9 @@
+# Base compose file
+# Run this compose file with the following command:
+# ```bash
+# docker compose -f docker-compose.yaml up --build
+# ```
+
 services:
   db:
     image: postgres:17.5-bookworm
@@ -47,6 +53,8 @@ services:
   api:
     image: "${API_IMAGE}:${API_TAG-latest}"
     restart: always
+    ports:
+      - "8444:8444"
     env_file:
       - .env
     environment:

@@ -43,6 +43,10 @@ jobs:
           python-version: "3.12"
           enable-cache: true
 
+      - name: Install optional dependencies
+        run: |
+          uv sync --extra flagembedding-cpu
+
       - name: Generate random password for testing
         run: |
           echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
