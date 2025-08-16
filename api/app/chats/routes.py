@@ -14,6 +14,7 @@ from app.deps import (
     AsyncSessionDep,
     CurrentActiveUserDep,
 )
+from app.schemas import MessageResponse
 
 router = APIRouter(prefix="/chats", tags=["chats"])
 
@@ -86,17 +87,14 @@ async def get_chat_session(
     Get a specific chat session by ID for the current user.
     """
     chat_session = await chats_service.get_chat_session_by_id(
-        session=session, chat_session_id=str(chat_session_id)
+        session=session,
+        chat_session_id=str(chat_session_id),
+        current_user=current_user,
     )
     if chat_session is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Chat session not found",
-        )
-    if chat_session.user_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You do not have permission to access this chat session",
         )
     return chat_session
 
@@ -120,6 +118,23 @@ async def update_chat_session(
     return chat_session
 
 
+@router.delete(
+    "/chat_sessions/{chat_session_id}", response_model=MessageResponse
+)
+async def delete_chat_session(
+    chat_session_id: uuid.UUID,
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+):
+    """Delete a chat session by ID."""
+    message_response = await chats_service.delete_chat_session(
+        session=session,
+        chat_session_id=str(chat_session_id),
+        current_user=current_user,
+    )
+    return message_response
+
+
 @router.get("/chat_sessions/{chat_session_id}/messages")
 async def get_chat_messages(
     chat_session_id: uuid.UUID,
@@ -130,7 +145,7 @@ async def get_chat_messages(
     chat_messages = await chats_service.get_chat_messages_by_chat_session_id(
         session=session,
         chat_session_id=str(chat_session_id),
-        user_id=str(current_user.id),
+        current_user=current_user,
     )
     return chat_messages
 

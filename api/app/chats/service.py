@@ -12,17 +12,31 @@ from app.chats.schemas import (
 )
 from app.core.config import timezone_vi
 from app.core.database import AsyncSession
+from app.schemas import MessageResponse
 from app.users.models import User
+from app.users.schemas import UserRole
 
 
 async def get_chat_session_by_id(
     session: AsyncSession,
     chat_session_id: str,
+    current_user: User | None = None,
 ) -> ChatSession | None:
     chat_session_result = await session.execute(
         select(ChatSession).where(ChatSession.id == chat_session_id)
     )
     chat_session = chat_session_result.scalars().first()
+
+    if current_user is not None and chat_session is not None:
+        if (
+            current_user.role != UserRole.ADMIN
+            and chat_session.user_id != current_user.id
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to access this chat session.",
+            )
+
     return chat_session
 
 
@@ -81,7 +95,10 @@ async def update_chat_session(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Chat session not found.",
         )
-    if chat_session.user_id != current_user.id:
+    if (
+        current_user.role != UserRole.ADMIN
+        and chat_session.user_id != current_user.id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to update this chat session.",
@@ -102,10 +119,38 @@ async def update_chat_session(
     return chat_session
 
 
+async def delete_chat_session(
+    session: AsyncSession,
+    chat_session_id: str,
+    current_user: User,
+) -> MessageResponse:
+    chat_session_result = await session.execute(
+        select(ChatSession).where(ChatSession.id == chat_session_id)
+    )
+    chat_session = chat_session_result.scalars().first()
+    if chat_session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat session not found.",
+        )
+    if (
+        current_user.role != UserRole.ADMIN
+        and chat_session.user_id != current_user.id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to delete this chat session.",
+        )
+
+    await session.delete(chat_session)
+    await session.commit()
+    return MessageResponse(message="Chat session deleted successfully")
+
+
 async def get_chat_messages_by_chat_session_id(
     session: AsyncSession,
     chat_session_id: str,
-    user_id: str | None = None,
+    current_user: User,
 ) -> list[ChatMessage]:
     chat_session_result = await session.execute(
         select(ChatSession)
@@ -118,7 +163,10 @@ async def get_chat_messages_by_chat_session_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Chat session not found.",
         )
-    if user_id is not None and chat_session.user_id != user_id:
+    if (
+        current_user.role != UserRole.ADMIN
+        and chat_session.user_id != current_user.id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this chat session.",
@@ -136,7 +184,7 @@ async def create_new_message(
     session: AsyncSession,
     chat_session_id: str,
     chat_message_create: ChatMessageCreate,
-    user_id: str | None = None,
+    user_id: str,
 ) -> ChatMessage:
     chat_session_result = await session.execute(
         select(ChatSession)
@@ -153,7 +201,7 @@ async def create_new_message(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Chat session not found.",
         )
-    if user_id is not None and chat_session.user_id != user_id:
+    if chat_session.user_id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this chat session.",
