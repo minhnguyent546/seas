@@ -16,14 +16,37 @@ export function generateId() {
 }
 
 /**
- * Formats a date
+ * Formats a date for message timestamps
  */
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  }).format(date);
+export function formatMessageDate(date: Date): string {
+  const now = new Date();
+  const messageDate = new Date(date);
+
+  // Check if the message is from today
+  const isToday =
+    now.getFullYear() === messageDate.getFullYear() &&
+    now.getMonth() === messageDate.getMonth() &&
+    now.getDate() === messageDate.getDate();
+
+  if (isToday) {
+    // Same day: show time with seconds (24-hour format)
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).format(messageDate);
+  } else {
+    // Different day: show day and time with seconds (24-hour format)
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).format(messageDate);
+  }
 }
 
 /**

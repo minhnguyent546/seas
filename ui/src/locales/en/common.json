@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "settings": "Settings",
+    "logout": "Sign out",
+    "selectLanguage": "Select Language"
+  },
+  "chat": {
+    "placeholder": "Ask about the CTU Enrollment Program...",
+    "send": "Send",
+    "clear": "Clear conversation",
+    "newConversation": "New Conversation",
+    "typing": "Typing...",
+    "error": "Something went wrong. Please try again.",
+    "welcomeTitle": "Welcome to SEAS",
+    "welcomeGreeting": "Hi, {{name}}!",
+    "welcomeMessage": "Ask me anything about the CTU Enrollment Program!",
+    "loadingSessions": "Loading chat sessions...",
+    "loadingConversation": "Loading conversation...",
+    "recommendedQuestions": {
+      "admissionRequirements": "What are the admission requirements?",
+      "scholarships": "How do I apply for scholarships?",
+      "programs": "What programs do you offer?",
+      "campusLife": "Tell me about campus life.",
+      "tuitionFees": "What are the tuition fees?",
+      "applicationDeadline": "When is the application deadline?"
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "signIn": "Sign in",
+    "signInHeading": "Sign in",
+    "signInSubtext": "Sign in to your account to continue",
+    "createAccount": "Create an account",
+    "createAccountSubtext": "Join us to explore the CTU Enrollment Program",
+    "email": "Email",
+    "emailAddress": "Email address",
+    "fullName": "Full Name",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me",
+    "signInWithGoogle": "Sign in with Google",
+    "continueWithGoogle": "Continue with Google",
+    "signingInWithGoogle": "Signing in with Google",
+    "continueWithGitHub": "Continue with GitHub",
+    "signingInWithGitHub": "Signing in with GitHub",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "createAccountButton": "Create account",
+    "or": "Or",
+    "placeholders": {
+      "enterUsername": "Enter your username",
+      "enterPassword": "Enter your password",
+      "enterEmail": "Enter your email",
+      "enterFullName": "Enter your full name",
+      "confirmPassword": "Confirm your password"
+    },
+    "validation": {
+      "usernameRequired": "Username is required",
+      "usernameMinLength": "Username must be at least 3 characters",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "fullNameRequired": "Full name is required",
+      "fullNameMinLength": "Full name must be at least 3 characters",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsNoMatch": "Passwords do not match"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clear": "Clear",
+    "apply": "Apply",
+    "reset": "Reset"
+  },
+  "messages": {
+    "success": "Operation completed successfully",
+    "error": "An error occurred",
+    "warning": "Warning",
+    "info": "Information",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+  },
+  "languages": {
+    "en": "English",
+    "vi": "Tiếng Việt"
+  },
+  "sidebar": {
+    "pinned": "Pinned",
+    "history": "History",
+    "openSidebar": "Open Sidebar",
+    "collapseSidebar": "Collapse Sidebar",
+    "newChat": "New Chat",
+    "rename": "Rename",
+    "sessionName": "Session name",
+    "pinSession": "Pin session",
+    "unpinSession": "Unpin session",
+    "delete": "Delete",
+    "deleteSession": "Delete Session",
+    "deleteSessionConfirm": "Are you sure you want to delete '{{sessionName}}'? This action cannot be undone.",
+    "sessionPinned": "Session pinned successfully",
+    "sessionUnpinned": "Session unpinned successfully",
+    "reportIssue": "Report issue",
+    "ctuHomepage": "CTU homepage",
+    "ctuAdmissions": "Admissions info"
+  },
+  "loading": {
+    "checkingAuth": "Checking authentication...",
+    "default": "Loading..."
+  },
+  "errors": {
+    "googleLoginFailed": "Google login failed. Please try again.",
+    "githubLoginFailed": "GitHub login failed. Please try again.",
+    "oauthFailed": "OAuth login failed. Please try again."
+  }
+}

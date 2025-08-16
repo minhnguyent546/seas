@@ -12,9 +12,11 @@ wheels/
 .venv
 .venv.*
 .venv-*
+.venv*
 
 # local stuff
 _*
+_test_crawling/
 !__init__.py
 *.local
 
@@ -40,3 +42,5 @@ _*
 # other
 *.bak
 *.backup
+*.bak*
+.hf_models

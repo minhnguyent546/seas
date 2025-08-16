@@ -14,6 +14,9 @@ on:
 jobs:
   test-docker-compose:
     runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILES_OPTION: "-f docker-compose.yaml -f docker-compose.dev.yaml"
+
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
@@ -32,23 +35,25 @@ jobs:
           GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
           OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
           ANTHROPIC_API_KEY: "${{ secrets.ANTHROPIC_API_KEY }}"
+          QDRANT_API_KEY: test-api-key
           API_IMAGE=seas-api
+          RERANK_ENABLED=false
           EOF
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build docker images
-        run: docker compose build
+        run: docker compose ${{ env.COMPOSE_FILES_OPTION }} build
 
       - name: Remove existing containers
-        run: docker compose down -v --remove-orphans
+        run: docker compose ${{ env.COMPOSE_FILES_OPTION }} down -v --remove-orphans
 
       - name: Start containers
-        run: docker compose up -d --wait api
+        run: docker compose ${{ env.COMPOSE_FILES_OPTION }} up -d --wait api
 
       - name: Test if backend is up
         run: curl -f http://localhost:8444/health
 
       - name: Cleanup
-        run: docker compose down -v --remove-orphans
+        run: docker compose ${{ env.COMPOSE_FILES_OPTION }} down -v --remove-orphans

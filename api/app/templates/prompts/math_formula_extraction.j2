@@ -1,0 +1,18 @@
+Analyze this image and extract any mathematical formulas present.
+
+IMPORTANT INSTRUCTIONS:
+1. If the image contains mathematical formulas or equations, convert them to markdown format using LaTeX syntax
+2. Use $...$ for inline math and $$...$$ for display math equations
+3. Preserve the mathematical structure and formatting
+4. If the image does NOT contain mathematical formulas, return exactly "NO_MATH_FORMULAS" and NOTHING ELSE
+5. Only return the mathematical formulas in markdown format, nothing else
+6. Please note that the formulas might contain some Vietnamese characters, and it is easy to get confused (e.g. "đ" vs "d"), so please be careful
+7. If there are multiple formulas, separate them with newlines
+
+Examples of proper markdown math format:
+- Inline: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$
+- Display: $$y = \frac{(x - a)(c + d)}{b}$$
+
+{% if additional_instructions %}
+Additional instructions: {{ additional_instructions }}
+{% endif %}

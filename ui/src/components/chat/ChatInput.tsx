@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/hooks/useLanguage';
 import { CircularProgress } from '@mui/material';
 import { IconMicrophone, IconSend } from '@tabler/icons-react';
 import React, { useRef, useState } from 'react';
@@ -12,10 +13,13 @@ interface ChatInputProps {
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
   isLoading = false,
-  placeholder = 'Ask me anything about CTU Enrollment Program...',
+  placeholder,
 }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useLanguage();
+
+  const defaultPlaceholder = placeholder || t('chat.placeholder');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -57,7 +61,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder}
+            placeholder={defaultPlaceholder}
             className="max-h-[200px] min-h-[40px] w-full resize-none border-0 bg-transparent px-2 py-2 text-base focus:outline-none focus:ring-0 dark:text-white"
             rows={1}
           />
@@ -67,7 +71,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             variant="ghost"
             size="icon"
             type="button"
-            className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Voice input"
           >
             <IconMicrophone size={20} />
@@ -76,7 +80,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             onClick={handleSendMessage}
             disabled={!input.trim() || isLoading}
             size="icon"
-            className="h-8 w-8 rounded-full bg-primary text-white hover:bg-primary-700"
+            className="h-8 w-8 rounded-full bg-primary text-white hover:bg-primary-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Send message"
           >
             {isLoading ? (

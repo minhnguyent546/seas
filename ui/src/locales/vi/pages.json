@@ -1,0 +1,18 @@
+{
+  "titles": {
+    "home": "Chatbot Tư vấn Tuyển sinh Đại học Cần Thơ",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "settings": "Cài đặt"
+  },
+  "descriptions": {
+    "home": "SEAS",
+    "login": "SEAS",
+    "signup": "SEAS",
+    "settings": "SEAS"
+  },
+  "meta": {
+    "defaultTitle": "SEAS",
+    "defaultDescription": "SEAS"
+  }
+}

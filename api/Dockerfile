@@ -3,6 +3,10 @@ FROM python:3.12-slim
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
+ENV HF_HUB_DISABLE_TELEMETRY=1
+
+# disable tokenizers parallelism to avoid overloading the CPU
+ENV TOKENIZERS_PARALLELISM=false
 
 RUN apt update && apt install -y --no-install-recommends \
     gcc \
@@ -30,7 +34,7 @@ ENV UV_LINK_MODE=copy
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project
+    uv sync --extra flagembedding-cpu --frozen --no-install-project;
 
 ENV PYTHONPATH=/app
 
@@ -38,7 +42,7 @@ COPY . /app
 
 # sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync
+    uv sync --extra flagembedding-cpu;
 
 EXPOSE 8444
 

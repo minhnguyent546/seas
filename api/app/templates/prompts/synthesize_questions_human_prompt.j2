@@ -1,0 +1,10 @@
+## Thông tin ngữ cảnh
+
+{% for context in contexts %}
+### Chunk id: {{ context.chunk_index }}
+```
+{{ context.content }}
+```
+{% endfor %}
+
+## Câu trả lời của bạn

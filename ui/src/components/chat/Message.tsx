@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useMarkdownRenderer } from '@/hooks/useMarkdownRenderer';
 import { useMessageActions } from '@/hooks/useMessageActions';
 import { useTypingEffect } from '@/hooks/useTypingEffect';
-import { formatDate } from '@/lib/utils';
+import { formatMessageDate } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
 import { IconCopy, IconThumbDown, IconThumbUp } from '@tabler/icons-react';
 import React from 'react';
@@ -12,6 +12,7 @@ interface MessageProps {
   message: MessageType;
   isLastMessage?: boolean;
   isLoading?: boolean;
+  isLoadingFromBackend?: boolean;
 }
 
 export const UserMessage: React.FC<MessageProps> = ({ message }) => {
@@ -23,7 +24,7 @@ export const UserMessage: React.FC<MessageProps> = ({ message }) => {
         </div>
         <div className="flex items-center justify-end gap-2">
           <div className="text-xs text-gray-500">
-            {formatDate(message.timestamp)}
+            {formatMessageDate(message.timestamp)}
           </div>
         </div>
       </div>
@@ -35,8 +36,12 @@ export const BotMessage: React.FC<MessageProps> = ({
   message,
   isLoading = false,
   isLastMessage = false,
+  isLoadingFromBackend = false,
 }) => {
-  const displayText = useTypingEffect(message.content, isLastMessage);
+  // Only apply typing effect if this is the last message, not loading from backend, and has content
+  const shouldUseTypingEffect =
+    isLastMessage && !isLoadingFromBackend && Boolean(message.content);
+  const displayText = useTypingEffect(message.content, shouldUseTypingEffect);
   const renderedMarkdown = useMarkdownRenderer(displayText);
   const { handleCopyMessage, handleLikeMessage, handleDislikeMessage } =
     useMessageActions();
@@ -61,7 +66,7 @@ export const BotMessage: React.FC<MessageProps> = ({
         {!isEmptyAndLoading && (
           <div className="flex items-center gap-2">
             <div className="text-xs text-gray-500">
-              {formatDate(message.timestamp)}
+              {formatMessageDate(message.timestamp)}
             </div>
             <div className="flex items-center gap-1">
               <Button
@@ -113,6 +118,7 @@ export const Message: React.FC<MessageProps> = ({
   message,
   isLoading,
   isLastMessage,
+  isLoadingFromBackend,
 }) => {
   switch (message.role) {
     case 'user':
@@ -123,6 +129,7 @@ export const Message: React.FC<MessageProps> = ({
           message={message}
           isLoading={isLoading}
           isLastMessage={isLastMessage}
+          isLoadingFromBackend={isLoadingFromBackend}
         />
       );
     case 'system':

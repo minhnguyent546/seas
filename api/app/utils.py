@@ -9,12 +9,13 @@ import jwt
 import markdown_to_data
 from fastapi import BackgroundTasks, HTTPException, UploadFile, status
 from fastapi.routing import APIRoute
+from langchain_core.messages import BaseMessage
 from loguru import logger
 from markdown_to_data.to_md.to_md_parser import to_md_parser
 
 from app.core.config import settings, timezone_vi
 from app.schemas import EmailData
-from app.templates import email_templates
+from app.templates import email_templates, prompt_templates
 
 
 def serialize_datetime(value: datetime) -> str:
@@ -152,7 +153,23 @@ def custom_generate_unique_id(route: APIRoute) -> str:
     return f"default-{route.name}"
 
 
-def save_uploaded_file(file: UploadFile) -> str:
+def get_file_size(file: UploadFile) -> int:
+    file.file.seek(0, os.SEEK_END)  # Seek to end of file
+    file_size = file.file.tell()
+    file.file.seek(0, os.SEEK_SET)  # Reset to beginning
+    return file_size
+
+
+def save_uploaded_document(file: UploadFile) -> str:
+    MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB in bytes
+    file_size = get_file_size(file=file)
+
+    if file_size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File size ({file_size / (1024 * 1024):.2f}MB) exceeds maximum allowed size of {MAX_FILE_SIZE / (1024 * 1024):.2f}MB",
+        )
+
     unique_name = f"{uuid.uuid4()}.md"
     file_path = os.path.join(settings.DOC_UPLOAD_DIR, unique_name)
     with open(file_path, "wb") as f:
@@ -201,19 +218,63 @@ def extract_markdown_tables(
 
 
 def get_langchain_llm(model_name: str, **kwargs):
-    if "/" not in model_name:
-        raise ValueError(
-            f"Expected model name have the format <provider>/<model_name>, got {model_name}"
+    try:
+        provider, model_name = model_name.split("/", 1)
+        if provider == "google":
+            from langchain_google_genai import ChatGoogleGenerativeAI
+
+            return ChatGoogleGenerativeAI(model=model_name, **kwargs)
+        elif provider == "openai":
+            from langchain_openai import ChatOpenAI
+
+            return ChatOpenAI(model=model_name, **kwargs)
+        elif provider == "openrouter":
+            from langchain_openai import (
+                ChatOpenAI,  # as OpenRouter uses an OpenAI-compatible API
+            )
+
+            kwargs["openai_api_base"] = settings.OPENROUTER_BASE_URL
+            kwargs["openai_api_key"] = settings.OPENROUTER_API_KEY
+
+            return ChatOpenAI(model=model_name, **kwargs)
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
+    except Exception as err:
+        logger.error(f"Failed to initialize langchain llm: {err}")
+        raise err
+
+
+def get_prompt_template(template_name: str):
+    try:
+        return prompt_templates.get_template(template_name)
+    except Exception as err:
+        logger.error(f"Failed to get prompt template: {err}")
+        raise err
+
+
+def get_prompt(*, template_name: str, **kwargs):
+    try:
+        template = get_prompt_template(template_name)
+        return template.render(kwargs)
+    except Exception as err:
+        logger.error(f"Failed to get prompt: {err}")
+        raise err
+
+
+def extract_content_from_base_message(response: BaseMessage) -> str:
+    if isinstance(response, str):
+        return response
+
+    if not hasattr(response, "content") or not response.content:
+        return ""
+
+    if isinstance(response.content, str):
+        return response.content
+    elif isinstance(response.content, list):  # pyright: ignore[reportUnnecessaryIsInstance]
+        raise NotImplementedError(
+            "Not implemented for response.content as a list"
         )
-
-    provider, model_name = model_name.split("/")
-    if provider == "google":
-        from langchain_google_genai import GoogleGenerativeAI
-
-        return GoogleGenerativeAI(model=model_name, **kwargs)
-    elif provider == "openai":
-        from langchain_openai import ChatOpenAI
-
-        return ChatOpenAI(model=model_name, **kwargs)
     else:
-        raise ValueError(f"Unsupported provider: {provider}")
+        raise AssertionError(
+            f"Unexpected response type: {type(response.content)}. Expected str or list of str/dict."
+        )

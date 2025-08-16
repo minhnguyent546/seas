@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthLoginViaGithubOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatbotQueryData, ChatbotQueryResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsHtmlResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
+import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthLoginViaGithubOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatbotQueryData, ChatbotQueryResponse, ChatbotQueryEvalData, ChatbotQueryEvalResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetLatestChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsDeleteChatSessionData, ChatsDeleteChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, RagAddDocumentToDatabaseData, RagAddDocumentToDatabaseResponse, RagAddDocumentToDatabaseInBatchData, RagAddDocumentToDatabaseInBatchResponse, RagSimilaritySearchData, RagSimilaritySearchResponse, RagSplitMarkdownOnHeadersData, RagSplitMarkdownOnHeadersResponse, RagQueryExpansionData, RagQueryExpansionResponse, RagExportDocumentSectionsChunksResponse, RagGetRagModelsStatusResponse, RagRecomputeEmbeddingsData, RagRecomputeEmbeddingsResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
 
 export class AuthService {
     /**
@@ -229,6 +229,26 @@ export class ChatbotService {
         });
     }
     
+    /**
+     * Query Eval
+     * Process a chat query and return complete response with evaluation metadata.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static queryEval(data: ChatbotQueryEvalData): CancelablePromise<ChatbotQueryEvalResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/chatbot/query-eval',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
 }
 
 export class ChatsService {
@@ -262,6 +282,19 @@ export class ChatsService {
             errors: {
                 422: 'Validation Error'
             }
+        });
+    }
+    
+    /**
+     * Get Latest Chat Session
+     * Get the latest chat session for the current user.
+     * @returns ChatSessionPublic Successful Response
+     * @throws ApiError
+     */
+    public static getLatestChatSession(): CancelablePromise<ChatsGetLatestChatSessionResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/chats/chat_sessions/latest-chat-session'
         });
     }
     
@@ -311,6 +344,27 @@ export class ChatsService {
     }
     
     /**
+     * Delete Chat Session
+     * Delete a chat session by ID.
+     * @param data The data for the request.
+     * @param data.chatSessionId
+     * @returns MessageResponse Successful Response
+     * @throws ApiError
+     */
+    public static deleteChatSession(data: ChatsDeleteChatSessionData): CancelablePromise<ChatsDeleteChatSessionResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/chats/chat_sessions/{chat_session_id}',
+            path: {
+                chat_session_id: data.chatSessionId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
      * Get Chat Messages
      * Get chat messages for a specific session.
      * @param data The data for the request.
@@ -347,6 +401,158 @@ export class ChatsService {
             path: {
                 chat_session_id: data.chatSessionId
             },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+}
+
+export class RagService {
+    /**
+     * Add Document To Database
+     * Add a document to the database(s). Requires superuser permissions.
+     * @param data The data for the request.
+     * @param data.formData
+     * @returns MessageResponse Successful Response
+     * @throws ApiError
+     */
+    public static addDocumentToDatabase(data: RagAddDocumentToDatabaseData): CancelablePromise<RagAddDocumentToDatabaseResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rag/documents/upload',
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Add Document To Database In Batch
+     * Add a document to the database(s) in batch. Requires superuser permissions.
+     * @param data The data for the request.
+     * @param data.formData
+     * @returns MessageResponse Successful Response
+     * @throws ApiError
+     */
+    public static addDocumentToDatabaseInBatch(data: RagAddDocumentToDatabaseInBatchData): CancelablePromise<RagAddDocumentToDatabaseInBatchResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rag/documents/batch-upload',
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Similarity Search
+     * Similarity search for a query. Requires superuser permissions.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns SimilaritySearchResult Successful Response
+     * @throws ApiError
+     */
+    public static similaritySearch(data: RagSimilaritySearchData): CancelablePromise<RagSimilaritySearchResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rag/private/similarity-search',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Split Markdown On Headers
+     * Split a document on headers. Requires superuser permissions.
+     * @param data The data for the request.
+     * @param data.formData
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static splitMarkdownOnHeaders(data: RagSplitMarkdownOnHeadersData): CancelablePromise<RagSplitMarkdownOnHeadersResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rag/private/split-markdown-on-headers',
+            formData: data.formData,
+            mediaType: 'multipart/form-data',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Query Expansion
+     * Query expansion. Requires superuser permissions.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static queryExpansion(data: RagQueryExpansionData): CancelablePromise<RagQueryExpansionResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rag/private/query-expansion',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Export Document Sections Chunks
+     * Export document sections chunks to a JSON file. Requires superuser permissions.
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static exportDocumentSectionsChunks(): CancelablePromise<RagExportDocumentSectionsChunksResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/rag/private/export-document-sections-chunks'
+        });
+    }
+    
+    /**
+     * Get Rag Models Status
+     * Get the status of RAG models initialization. Requires superuser permissions.
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static getRagModelsStatus(): CancelablePromise<RagGetRagModelsStatusResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/rag/private/rag-models-status'
+        });
+    }
+    
+    /**
+     * Recompute Embeddings
+     * Recompute embeddings for all document sections chunks. Requires superuser permissions.
+     *
+     * This is useful when the embeddings model is changed and we need
+     * to recompute the embeddings for all document sections chunks.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static recomputeEmbeddings(data: RagRecomputeEmbeddingsData): CancelablePromise<RagRecomputeEmbeddingsResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/rag/private/recompute-embeddings',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -545,18 +751,6 @@ export class UtilsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/health'
-        });
-    }
-    
-    /**
-     * Html
-     * @returns string Successful Response
-     * @throws ApiError
-     */
-    public static html(): CancelablePromise<UtilsHtmlResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/html'
         });
     }
     

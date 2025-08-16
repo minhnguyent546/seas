@@ -1,0 +1,2875 @@
+{
+  "model": "openai/gpt-4.1",
+  "num_questions": 6,
+  "generated_questions": [
+    {
+      "section_id": "e213af52-c135-475c-9ed5-9875a887bddb",
+      "generated_questions": [
+        {
+          "question": "Chủ tịch Hội đồng tuyển sinh (HĐTS) có trách nhiệm gì trong việc thành lập các tổ chức giúp việc HĐTS tổ chức thi bổ trợ tuyển sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d7191dbc-4785-4ee0-ae65-2ed128312169"
+          ]
+        },
+        {
+          "question": "Các tổ chức giúp việc HĐTS tổ chức thi bổ trợ tuyển sinh được thành lập dựa trên quy định của văn bản nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d7191dbc-4785-4ee0-ae65-2ed128312169"
+          ]
+        },
+        {
+          "question": "Nhiệm vụ và quyền hạn của các tổ chức giúp việc HĐTS tổ chức thi bổ trợ tuyển sinh được quy định như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d7191dbc-4785-4ee0-ae65-2ed128312169"
+          ]
+        },
+        {
+          "question": "Quyết định thành lập các tổ chức giúp việc HĐTS tổ chức thi bổ trợ tuyển sinh bao gồm những nội dung gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d7191dbc-4785-4ee0-ae65-2ed128312169"
+          ]
+        },
+        {
+          "question": "Ai là người ban hành quyết định thành lập các tổ chức giúp việc HĐTS tổ chức thi bổ trợ tuyển sinh tại Trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d7191dbc-4785-4ee0-ae65-2ed128312169"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "48810231-d489-4e44-bfb3-4ae4d1b2b27f",
+      "generated_questions": [
+        {
+          "question": "Những đối tượng nào được tuyển thẳng vào Đại học Cần Thơ năm 2025 theo phương thức 1?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "eb5f7834-0831-427a-a0bf-578f554055d2",
+            "c51488a6-0694-4f22-86f3-20d1d6fcbebc"
+          ]
+        },
+        {
+          "question": "Thí sinh đoạt giải học sinh giỏi quốc gia được tuyển thẳng vào ngành nào của Đại học Cần Thơ?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "eb5f7834-0831-427a-a0bf-578f554055d2",
+            "c51488a6-0694-4f22-86f3-20d1d6fcbebc"
+          ]
+        },
+        {
+          "question": "Nếu thí sinh thuộc diện tuyển thẳng nhưng không sử dụng quyền này, họ có thể được ưu tiên xét tuyển vào ngành khác không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "4a9cc016-0910-41b1-bb3a-3753222f2d5d"
+          ]
+        },
+        {
+          "question": "Đại học Cần Thơ có cấp học bổng cho thí sinh tuyển thẳng và ưu tiên xét tuyển không? Nếu có, giá trị học bổng là bao nhiêu?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            1,
+            2
+          ],
+          "referenced_chunk_ids": [
+            "c51488a6-0694-4f22-86f3-20d1d6fcbebc",
+            "4a9cc016-0910-41b1-bb3a-3753222f2d5d"
+          ]
+        },
+        {
+          "question": "Điều kiện để thí sinh được ưu tiên xét tuyển vào Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "4a9cc016-0910-41b1-bb3a-3753222f2d5d"
+          ]
+        },
+        {
+          "question": "Thí sinh khuyết tật nặng muốn đăng ký tuyển thẳng vào Đại học Cần Thơ cần làm gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "c51488a6-0694-4f22-86f3-20d1d6fcbebc"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "48810231-d489-4e44-bfb3-4ae4d1b2b27f",
+      "generated_questions": [
+        {
+          "question": "Những giấy tờ nào cần chuẩn bị khi nộp hồ sơ đăng ký tuyển thẳng hoặc ưu tiên xét tuyển vào Đại học Cần Thơ năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            3
+          ],
+          "referenced_chunk_ids": [
+            "69a279bd-f3df-4095-8336-5473c0c3661c"
+          ]
+        },
+        {
+          "question": "Thí sinh cần nộp hồ sơ tuyển thẳng, ưu tiên xét tuyển trước thời hạn nào và có thể nộp bằng những hình thức nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            3
+          ],
+          "referenced_chunk_ids": [
+            "69a279bd-f3df-4095-8336-5473c0c3661c"
+          ]
+        },
+        {
+          "question": "Khi nào Đại học Cần Thơ công bố kết quả tuyển thẳng và thí sinh cần làm gì nếu có nguyện vọng nhập học ngành đã được tuyển thẳng?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            3
+          ],
+          "referenced_chunk_ids": [
+            "69a279bd-f3df-4095-8336-5473c0c3661c"
+          ]
+        },
+        {
+          "question": "Kết quả ưu tiên xét tuyển được công bố vào thời điểm nào và theo phương thức nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            3,
+            4
+          ],
+          "referenced_chunk_ids": [
+            "69a279bd-f3df-4095-8336-5473c0c3661c",
+            "3f0e1bf8-bf67-4b04-9e36-198acfac5e13"
+          ]
+        },
+        {
+          "question": "Thời gian xác nhận nhập học trực tuyến và làm thủ tục nhập học trực tiếp tại Trường Đại học Cần Thơ cho thí sinh trúng tuyển là khi nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            3,
+            4
+          ],
+          "referenced_chunk_ids": [
+            "69a279bd-f3df-4095-8336-5473c0c3661c",
+            "3f0e1bf8-bf67-4b04-9e36-198acfac5e13"
+          ]
+        },
+        {
+          "question": "Nếu cần tư vấn về tuyển sinh hoặc có thắc mắc, thí sinh có thể liên hệ với Đại học Cần Thơ qua những kênh nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            4
+          ],
+          "referenced_chunk_ids": [
+            "3f0e1bf8-bf67-4b04-9e36-198acfac5e13"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "866fdf2c-436e-40d5-8a9a-481c0f14f66e",
+      "generated_questions": [
+        {
+          "question": "Quy trình xác nhận nhập học trực tuyến của thí sinh trúng tuyển vào Đại học Cần Thơ được thực hiện như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8344cc7-2617-48cf-9a3a-87721d043a29"
+          ]
+        },
+        {
+          "question": "Nếu thí sinh không xác nhận và làm thủ tục nhập học trong thời hạn quy định mà không có lý do chính đáng, hậu quả sẽ như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8344cc7-2617-48cf-9a3a-87721d043a29"
+          ]
+        },
+        {
+          "question": "Trong trường hợp nào thí sinh có thể được bảo lưu kết quả trúng tuyển tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8344cc7-2617-48cf-9a3a-87721d043a29"
+          ]
+        },
+        {
+          "question": "Ai là người quyết định việc tiếp nhận hoặc bảo lưu kết quả trúng tuyển cho thí sinh gặp sự cố do ốm đau hoặc thiên tai?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8344cc7-2617-48cf-9a3a-87721d043a29"
+          ]
+        },
+        {
+          "question": "Nếu thí sinh đã xác nhận nhập học tại một cơ sở đào tạo, họ có được tham gia xét tuyển ở nơi khác không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8344cc7-2617-48cf-9a3a-87721d043a29"
+          ]
+        },
+        {
+          "question": "Khi có sai sót do cán bộ tuyển sinh hoặc thí sinh gây ra, quy trình xử lý việc tiếp nhận hoặc bảo lưu kết quả trúng tuyển sẽ như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8344cc7-2617-48cf-9a3a-87721d043a29"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "b7a91058-615d-473d-9267-b169c52dc806",
+      "generated_questions": [
+        {
+          "question": "Những trường đại học nào hiện đang sử dụng kết quả thi do Trường Đại học Cần Thơ tổ chức để xét tuyển?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f662735f-b99b-44d1-b121-faee5d0bfcf8"
+          ]
+        },
+        {
+          "question": "Nếu một cơ sở giáo dục đại học khác muốn sử dụng kết quả thi do Trường Đại học Cần Thơ tổ chức thì cần thực hiện thủ tục gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f662735f-b99b-44d1-b121-faee5d0bfcf8"
+          ]
+        },
+        {
+          "question": "Danh sách các trường sử dụng kết quả thi của Trường Đại học Cần Thơ có thể thay đổi không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f662735f-b99b-44d1-b121-faee5d0bfcf8"
+          ]
+        },
+        {
+          "question": "Trường Đại học Ngân hàng TPHCM và Trường Đại học Sư phạm Kỹ thuật Hưng Yên đều sử dụng kết quả thi do trường nào tổ chức để xét tuyển?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f662735f-b99b-44d1-b121-faee5d0bfcf8"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "9680b931-5614-4edd-aebc-ccbb2cd291c9",
+      "generated_questions": [
+        {
+          "question": "Đề án nào về kỳ thi tuyển sinh đại học năm 2025 đã được Trường Đại học Cần Thơ phê duyệt và ban hành?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2e9dff7-7252-4cfb-98a6-ca40a3887a75"
+          ]
+        },
+        {
+          "question": "Kỳ thi đánh giá đầu vào đại học trên máy tính của Trường Đại học Cần Thơ năm 2025 có tên gọi là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2e9dff7-7252-4cfb-98a6-ca40a3887a75"
+          ]
+        },
+        {
+          "question": "Những ai chịu trách nhiệm thi hành Quyết định về việc tổ chức kỳ thi V-SAT của Trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2e9dff7-7252-4cfb-98a6-ca40a3887a75"
+          ]
+        },
+        {
+          "question": "Quyết định về việc tổ chức kỳ thi đánh giá đầu vào đại học trên máy tính của Trường Đại học Cần Thơ có hiệu lực từ khi nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2e9dff7-7252-4cfb-98a6-ca40a3887a75"
+          ]
+        },
+        {
+          "question": "Các phòng ban nào của Trường Đại học Cần Thơ được nêu rõ trong Quyết định về tổ chức kỳ thi V-SAT?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2e9dff7-7252-4cfb-98a6-ca40a3887a75"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "b66c479b-6be6-44d1-b47b-07d238b2ef10",
+      "generated_questions": [
+        {
+          "question": "Điều kiện về điểm trung bình tích lũy để sinh viên khóa 47 trở về sau được đăng ký học cùng lúc hai chương trình là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "14e8c772-0168-48ea-8761-e8da12ac9d3a"
+          ]
+        },
+        {
+          "question": "Khi học cùng lúc hai chương trình, sinh viên có được hưởng quyền lợi của cả hai chương trình không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "161177a6-3d4c-48f2-9296-d6af352571e9"
+          ]
+        },
+        {
+          "question": "Nếu sinh viên học cùng lúc hai chương trình có ĐTBCHK dưới 2.00 thì sẽ bị xử lý như thế nào trong học kỳ tiếp theo?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "161177a6-3d4c-48f2-9296-d6af352571e9"
+          ]
+        },
+        {
+          "question": "Quy trình đăng ký học thêm chương trình thứ hai tại Đại học Cần Thơ gồm những bước cơ bản nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "14e8c772-0168-48ea-8761-e8da12ac9d3a"
+          ]
+        },
+        {
+          "question": "Sinh viên chỉ được xét tốt nghiệp chương trình thứ hai trong trường hợp nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "161177a6-3d4c-48f2-9296-d6af352571e9"
+          ]
+        },
+        {
+          "question": "Có thể chuyển kết quả các học phần đã tích lũy từ chương trình thứ nhất sang chương trình thứ hai không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "161177a6-3d4c-48f2-9296-d6af352571e9"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "c222336d-bfe1-4138-a284-7008e658a7f6",
+      "generated_questions": [
+        {
+          "question": "Sinh viên hết thời gian học tập tối đa nhưng chưa hoàn thành các học phần Giáo dục quốc phòng & an ninh hoặc Giáo dục thể chất sẽ có bao lâu để trở về Trường Đại học Cần Thơ hoàn thiện và đề nghị xét công nhận tốt nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "fd2239f0-d59f-4d55-9051-8b767a476f25"
+          ]
+        },
+        {
+          "question": "Đối với sinh viên từ Khóa 47 trở về sau, ngoài các học phần GDQP&AN và GDTC, còn phải đạt chuẩn đầu ra nào để đủ điều kiện tốt nghiệp sau khi hết thời gian học tập tối đa?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "fd2239f0-d59f-4d55-9051-8b767a476f25"
+          ]
+        },
+        {
+          "question": "Nếu sinh viên không đủ điều kiện tốt nghiệp, Trường Đại học Cần Thơ sẽ thực hiện những thủ tục gì liên quan đến kết quả học tập đã tích lũy của sinh viên?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "fd2239f0-d59f-4d55-9051-8b767a476f25"
+          ]
+        },
+        {
+          "question": "Sinh viên hết thời gian học hình thức chính quy nhưng vẫn còn trong thời hạn học tập của hình thức khác sẽ được chuyển sang hình thức đào tạo nào tại Trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "fd2239f0-d59f-4d55-9051-8b767a476f25"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "06e5a115-d100-441a-bdc6-65733d0f50e2",
+      "generated_questions": [
+        {
+          "question": "Phòng Đào tạo của Trường Đại học Cần Thơ là nơi hỗ trợ và giải đáp thông tin về kết quả tuyển thẳng, ưu tiên xét tuyển vào đại học chính quy năm 2025 đúng không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2fc75030-ad8a-4898-aea9-528ae84e4894"
+          ]
+        },
+        {
+          "question": "Kết quả tuyển thẳng và ưu tiên xét tuyển vào đại học chính quy năm 2025 của Đại học Cần Thơ sẽ được thông báo ở đâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2fc75030-ad8a-4898-aea9-528ae84e4894"
+          ]
+        },
+        {
+          "question": "Nếu thí sinh cần giải đáp về kết quả tuyển thẳng, họ nên liên hệ bộ phận nào của Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2fc75030-ad8a-4898-aea9-528ae84e4894"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "11a79878-eb48-4be6-912c-92303da72bd0",
+      "generated_questions": [
+        {
+          "question": "Nếu thí sinh muốn tham gia đợt 3 kỳ thi tuyển sinh năm 2025 của Đại học Cần Thơ, họ cần nộp hồ sơ đăng ký trong khoảng thời gian nào và ngày thi cụ thể là khi nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1d1d503c-697f-44bd-a456-4739aec21421"
+          ]
+        },
+        {
+          "question": "Ngày dự kiến cấp bảng điểm cho thí sinh của từng đợt thi tuyển sinh năm 2025 tại Đại học Cần Thơ là khi nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1d1d503c-697f-44bd-a456-4739aec21421"
+          ]
+        },
+        {
+          "question": "Có bao nhiêu đợt thi tuyển sinh đại học năm 2025 được tổ chức tại Đại học Cần Thơ và đợt nào kéo dài nhiều ngày nhất?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1d1d503c-697f-44bd-a456-4739aec21421"
+          ]
+        },
+        {
+          "question": "Thời gian nhận hồ sơ đăng ký dự thi cho đợt cuối cùng của kỳ thi tuyển sinh năm 2025 tại Đại học Cần Thơ là từ ngày nào đến ngày nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1d1d503c-697f-44bd-a456-4739aec21421"
+          ]
+        },
+        {
+          "question": "So sánh khoảng thời gian nhận hồ sơ đăng ký dự thi giữa đợt 2 và đợt 4 của Đại học Cần Thơ năm 2025. Đợt nào có thời gian nhận hồ sơ dài hơn?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1d1d503c-697f-44bd-a456-4739aec21421"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "65b89346-bb5b-4323-b379-cbd362605f73",
+      "generated_questions": [
+        {
+          "question": "Sau khi kỳ thi kết thúc, những công việc nào liên quan đến bảo mật dữ liệu và thông tin thí sinh được thực hiện?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "b27293e5-69ae-402a-91fa-1c729d88454f"
+          ]
+        },
+        {
+          "question": "Việc sao lưu và xóa dữ liệu hệ thống được thực hiện vào giai đoạn nào trong quy trình thi?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "b27293e5-69ae-402a-91fa-1c729d88454f"
+          ]
+        },
+        {
+          "question": "Ai chịu trách nhiệm phối hợp xử lý các sự cố liên quan đến máy chủ sau khi thi?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "b27293e5-69ae-402a-91fa-1c729d88454f"
+          ]
+        },
+        {
+          "question": "Trách nhiệm liên quan đến đề thi và ngân hàng câu hỏi thi sau khi thi là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "b27293e5-69ae-402a-91fa-1c729d88454f"
+          ]
+        },
+        {
+          "question": "Việc chấm thi hoặc phúc khảo phần viết môn Ngữ văn được thực hiện như thế nào theo quy định?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "b27293e5-69ae-402a-91fa-1c729d88454f"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "aef92f31-7d89-4996-93ce-8e55aa5a38ce",
+      "generated_questions": [
+        {
+          "question": "Nếu thí sinh phát hiện điểm thi V-SAT của mình không có trên Cổng tuyển sinh của Bộ, thí sinh cần làm gì để được cập nhật điểm?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7ff22290-a063-4467-891a-1fda6f4a822a"
+          ]
+        },
+        {
+          "question": "Những thông tin nào thí sinh cần cung cấp khi gửi email phản hồi về việc không có điểm thi trên Cổng tuyển sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7ff22290-a063-4467-891a-1fda6f4a822a"
+          ]
+        },
+        {
+          "question": "Thí sinh cần gửi phản hồi về việc thiếu điểm thi trên Cổng tuyển sinh trước thời hạn nào để được Trường Đại học Cần Thơ giải quyết?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7ff22290-a063-4467-891a-1fda6f4a822a"
+          ]
+        },
+        {
+          "question": "Các loại điểm thi nào do Trường Đại học Cần Thơ tổ chức đã được cập nhật lên Cổng tuyển sinh của Bộ vào ngày 15/7/2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7ff22290-a063-4467-891a-1fda6f4a822a"
+          ]
+        },
+        {
+          "question": "Nguyên nhân nào khiến nhiều trường hợp không cập nhật được điểm thi vào Cổng tuyển sinh của Bộ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7ff22290-a063-4467-891a-1fda6f4a822a"
+          ]
+        },
+        {
+          "question": "Nếu thí sinh gửi phản hồi về điểm thi sau 17g00 ngày 25/7/2025, Trường Đại học Cần Thơ sẽ xử lý như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7ff22290-a063-4467-891a-1fda6f4a822a"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "8e003b60-b52c-46e7-b72a-abfc3dd0c503",
+      "generated_questions": [
+        {
+          "question": "Những nguyên tắc nào đảm bảo công bằng đối với thí sinh trong tuyển sinh đại học chính quy tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "52cc80da-fcfa-4ee9-baa8-568445b200f9"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ phải thực hiện những cam kết gì đối với thí sinh trong quá trình tuyển sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "52cc80da-fcfa-4ee9-baa8-568445b200f9"
+          ]
+        },
+        {
+          "question": "Các nguyên tắc bình đẳng giữa các cơ sở đào tạo trong tuyển sinh được quy định như thế nào tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "52cc80da-fcfa-4ee9-baa8-568445b200f9"
+          ]
+        },
+        {
+          "question": "Đại học Cần Thơ có trách nhiệm minh bạch thông tin tuyển sinh như thế nào đối với xã hội?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "52cc80da-fcfa-4ee9-baa8-568445b200f9"
+          ]
+        },
+        {
+          "question": "Làm thế nào để Đại học Cần Thơ đảm bảo quyền xác định nguyện vọng ưu tiên cho thí sinh trong tuyển sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "52cc80da-fcfa-4ee9-baa8-568445b200f9"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ cần thực hiện trách nhiệm giải trình với xã hội về những vấn đề nào liên quan đến tuyển sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "52cc80da-fcfa-4ee9-baa8-568445b200f9"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "dbe2f167-05c7-463d-aaa7-965d732f4247",
+      "generated_questions": [
+        {
+          "question": "Theo quy định, sinh viên được công nhận và chuyển đổi bao nhiêu tín chỉ thì thời gian học tập tối đa để hoàn thành chương trình đào tạo sẽ giảm 1 học kỳ đối với Khóa 50 trở về sau?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7331cf4d-6105-429b-af53-d64f97838cce"
+          ]
+        },
+        {
+          "question": "Khối lượng tín chỉ tối đa được công nhận và chuyển đổi đối với sinh viên tuyển sinh từ năm học 2021 - 2022 tại Đại học Cần Thơ là bao nhiêu phần trăm so với khối lượng học tập tối thiểu của chương trình đào tạo?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7331cf4d-6105-429b-af53-d64f97838cce"
+          ]
+        },
+        {
+          "question": "Nếu sinh viên được công nhận và chuyển đổi 15 tín chỉ đối với Khóa 49 trở về trước, thời gian học tập tối đa để hoàn thành chương trình sẽ giảm bao nhiêu học kỳ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7331cf4d-6105-429b-af53-d64f97838cce"
+          ]
+        },
+        {
+          "question": "Quy định về chuyển đổi tín chỉ và giảm thời gian học tập tối đa áp dụng cho những đối tượng sinh viên nào tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "7331cf4d-6105-429b-af53-d64f97838cce"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "9fb26aac-a830-4eb2-8df1-4b2eeb58ce5e",
+      "generated_questions": [
+        {
+          "question": "Kỳ thi đánh giá người học phục vụ tuyển sinh đầu vào đại học tại Đại học Cần Thơ được tổ chức trên hình thức nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8a1813d-dad5-49a8-9661-83b2dd7411f6"
+          ]
+        },
+        {
+          "question": "Mục tiêu của kỳ thi đánh giá người học phục vụ tuyển sinh đầu vào đại học là gì? Nêu ít nhất hai mục tiêu.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8a1813d-dad5-49a8-9661-83b2dd7411f6"
+          ]
+        },
+        {
+          "question": "Kỳ thi đánh giá người học phục vụ tuyển sinh đầu vào đại học tại Đại học Cần Thơ có phải là một kỳ thi độc lập không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8a1813d-dad5-49a8-9661-83b2dd7411f6"
+          ]
+        },
+        {
+          "question": "Theo tài liệu, kỳ thi đánh giá người học phục vụ tuyển sinh đầu vào đại học giúp giảm những áp lực nào cho thí sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8a1813d-dad5-49a8-9661-83b2dd7411f6"
+          ]
+        },
+        {
+          "question": "Kỳ thi này được thiết kế để đáp ứng các yêu cầu đào tạo như thế nào so với các xu thế trên thế giới?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c8a1813d-dad5-49a8-9661-83b2dd7411f6"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "b3bd2c4a-c3e6-4b09-a44a-3ae296a799df",
+      "generated_questions": [
+        {
+          "question": "Chương trình tiên tiến của Đại học Cần Thơ tuyển sinh theo hình thức nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f2e113d0-4654-407e-b0bd-3b67b020a9c1"
+          ]
+        },
+        {
+          "question": "Để biết chi tiết về thông tin tuyển sinh chương trình tiên tiến, thí sinh có thể truy cập vào đường dẫn nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f2e113d0-4654-407e-b0bd-3b67b020a9c1"
+          ]
+        },
+        {
+          "question": "Chương trình tiên tiến tại Đại học Cần Thơ thuộc loại hình đào tạo nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f2e113d0-4654-407e-b0bd-3b67b020a9c1"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "24e6c1c5-d5c2-4362-909b-9f2aec4f486e",
+      "generated_questions": [
+        {
+          "question": "Quy trình thử nghiệm câu hỏi thi và đề thi bao gồm những bước chính nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "772c734d-aadc-4399-bae7-852cbd5f76ed"
+          ]
+        },
+        {
+          "question": "Đề thi thử nghiệm phải có tối thiểu bao nhiêu lượt học sinh làm bài thử?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "772c734d-aadc-4399-bae7-852cbd5f76ed"
+          ]
+        },
+        {
+          "question": "Sau khi thử nghiệm đề thi, dữ liệu kết quả làm bài của thí sinh sẽ được xử lý như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "772c734d-aadc-4399-bae7-852cbd5f76ed"
+          ]
+        },
+        {
+          "question": "Ai là người thực hiện phân tích đề thi và đánh giá độ khó của đề thi?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "772c734d-aadc-4399-bae7-852cbd5f76ed"
+          ]
+        },
+        {
+          "question": "Nếu không thể thử nghiệm tất cả các câu hỏi, giải pháp thay thế là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "772c734d-aadc-4399-bae7-852cbd5f76ed"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "768f7899-7c81-49e4-9e2d-4813b413e2a8",
+      "generated_questions": [
+        {
+          "question": "Sinh viên cần tích lũy đủ bao nhiêu học phần và khối lượng tín chỉ tối thiểu để được xét cấp bằng tốt nghiệp tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6062eca0-9158-4260-9af0-cf35458ee1dd"
+          ]
+        },
+        {
+          "question": "Những nội dung nào được trình bày trong bản mô tả chương trình đào tạo của Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6062eca0-9158-4260-9af0-cf35458ee1dd"
+          ]
+        },
+        {
+          "question": "Tổng khối lượng các học phần được phép thực hiện bằng phương thức dạy và học trực tuyến tối đa chiếm bao nhiêu phần trăm chương trình đào tạo?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6062eca0-9158-4260-9af0-cf35458ee1dd"
+          ]
+        },
+        {
+          "question": "Khi nào Đại học Cần Thơ có thể tổ chức dạy và học hoàn toàn trực tuyến cho các học phần?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6062eca0-9158-4260-9af0-cf35458ee1dd"
+          ]
+        },
+        {
+          "question": "Bản mô tả chương trình đào tạo và chương trình dạy học của các ngành tại Đại học Cần Thơ được công khai ở đâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "87ac961a-2112-4be4-a29f-72e7fd95befb"
+          ]
+        },
+        {
+          "question": "Ma trận tương thích giữa các học phần và chuẩn đầu ra được thể hiện trong tài liệu nào liên quan đến chương trình đào tạo?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6062eca0-9158-4260-9af0-cf35458ee1dd"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "8642dfcd-23f1-4bb4-a4da-fb6075872577",
+      "generated_questions": [
+        {
+          "question": "Đại học Cần Thơ dự kiến tổ chức những môn thi năng khiếu nào trong kỳ tuyển sinh đại học chính quy năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "f0e3094b-960c-4703-9465-68a9546de893"
+          ]
+        },
+        {
+          "question": "Thí sinh có thể tra cứu thông tin về học phí của Đại học Cần Thơ năm 2025 ở đâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "f0e3094b-960c-4703-9465-68a9546de893"
+          ]
+        },
+        {
+          "question": "Các ngành đào tạo giáo viên trình độ đại học hình thức chính quy năm 2025 tại Đại học Cần Thơ được công bố chỉ tiêu tuyển sinh chính thức qua thông báo nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "20588a0e-ebb8-41eb-9925-ab7133a91b17"
+          ]
+        },
+        {
+          "question": "Đại học Cần Thơ áp dụng các quy tắc quy đổi điểm nào trong tuyển sinh đại học chính quy năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "f0e3094b-960c-4703-9465-68a9546de893"
+          ]
+        },
+        {
+          "question": "Thí sinh muốn đăng ký xét tuyển đại học chính quy Đợt 1 năm 2025 tại Đại học Cần Thơ cần theo dõi thông báo nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "f0e3094b-960c-4703-9465-68a9546de893"
+          ]
+        },
+        {
+          "question": "Chỉ tiêu tuyển sinh đại học chính quy năm 2025 của Đại học Cần Thơ được cập nhật ở đâu?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "20588a0e-ebb8-41eb-9925-ab7133a91b17",
+            "f0e3094b-960c-4703-9465-68a9546de893"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "f1bacbbb-ae7c-472e-86fa-f20c3f662008",
+      "generated_questions": [
+        {
+          "question": "Đề án tổ chức thi để bổ trợ tuyển sinh của Đại học Cần Thơ cần đáp ứng những yêu cầu và nguyên tắc nào theo quy định?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1cd118d5-d654-4342-85db-dd2d338e9dd1"
+          ]
+        },
+        {
+          "question": "Ai là người ban hành Đề án tổ chức thi để bổ trợ tuyển sinh tại Đại học Cần Thơ và nội dung của đề án này phải tuân theo quy chế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1cd118d5-d654-4342-85db-dd2d338e9dd1"
+          ]
+        },
+        {
+          "question": "Nếu Đề án tổ chức thi để bổ trợ tuyển sinh được điều chỉnh hoặc bổ sung trong quá trình triển khai, các yêu cầu nào phải được đảm bảo đối với thí sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1cd118d5-d654-4342-85db-dd2d338e9dd1"
+          ]
+        },
+        {
+          "question": "Đề án tổ chức thi để bổ trợ tuyển sinh có thể được tích hợp vào tài liệu nào khác liên quan đến công tác tuyển sinh của trường?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1cd118d5-d654-4342-85db-dd2d338e9dd1"
+          ]
+        },
+        {
+          "question": "Trách nhiệm giải trình và cam kết của Trường Đại học Cần Thơ về kỳ thi bổ trợ tuyển sinh được thể hiện thông qua văn bản nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1cd118d5-d654-4342-85db-dd2d338e9dd1"
+          ]
+        },
+        {
+          "question": "Các nội dung chủ yếu của Đề án tổ chức thi để bổ trợ tuyển sinh được quy định bởi cơ quan nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1cd118d5-d654-4342-85db-dd2d338e9dd1"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "7d957039-a808-4373-9c6a-a22e3ec28660",
+      "generated_questions": [
+        {
+          "question": "Sinh viên bị khiển trách trong kỳ thi sẽ bị trừ bao nhiêu phần trăm điểm số và nếu bị khiển trách hai lần trong một năm học thì hình thức kỷ luật nào sẽ được áp dụng?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "3554912b-0dec-4eed-b873-e1d338888f47"
+          ]
+        },
+        {
+          "question": "Việc trao đổi giấy nháp cho nhau nhưng chưa sử dụng trong phòng thi sẽ bị xử lý như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "3554912b-0dec-4eed-b873-e1d338888f47"
+          ]
+        },
+        {
+          "question": "Nếu một sinh viên đã bị cảnh cáo một lần nhưng tiếp tục vi phạm trong cùng một buổi thi, hình thức xử lý sẽ ra sao và hậu quả nếu bị đình chỉ thi hai lần trong một năm học là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "3554912b-0dec-4eed-b873-e1d338888f47"
+          ]
+        },
+        {
+          "question": "Sinh viên bị phát hiện mang vật dụng không được phép vào phòng thi sau khi mở đề thi sẽ bị xử lý như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "3554912b-0dec-4eed-b873-e1d338888f47"
+          ]
+        },
+        {
+          "question": "Trong trường hợp sinh viên nhờ người khác thi hộ lần đầu tiên, cả người nhờ và người thi hộ sẽ bị áp dụng hình thức xử lý nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "3554912b-0dec-4eed-b873-e1d338888f47"
+          ]
+        },
+        {
+          "question": "Nếu sinh viên bị đình chỉ thi hai lần trong một năm học mà tiếp tục tái phạm, hậu quả cao nhất có thể bị áp dụng là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "3554912b-0dec-4eed-b873-e1d338888f47"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "b9fc3abd-bd81-49af-8b2d-f501bf5683ec",
+      "generated_questions": [
+        {
+          "question": "Sinh viên khóa từ K.45 trở đi cần tích lũy bao nhiêu tín chỉ để được xếp vào năm học thứ ba tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d15b191d-de23-4fd8-84bd-9acd7ce2fd2b"
+          ]
+        },
+        {
+          "question": "Số tín chỉ tích lũy tối thiểu để một sinh viên thuộc khóa K.40 đến K.44 được xếp vào năm học thứ tư là bao nhiêu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d15b191d-de23-4fd8-84bd-9acd7ce2fd2b"
+          ]
+        },
+        {
+          "question": "So sánh yêu cầu về số tín chỉ tích lũy để xếp năm học thứ nhất giữa các khóa từ K.36 đến K.39 và các khóa từ K.40 trở đi tại Đại học Cần Thơ.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d15b191d-de23-4fd8-84bd-9acd7ce2fd2b"
+          ]
+        },
+        {
+          "question": "Một sinh viên khóa K.36 đến K.39 có bao nhiêu tín chỉ tích lũy sẽ được xếp vào năm học thứ hai?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d15b191d-de23-4fd8-84bd-9acd7ce2fd2b"
+          ]
+        },
+        {
+          "question": "Nêu sự khác biệt về số tín chỉ cần tích lũy để được xếp vào năm học thứ năm giữa các khóa K.36 đến K.39 và các khóa K.45 trở đi.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d15b191d-de23-4fd8-84bd-9acd7ce2fd2b"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "04e82d6a-0d40-496a-96a4-32bc1d441601",
+      "generated_questions": [
+        {
+          "question": "Điểm rèn luyện của sinh viên được tính như thế nào và dựa trên thang điểm bao nhiêu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d75e118e-c90d-4a24-b2a5-17f8ff420590"
+          ]
+        },
+        {
+          "question": "Sinh viên bị kỷ luật mức cảnh cáo cấp Trường bị giới hạn xếp loại rèn luyện ở mức nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d75e118e-c90d-4a24-b2a5-17f8ff420590"
+          ]
+        },
+        {
+          "question": "Nếu sinh viên không nộp bảng đánh giá kết quả rèn luyện đúng thời gian quy định thì bị xếp loại gì trong học kỳ đó?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d75e118e-c90d-4a24-b2a5-17f8ff420590"
+          ]
+        },
+        {
+          "question": "Điểm rèn luyện của sinh viên có vai trò gì trong việc xét học bổng khuyến khích học tập và khen thưởng cuối năm học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d75e118e-c90d-4a24-b2a5-17f8ff420590"
+          ]
+        },
+        {
+          "question": "Điều gì xảy ra nếu sinh viên bị xếp loại rèn luyện yếu, kém trong 2 học kỳ liên tiếp hai lần?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d75e118e-c90d-4a24-b2a5-17f8ff420590"
+          ]
+        },
+        {
+          "question": "Điểm rèn luyện toàn khóa học của sinh viên được lưu trữ và sử dụng như thế nào sau khi tốt nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "d75e118e-c90d-4a24-b2a5-17f8ff420590"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "60cc0877-7a32-4bb7-a7b5-3ca05124c1d9",
+      "generated_questions": [
+        {
+          "question": "Quyết định số 3266/OĐ-ĐHCT về công tác học vụ dành cho sinh viên trình độ đại học hình thức chính quy của Đại học Cần Thơ được ban hành vào ngày nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c6ebb1a5-a115-4ca1-ba4b-f46b01ad52ca"
+          ]
+        },
+        {
+          "question": "Quyết định về công tác học vụ dành cho sinh viên đại học chính quy tại Đại học Cần Thơ do ai ban hành?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c6ebb1a5-a115-4ca1-ba4b-f46b01ad52ca"
+          ]
+        },
+        {
+          "question": "Văn bản nào quy định về công tác học vụ dành cho sinh viên đại học hệ chính quy tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c6ebb1a5-a115-4ca1-ba4b-f46b01ad52ca"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "287665ff-51b7-43fb-8630-baa0c0e2ae98",
+      "generated_questions": [
+        {
+          "question": "Thời gian đào tạo và danh hiệu cấp bằng của ngành Công nghệ thực phẩm (Chương trình chất lượng cao) tại Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2cc9428e-38d7-491d-8d09-02634a27f2fe"
+          ]
+        },
+        {
+          "question": "Mã ngành tuyển sinh và tên ngành ghi trên bằng tốt nghiệp của chương trình Công nghệ thực phẩm chất lượng cao là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2cc9428e-38d7-491d-8d09-02634a27f2fe"
+          ]
+        },
+        {
+          "question": "Các phương thức xét tuyển nào được áp dụng đối với ngành Công nghệ thực phẩm (Chương trình chất lượng cao)?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2cc9428e-38d7-491d-8d09-02634a27f2fe"
+          ]
+        },
+        {
+          "question": "Liệt kê các tổ hợp môn xét tuyển được sử dụng cho ngành Công nghệ thực phẩm (Chương trình chất lượng cao).",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2cc9428e-38d7-491d-8d09-02634a27f2fe"
+          ]
+        },
+        {
+          "question": "Trong phương thức xét điểm V-SAT, những tổ hợp môn nào không được sử dụng cho ngành Công nghệ thực phẩm (Chương trình chất lượng cao)?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2cc9428e-38d7-491d-8d09-02634a27f2fe"
+          ]
+        },
+        {
+          "question": "Tên ngành “Công nghệ thực phẩm (Chương trình chất lượng cao)” sẽ xuất hiện trên những giấy tờ nào khi sinh viên tốt nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2cc9428e-38d7-491d-8d09-02634a27f2fe"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "76176b70-8bd3-434e-9256-663168053f54",
+      "generated_questions": [
+        {
+          "question": "Trung tâm KTQG và Trường Đại học Cần Thơ phối hợp như thế nào trong việc tổ chức thi?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1190343e-89a3-42e3-8515-16b19df63998"
+          ]
+        },
+        {
+          "question": "Ai chịu trách nhiệm xây dựng phần mềm tổ chức thi trong kế hoạch phối hợp thực hiện?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1190343e-89a3-42e3-8515-16b19df63998"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ đảm nhận những công việc gì liên quan đến kỳ thi môn Ngữ văn?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1190343e-89a3-42e3-8515-16b19df63998"
+          ]
+        },
+        {
+          "question": "Việc chấm phúc khảo phần thi viết luận môn Ngữ văn thuộc trách nhiệm của đơn vị nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "1190343e-89a3-42e3-8515-16b19df63998"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "55068e8e-a157-4bde-a6d1-648d1d1e899b",
+      "generated_questions": [
+        {
+          "question": "Sinh viên phải đáp ứng những điều kiện nào để được xếp loại xuất sắc tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2249a22d-6d68-4e92-94cf-7365f69eb0ed"
+          ]
+        },
+        {
+          "question": "Sinh viên trúng tuyển vào Trường Đại học Cần Thơ có điểm cao sẽ nhận được hình thức khen thưởng nào và ai là người quyết định?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2249a22d-6d68-4e92-94cf-7365f69eb0ed"
+          ]
+        },
+        {
+          "question": "Những tiêu chí nào để xét sinh viên làm thủ khoa ngành/chuyên ngành đào tạo khi tốt nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2249a22d-6d68-4e92-94cf-7365f69eb0ed"
+          ]
+        },
+        {
+          "question": "Nếu hai sinh viên cùng có kết quả học tập bằng nhau, yếu tố nào sẽ được ưu tiên khi xét khen thưởng cuối năm học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2249a22d-6d68-4e92-94cf-7365f69eb0ed"
+          ]
+        },
+        {
+          "question": "Có bao nhiêu sinh viên trong mỗi lớp chuyên ngành được xét cấp giấy khen và phần thưởng cuối mỗi năm học ở Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2249a22d-6d68-4e92-94cf-7365f69eb0ed"
+          ]
+        },
+        {
+          "question": "Các mức xếp loại học tập và rèn luyện của sinh viên tại Đại học Cần Thơ được quy định như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "2249a22d-6d68-4e92-94cf-7365f69eb0ed"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "334646a5-4fc2-4c90-ad38-fc6e94802b00",
+      "generated_questions": [
+        {
+          "question": "Chương trình Quản trị kinh doanh (Chất lượng cao) tại Đại học Cần Thơ có thời gian đào tạo bao lâu và danh hiệu gì được cấp khi tốt nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "95675151-2dc1-424d-9bc0-bdb884dabff9"
+          ]
+        },
+        {
+          "question": "Các phương thức xét tuyển nào được áp dụng cho ngành Quản trị kinh doanh (Chương trình chất lượng cao) và các tổ hợp môn xét tuyển tương ứng là gì?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "95675151-2dc1-424d-9bc0-bdb884dabff9",
+            "5176df17-27ed-4aef-8205-3002491d43c0"
+          ]
+        },
+        {
+          "question": "Điểm khác biệt giữa chương trình Quản trị kinh doanh chất lượng cao và chương trình đại trà là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "5176df17-27ed-4aef-8205-3002491d43c0"
+          ]
+        },
+        {
+          "question": "Sinh viên tốt nghiệp ngành Quản trị kinh doanh (Chất lượng cao) có thể làm việc ở những vị trí nào và tại những loại hình tổ chức nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "006194a5-2352-45f3-bc9a-c34e4869719d"
+          ]
+        },
+        {
+          "question": "Khoảng bao nhiêu phần trăm các học phần chuyên ngành trong chương trình Quản trị kinh doanh (Chất lượng cao) được giảng dạy bằng tiếng Anh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "5176df17-27ed-4aef-8205-3002491d43c0"
+          ]
+        },
+        {
+          "question": "Những kỹ năng và kiến thức trọng yếu nào sinh viên sẽ được đào tạo trong chương trình Quản trị kinh doanh chất lượng cao?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "5176df17-27ed-4aef-8205-3002491d43c0"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "5def1a3d-9c1e-47e5-a1d4-7e043cb3de67",
+      "generated_questions": [
+        {
+          "question": "Quy trình thông báo điểm học phần của giảng viên tại Đại học Cần Thơ bao gồm những bước nào và thời hạn hoàn thành là bao lâu kể từ ngày kết thúc kế hoạch nhập điểm?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6533aac0-a4f1-460e-a267-5c7c88ab9c35"
+          ]
+        },
+        {
+          "question": "Ai là người chịu trách nhiệm ký duyệt bảng điểm và xử lý các khiếu nại liên quan đến kết quả học tập của học phần tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6533aac0-a4f1-460e-a267-5c7c88ab9c35"
+          ]
+        },
+        {
+          "question": "Các bài thi viết và tiểu luận của sinh viên sẽ được đơn vị quản lý học phần lưu giữ trong thời gian bao lâu kể từ ngày thi hoặc nộp tiểu luận?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6533aac0-a4f1-460e-a267-5c7c88ab9c35"
+          ]
+        },
+        {
+          "question": "Nếu sinh viên muốn đăng ký cấp bảng điểm học kỳ vì nhu cầu riêng, chi phí sẽ do ai quy định?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6533aac0-a4f1-460e-a267-5c7c88ab9c35"
+          ]
+        },
+        {
+          "question": "Trong thời gian bao lâu sau khi công bố điểm thì trưởng đơn vị đào tạo quản lý học phần phải xử lý tất cả các khiếu nại về kết quả học tập?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6533aac0-a4f1-460e-a267-5c7c88ab9c35"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "e391f697-6492-4f10-a013-14bc5c5976ed",
+      "generated_questions": [
+        {
+          "question": "Thời gian đào tạo và danh hiệu cấp bằng của ngành Quản trị dịch vụ du lịch và lữ hành (Chương trình chất lượng cao) tại Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c6a7476b-f07a-4bcc-81fb-48592a8e20c5"
+          ]
+        },
+        {
+          "question": "Các phương thức xét tuyển nào được áp dụng cho ngành Quản trị dịch vụ du lịch và lữ hành (CLC) và tổ hợp môn xét tuyển gồm những môn nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "c6a7476b-f07a-4bcc-81fb-48592a8e20c5",
+            "828793c9-18ac-46ec-b243-6c30781c5f39"
+          ]
+        },
+        {
+          "question": "Chương trình đào tạo ngành Quản trị dịch vụ du lịch và lữ hành (CLC) tại Đại học Cần Thơ hướng tới mục tiêu gì cho sinh viên sau khi tốt nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "828793c9-18ac-46ec-b243-6c30781c5f39"
+          ]
+        },
+        {
+          "question": "Sinh viên ngành Quản trị dịch vụ du lịch và lữ hành (CLC) có thể thực tập và kiến tập tại những loại tổ chức/doanh nghiệp nào trong quá trình học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "828793c9-18ac-46ec-b243-6c30781c5f39"
+          ]
+        },
+        {
+          "question": "Liệt kê ba vị trí việc làm phù hợp cho sinh viên tốt nghiệp ngành Quản trị dịch vụ du lịch và lữ hành (CLC) tại Đại học Cần Thơ.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "57ca032b-10ab-428b-9bca-10858cff65cb"
+          ]
+        },
+        {
+          "question": "Những nơi làm việc nào được liệt kê dành cho sinh viên sau khi tốt nghiệp ngành Quản trị dịch vụ du lịch và lữ hành (CLC)?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "57ca032b-10ab-428b-9bca-10858cff65cb"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "81f66b25-02af-4e7e-ae1b-fc78b9c25690",
+      "generated_questions": [
+        {
+          "question": "Các thông báo nào liên quan đến kết quả tuyển thẳng và ưu tiên xét tuyển vào đại học chính quy năm 2025 tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2246169-23c0-4422-92ee-99348adec792"
+          ]
+        },
+        {
+          "question": "Đại học Cần Thơ tổ chức những môn thi năng khiếu nào trong kỳ tuyển sinh đại học chính quy năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "6ec1cbfe-1daa-4bce-aa19-a61d760574dc"
+          ]
+        },
+        {
+          "question": "Thông báo về ngưỡng đảm bảo chất lượng đầu vào đại học chính quy năm 2025 được công bố ở đâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2246169-23c0-4422-92ee-99348adec792"
+          ]
+        },
+        {
+          "question": "Nếu muốn tìm hiểu về quy tắc quy đổi điểm trong tuyển sinh đại học chính quy năm 2025, thí sinh nên tham khảo tài liệu nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "6ec1cbfe-1daa-4bce-aa19-a61d760574dc"
+          ]
+        },
+        {
+          "question": "Liệt kê các thông báo liên quan đến việc xét tuyển thẳng và tiếp nhận học sinh hoàn thành chương trình dự bị đại học vào Đại học Cần Thơ năm 2025.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c2246169-23c0-4422-92ee-99348adec792"
+          ]
+        },
+        {
+          "question": "Những thông tin nào về học phí và điểm ưu tiên trong tuyển sinh được cung cấp trên hệ thống tuyển sinh của Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "6ec1cbfe-1daa-4bce-aa19-a61d760574dc"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "4aa2534f-fc93-488e-8a28-570a55460d34",
+      "generated_questions": [
+        {
+          "question": "Mục tiêu giáo dục của Đại học Cần Thơ tập trung vào những khía cạnh nào của sự phát triển người học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f0b81094-b444-49cf-82ee-462180a13a65"
+          ]
+        },
+        {
+          "question": "Theo mục tiêu giáo dục của Đại học Cần Thơ, sinh viên cần đáp ứng những yêu cầu gì về kỹ năng và trách nhiệm nghề nghiệp?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f0b81094-b444-49cf-82ee-462180a13a65"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ nhấn mạnh những yếu tố nào nhằm phục vụ phát triển kinh tế - xã hội và hội nhập quốc tế trong mục tiêu giáo dục?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f0b81094-b444-49cf-82ee-462180a13a65"
+          ]
+        },
+        {
+          "question": "Khả năng tự học, sáng tạo và thích nghi với môi trường làm việc được đề cập như thế nào trong mục tiêu giáo dục của Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "f0b81094-b444-49cf-82ee-462180a13a65"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "6f977b08-b95c-47a7-9938-310d6d6b126e",
+      "generated_questions": [
+        {
+          "question": "Kỳ thi đánh giá đầu vào đại học trên máy tính (V-SAT) của Đại học Cần Thơ được xây dựng trong bối cảnh nào của ngành giáo dục Việt Nam?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "e2a3f104-2f5b-4398-bc0d-0a5687ba503a"
+          ]
+        },
+        {
+          "question": "Việc tổ chức kỳ thi V-SAT trên máy tính mang lại những lợi ích gì so với hình thức thi truyền thống trên giấy?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "7216a2de-9cc9-4339-8147-a5ff166bc5f9"
+          ]
+        },
+        {
+          "question": "Trung tâm KTOG có vai trò gì trong việc tổ chức kỳ thi đánh giá đầu vào đại học trên máy tính (V-SAT)?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "7216a2de-9cc9-4339-8147-a5ff166bc5f9"
+          ]
+        },
+        {
+          "question": "Nêu một số ưu điểm về tính khách quan và hiệu quả của kỳ thi V-SAT được đề cập trong tài liệu.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "7216a2de-9cc9-4339-8147-a5ff166bc5f9"
+          ]
+        },
+        {
+          "question": "Từ năm 2023 đến năm 2025, số lượng các trường đại học, học viện hợp tác tổ chức thi hoặc sử dụng kết quả kỳ thi V-SAT đã thay đổi như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "8f41276d-7984-45e2-bd77-5d7d92b61ed4"
+          ]
+        },
+        {
+          "question": "Kết quả kỳ thi V-SAT có thể được sử dụng cho mục đích gì trong công tác tuyển sinh đại học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "7216a2de-9cc9-4339-8147-a5ff166bc5f9"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "a5025ba5-57bc-4be2-afc2-786d82577525",
+      "generated_questions": [
+        {
+          "question": "Địa chỉ liên hệ và số điện thoại của Trường Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6216a3f5-45bd-4cef-8ce7-4068bc8ee728"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ có bao nhiêu trang thông tin điện tử liên quan đến tuyển sinh và quản lý đào tạo?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6216a3f5-45bd-4cef-8ce7-4068bc8ee728"
+          ]
+        },
+        {
+          "question": "Cơ quan nào phối hợp với Trường Đại học Cần Thơ trong công tác khảo thí và đánh giá chất lượng giáo dục?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6216a3f5-45bd-4cef-8ce7-4068bc8ee728"
+          ]
+        },
+        {
+          "question": "Địa chỉ email chính thức của Trường Đại học Cần Thơ dùng để liên hệ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6216a3f5-45bd-4cef-8ce7-4068bc8ee728"
+          ]
+        },
+        {
+          "question": "Địa chỉ của Trung tâm Khảo thí Quốc gia và Đánh giá Chất lượng Giáo dục đặt tại đâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6216a3f5-45bd-4cef-8ce7-4068bc8ee728"
+          ]
+        },
+        {
+          "question": "Trang web nào cung cấp thông tin về Trung tâm Khảo thí Quốc gia và Đánh giá Chất lượng Giáo dục?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6216a3f5-45bd-4cef-8ce7-4068bc8ee728"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "f18902bc-76d8-4d35-b07c-1475033349a2",
+      "generated_questions": [
+        {
+          "question": "Học phí tại Đại học Cần Thơ được tính như thế nào và ai là người quyết định mức học phí?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "65b1a2fc-0b6e-4248-b31e-40dd35d7237f"
+          ]
+        },
+        {
+          "question": "Sinh viên không đóng học phí trong bao nhiêu học kỳ liên tiếp sẽ bị buộc thôi học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "65b1a2fc-0b6e-4248-b31e-40dd35d7237f"
+          ]
+        },
+        {
+          "question": "Các đối tượng được miễn, giảm học phí và hỗ trợ chi phí học tập sẽ thực hiện theo quy định nào, và thông tin về hồ sơ hướng dẫn được công khai ở đâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "65b1a2fc-0b6e-4248-b31e-40dd35d7237f"
+          ]
+        },
+        {
+          "question": "Điều gì xảy ra nếu sinh viên không đóng học phí sau thời hạn đóng học phí của học kỳ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "65b1a2fc-0b6e-4248-b31e-40dd35d7237f"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "748a2c40-3163-4da5-9ba7-5608b3a65cf3",
+      "generated_questions": [
+        {
+          "question": "Tổng chỉ tiêu tuyển sinh đại học chính quy năm 2025 của Đại học Cần Thơ là bao nhiêu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a1ac6d17-bf42-406d-970a-a541d514fdd7"
+          ]
+        },
+        {
+          "question": "Đại học Cần Thơ có bao nhiêu chương trình đào tạo đại học chính quy và gồm những loại hình chương trình nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a1ac6d17-bf42-406d-970a-a541d514fdd7"
+          ]
+        },
+        {
+          "question": "Nêu tên hai ngành mới thuộc chương trình chất lượng cao được tuyển sinh năm 2025 tại Đại học Cần Thơ.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a1ac6d17-bf42-406d-970a-a541d514fdd7"
+          ]
+        },
+        {
+          "question": "Chế độ ưu tiên, tuyển thẳng, ưu tiên xét tuyển và xét tuyển thẳng trong tuyển sinh của Đại học Cần Thơ áp dụng theo quy định nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a1ac6d17-bf42-406d-970a-a541d514fdd7"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "df7a0e13-84a4-4dad-8db2-785d1a79cef6",
+      "generated_questions": [
+        {
+          "question": "Những quy định nào áp dụng đối với việc xử lý vi phạm trong công tác tuyển sinh tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "4bccea0e-0c7a-4564-bc7e-bb4dba7df665"
+          ]
+        },
+        {
+          "question": "Thí sinh có hành vi gian lận trong quá trình tuyển sinh có thể bị xử lý như thế nào theo quy định của Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "4bccea0e-0c7a-4564-bc7e-bb4dba7df665"
+          ]
+        },
+        {
+          "question": "Viên chức hoặc người lao động của Đại học Cần Thơ vi phạm quy chế tuyển sinh sẽ bị xử lý ra sao?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "4bccea0e-0c7a-4564-bc7e-bb4dba7df665"
+          ]
+        },
+        {
+          "question": "Ngoài việc bị buộc thôi học, thí sinh gian lận trong tuyển sinh còn có thể bị áp dụng những hình thức xử lý nào khác?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "4bccea0e-0c7a-4564-bc7e-bb4dba7df665"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "6d132d85-f2aa-4ab4-a768-eb944d237b38",
+      "generated_questions": [
+        {
+          "question": "Trung tâm KTQG có những trách nhiệm gì trong quá trình tổ chức kỳ thi đánh giá đầu vào đại học trên máy tính tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "553d5d84-d9e2-4299-b691-8ddc308ecf8c"
+          ]
+        },
+        {
+          "question": "Ai là đơn vị chịu trách nhiệm xây dựng ngân hàng câu hỏi thi cho kỳ thi đánh giá đầu vào đại học trên máy tính của Trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "553d5d84-d9e2-4299-b691-8ddc308ecf8c"
+          ]
+        },
+        {
+          "question": "Việc bàn giao kết quả thi từ phần mềm tổ chức thi cho Trường Đại học Cần Thơ được thực hiện như thế nào và có yêu cầu gì về biên bản bàn giao không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "553d5d84-d9e2-4299-b691-8ddc308ecf8c"
+          ]
+        },
+        {
+          "question": "Trung tâm KTQG đảm nhận vai trò gì trong công tác tập huấn cho đội ngũ cán bộ kỹ thuật và cán bộ coi thi của Trường ĐHCT?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "553d5d84-d9e2-4299-b691-8ddc308ecf8c"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "27071a1d-0d6b-4eac-a08e-b29a248147de",
+      "generated_questions": [
+        {
+          "question": "Thời hạn cuối cùng để xác nhận nhập học trực tuyến trên Cổng tuyển sinh của Bộ Giáo dục và Đào tạo là khi nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "e74d0596-d707-4734-90d6-bf8e75aa2d79"
+          ]
+        },
+        {
+          "question": "Sinh viên cần nộp hồ sơ nhập học và đóng tiền tại Trường Đại học Cần Thơ trong khoảng thời gian nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "e74d0596-d707-4734-90d6-bf8e75aa2d79"
+          ]
+        },
+        {
+          "question": "Nếu cần hỗ trợ hoặc giải đáp thông tin về tuyển sinh, thí sinh có thể liên hệ với bộ phận nào của Trường Đại học Cần Thơ và qua những kênh liên lạc nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "e74d0596-d707-4734-90d6-bf8e75aa2d79"
+          ]
+        },
+        {
+          "question": "Khi nào học sinh sẽ nhận được hướng dẫn về việc nộp hồ sơ nhập học tại Trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "e74d0596-d707-4734-90d6-bf8e75aa2d79"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "2f97829d-7e63-4f02-bf45-636733a48bb9",
+      "generated_questions": [
+        {
+          "question": "Sinh viên chính quy của Đại học Cần Thơ được cấp những gì sau khi nhập học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "5ad2fad0-8fd9-4f30-ac29-c1d06fc1f9b2"
+          ]
+        },
+        {
+          "question": "Những quy định về trang phục mà sinh viên Đại học Cần Thơ cần tuân thủ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "5ad2fad0-8fd9-4f30-ac29-c1d06fc1f9b2"
+          ]
+        },
+        {
+          "question": "Sinh viên cần làm gì để đảm bảo giữ gìn trật tự và vệ sinh trong khuôn viên trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "5ad2fad0-8fd9-4f30-ac29-c1d06fc1f9b2"
+          ]
+        },
+        {
+          "question": "Nêu các yêu cầu về tác phong và lối sống mà sinh viên Đại học Cần Thơ phải thực hiện trong quá trình học tập tại trường.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "5ad2fad0-8fd9-4f30-ac29-c1d06fc1f9b2"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "f5f6439f-a245-4fe5-9f14-fd7dd5714657",
+      "generated_questions": [
+        {
+          "question": "Danh mục các huyện nào được liệt kê trong phụ lục về huyện nghèo, biên giới và hải đảo của Đại học Cần Thơ dựa trên thông báo năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6347e8f3-aa4e-4395-be79-9c45a11e7e94"
+          ]
+        },
+        {
+          "question": "Theo ghi chú trong phụ lục, các huyện thuộc khu vực nào được liệt kê là huyện nghèo, biên giới và hải đảo?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6347e8f3-aa4e-4395-be79-9c45a11e7e94"
+          ]
+        },
+        {
+          "question": "Quyết định số 353/QĐ-TTg ngày 15/3/2022 có vai trò gì đối với danh sách các huyện nghèo, biên giới và hải đảo trong phụ lục này?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6347e8f3-aa4e-4395-be79-9c45a11e7e94"
+          ]
+        },
+        {
+          "question": "Thông báo số nào của Đại học Cần Thơ ban hành danh mục các huyện nghèo, biên giới và hải đảo kèm theo phụ lục này?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "6347e8f3-aa4e-4395-be79-9c45a11e7e94"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "23ec1401-2bd6-4bc3-a527-41ee4e208683",
+      "generated_questions": [
+        {
+          "question": "Nếu thí sinh cần hỗ trợ hoặc giải đáp thông tin về tuyển thẳng và ưu tiên xét tuyển năm 2025 của Đại học Cần Thơ thì có thể liên hệ qua những kênh nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "89572fa2-9471-4526-a2ba-ac4478ab2acd"
+          ]
+        },
+        {
+          "question": "Địa chỉ cụ thể của Phòng Đào tạo, Trường Đại học Cần Thơ để thí sinh đến liên hệ trực tiếp là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "89572fa2-9471-4526-a2ba-ac4478ab2acd"
+          ]
+        },
+        {
+          "question": "Ngoài số điện thoại bàn, Đại học Cần Thơ còn cung cấp những phương thức liên hệ nào cho thí sinh quan tâm đến tuyển sinh năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "89572fa2-9471-4526-a2ba-ac4478ab2acd"
+          ]
+        },
+        {
+          "question": "Website tuyển sinh chính thức của Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "89572fa2-9471-4526-a2ba-ac4478ab2acd"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "bcfbd467-bbe2-4fe8-856b-044b0ff13a5b",
+      "generated_questions": [
+        {
+          "question": "Thời gian đào tạo và danh hiệu cấp bằng của ngành Mạng máy tính và truyền thông dữ liệu (Chương trình chất lượng cao) tại Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "be693c2c-be0f-4fca-98ce-e77ded80f753"
+          ]
+        },
+        {
+          "question": "Mã ngành tuyển sinh và các tổ hợp xét tuyển của ngành Mạng máy tính và truyền thông dữ liệu (Chương trình chất lượng cao) gồm những gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "be693c2c-be0f-4fca-98ce-e77ded80f753"
+          ]
+        },
+        {
+          "question": "Có bao nhiêu phương thức xét tuyển vào ngành Mạng máy tính và truyền thông dữ liệu (Chương trình chất lượng cao) và mỗi phương thức sử dụng các tổ hợp môn nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "be693c2c-be0f-4fca-98ce-e77ded80f753",
+            "c230ad36-4f7f-490d-b80b-b0248fef6696"
+          ]
+        },
+        {
+          "question": "Những vị trí việc làm nào mà sinh viên tốt nghiệp ngành Mạng máy tính và truyền thông dữ liệu (Chương trình chất lượng cao) có thể đảm nhận?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            1,
+            2
+          ],
+          "referenced_chunk_ids": [
+            "c230ad36-4f7f-490d-b80b-b0248fef6696",
+            "806f444f-aac7-43e6-bb34-cc4e8b3b8b39"
+          ]
+        },
+        {
+          "question": "Chương trình đào tạo chất lượng cao ngành Mạng máy tính và truyền thông dữ liệu cung cấp những lợi ích gì về môi trường học tập và đội ngũ giảng viên?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "c230ad36-4f7f-490d-b80b-b0248fef6696"
+          ]
+        },
+        {
+          "question": "Sinh viên tốt nghiệp ngành này có thể làm việc ở đâu và có cơ hội học tiếp hoặc làm việc ở nước ngoài không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "806f444f-aac7-43e6-bb34-cc4e8b3b8b39"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "15eb09ef-6b83-4b54-b88a-f5d356431e8f",
+      "generated_questions": [
+        {
+          "question": "Trường Đại học Cần Thơ thực hiện bảo quản và lưu trữ các tài liệu liên quan đến tuyển sinh theo những quy định nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "81b66f96-5a49-4fe8-ad2a-59231a1ea33c"
+          ]
+        },
+        {
+          "question": "Theo quy định, các tài liệu tuyển sinh tại Trường Đại học Cần Thơ được bảo quản trong thời gian bao lâu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "81b66f96-5a49-4fe8-ad2a-59231a1ea33c"
+          ]
+        },
+        {
+          "question": "Danh sách phòng thi, bài thi và hồ sơ của thí sinh được lưu trữ theo quy định của quy chế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "81b66f96-5a49-4fe8-ad2a-59231a1ea33c"
+          ]
+        },
+        {
+          "question": "Những loại tài liệu liên quan đến tuyển sinh nào cần được bảo quản, lưu trữ tại Trường Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "81b66f96-5a49-4fe8-ad2a-59231a1ea33c"
+          ]
+        },
+        {
+          "question": "Luật Lưu trữ và các quy định về thời hạn bảo quản tài liệu chuyên môn nghiệp vụ ảnh hưởng như thế nào đến việc lưu trữ hồ sơ tuyển sinh tại Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "81b66f96-5a49-4fe8-ad2a-59231a1ea33c"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "baccc1fa-0676-46bb-87dc-7702fca5a35a",
+      "generated_questions": [
+        {
+          "question": "Trường Đại học Cần Thơ áp dụng công thức nào để quy đổi điểm học bạ hoặc điểm V-SAT sang điểm thi tốt nghiệp THPT trong tuyển sinh năm 2025?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "55113677-277d-4967-be50-35bba7b222ec",
+            "944d2ef8-0519-485f-b74b-25682a104a4a"
+          ]
+        },
+        {
+          "question": "Theo quy tắc quy đổi điểm, các giá trị a, b, c, d trong công thức nội suy tuyến tính được xác định như thế nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "55113677-277d-4967-be50-35bba7b222ec",
+            "944d2ef8-0519-485f-b74b-25682a104a4a"
+          ]
+        },
+        {
+          "question": "Hãy mô tả quy trình từng bước để tính điểm quy đổi từ điểm học bạ sang điểm thi tốt nghiệp THPT dựa vào bảng quy đổi.",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "55113677-277d-4967-be50-35bba7b222ec",
+            "944d2ef8-0519-485f-b74b-25682a104a4a"
+          ]
+        },
+        {
+          "question": "Ngưỡng đầu vào đối với các ngành xét tuyển bằng phương thức học bạ hoặc điểm V-SAT (trừ các ngành đào tạo giáo viên) được xác định như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "cfe01244-4b97-4f22-a11a-5deee1ee1a13"
+          ]
+        },
+        {
+          "question": "Đối với ngành Giáo dục Thể chất, trong trường hợp nào thí sinh không phải áp dụng ngưỡng đầu vào khi xét tuyển bằng học bạ hoặc điểm V-SAT?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "cfe01244-4b97-4f22-a11a-5deee1ee1a13"
+          ]
+        },
+        {
+          "question": "Điểm chuẩn trúng tuyển của Trường Đại học Cần Thơ được xác định dựa trên những yếu tố nào và có sự khác biệt giữa các tổ hợp hoặc phương thức xét tuyển không?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "cfe01244-4b97-4f22-a11a-5deee1ee1a13"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "51dbb51b-b25f-4d37-a2bc-c28403a46237",
+      "generated_questions": [
+        {
+          "question": "Mức điểm học bạ tối thiểu và tối đa của top 5% thí sinh trong tuyển sinh đại học chính quy năm 2025 của Đại học Cần Thơ là bao nhiêu?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "15eb1912-381c-4f8e-9978-d13a4333e479"
+          ]
+        },
+        {
+          "question": "Điểm thi tốt nghiệp THPT của thí sinh thuộc top 10% nằm trong khoảng nào theo quy tắc quy đổi điểm tuyển sinh năm 2025?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "15eb1912-381c-4f8e-9978-d13a4333e479"
+          ]
+        },
+        {
+          "question": "Nếu một thí sinh có điểm học bạ là 8,50 thì theo bảng quy đổi, thí sinh này nằm trong top mấy phần trăm?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "15eb1912-381c-4f8e-9978-d13a4333e479"
+          ]
+        },
+        {
+          "question": "So sánh mức điểm học bạ và điểm thi tốt nghiệp THPT của nhóm top 30% và top 70% thí sinh.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "15eb1912-381c-4f8e-9978-d13a4333e479"
+          ]
+        },
+        {
+          "question": "Một thí sinh có điểm học bạ là 7,80 và điểm thi tốt nghiệp THPT là 7,10 sẽ thuộc nhóm top mấy phần trăm theo bảng quy đổi?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "15eb1912-381c-4f8e-9978-d13a4333e479"
+          ]
+        },
+        {
+          "question": "Theo bảng quy đổi, nhóm thí sinh nào có mức điểm học bạ cao nhất và mức điểm thi tốt nghiệp THPT cao nhất?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "15eb1912-381c-4f8e-9978-d13a4333e479"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "bf8b5a99-7ca8-4699-a2c6-76024c273e46",
+      "generated_questions": [
+        {
+          "question": "Ngành Công nghệ sinh học (Chương trình tiên tiến) tại Đại học Cần Thơ có thời gian đào tạo bao lâu và danh hiệu được cấp sau khi tốt nghiệp là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "b827045e-6fb9-41b1-a35c-e9bbc13cc347"
+          ]
+        },
+        {
+          "question": "Sinh viên ngành Công nghệ sinh học (Chương trình tiên tiến) có thể lựa chọn những phương thức xét tuyển và tổ hợp môn nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "b827045e-6fb9-41b1-a35c-e9bbc13cc347",
+            "ad6307db-729e-4bf5-9e37-6655a5f92852"
+          ]
+        },
+        {
+          "question": "Chương trình tiên tiến ngành Công nghệ sinh học được xây dựng dựa trên chương trình của trường đại học nào, và sinh viên tốt nghiệp nhận thêm chứng nhận gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "ad6307db-729e-4bf5-9e37-6655a5f92852"
+          ]
+        },
+        {
+          "question": "Sinh viên tốt nghiệp ngành Công nghệ sinh học (Chương trình tiên tiến) có thể làm việc tại những vị trí nào trong lĩnh vực công nghệ sinh học?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "cf7f2680-a74e-49b6-b0cc-4dda05f2222c"
+          ]
+        },
+        {
+          "question": "Ngoài khả năng làm việc trong nước, chương trình tiên tiến ngành Công nghệ sinh học trang bị cho sinh viên những lợi thế gì về ngoại ngữ và cơ hội học tập quốc tế?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "ad6307db-729e-4bf5-9e37-6655a5f92852"
+          ]
+        },
+        {
+          "question": "Nêu các nơi làm việc tiêu biểu dành cho sinh viên tốt nghiệp ngành Công nghệ sinh học (Chương trình tiên tiến) tại Đại học Cần Thơ.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            2
+          ],
+          "referenced_chunk_ids": [
+            "cf7f2680-a74e-49b6-b0cc-4dda05f2222c"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "c3cec09b-f072-496c-9558-df583da542c2",
+      "generated_questions": [
+        {
+          "question": "Tên ngành và mã ngành của chương trình chất lượng cao ngành Kỹ thuật điều khiển và tự động hóa tại Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "11471109-f555-48b3-8b15-bfee87fef2f7"
+          ]
+        },
+        {
+          "question": "Chương trình chất lượng cao ngành Kỹ thuật điều khiển và tự động hóa tại Đại học Cần Thơ sử dụng những phương thức xét tuyển nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "11471109-f555-48b3-8b15-bfee87fef2f7",
+            "a52b9c50-54bb-432d-9e64-b298d3f96831"
+          ]
+        },
+        {
+          "question": "Sinh viên tốt nghiệp chương trình chất lượng cao ngành Kỹ thuật điều khiển và tự động hóa có thể làm việc tại những nơi nào?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            1,
+            2
+          ],
+          "referenced_chunk_ids": [
+            "a52b9c50-54bb-432d-9e64-b298d3f96831",
+            "d692b3ed-a3b3-424c-a3c8-abbd960b650a"
+          ]
+        },
+        {
+          "question": "Các tổ hợp xét tuyển dành cho chương trình chất lượng cao ngành Kỹ thuật điều khiển và tự động hóa là gì?",
+          "num_referenced_chunks": 2,
+          "referenced_chunk_indices": [
+            0,
+            1
+          ],
+          "referenced_chunk_ids": [
+            "11471109-f555-48b3-8b15-bfee87fef2f7",
+            "a52b9c50-54bb-432d-9e64-b298d3f96831"
+          ]
+        },
+        {
+          "question": "Sinh viên chương trình chất lượng cao ngành Kỹ thuật điều khiển và tự động hóa sẽ được trang bị những kỹ năng hoặc kiến thức gì nổi bật?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "a52b9c50-54bb-432d-9e64-b298d3f96831"
+          ]
+        },
+        {
+          "question": "Có điểm gì đặc biệt trong tổ hợp môn xét tuyển đối với phương thức xét điểm V-SAT ngành Kỹ thuật điều khiển và tự động hóa?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            1
+          ],
+          "referenced_chunk_ids": [
+            "a52b9c50-54bb-432d-9e64-b298d3f96831"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "f1a2a124-1a6c-4086-978e-c437ea0206f6",
+      "generated_questions": [
+        {
+          "question": "Sứ mạng của Trường Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "9a86aaed-fa63-40b8-b440-68825ea8d4fa"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ hướng đến phát triển những giá trị nào thông qua sứ mạng của mình?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "9a86aaed-fa63-40b8-b440-68825ea8d4fa"
+          ]
+        },
+        {
+          "question": "Theo sứ mạng được nêu, Đại học Cần Thơ tập trung vào những lĩnh vực nào để góp phần phát triển xã hội?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "9a86aaed-fa63-40b8-b440-68825ea8d4fa"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "d0476be5-8652-453b-a23a-1daf12b43765",
+      "generated_questions": [
+        {
+          "question": "Trường Đại học Cần Thơ chịu trách nhiệm gì trong việc tổ chức thi đánh giá đầu vào đại học trên máy tính?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c7ba157c-2516-4a91-ae25-7a118327cdfb"
+          ]
+        },
+        {
+          "question": "Những bước chuẩn bị nào được Trường Đại học Cần Thơ thực hiện cho kỳ thi đánh giá đầu vào đại học trên máy tính?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c7ba157c-2516-4a91-ae25-7a118327cdfb"
+          ]
+        },
+        {
+          "question": "Trường Đại học Cần Thơ sẽ phối hợp với đơn vị nào để chuẩn bị và tổ chức thi đánh giá đầu vào đại học trên máy tính?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c7ba157c-2516-4a91-ae25-7a118327cdfb"
+          ]
+        },
+        {
+          "question": "Phần viết luận môn Ngữ văn trong kỳ thi đánh giá đầu vào sẽ được chấm thi hoặc phúc khảo như thế nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c7ba157c-2516-4a91-ae25-7a118327cdfb"
+          ]
+        },
+        {
+          "question": "Kết quả thi đánh giá đầu vào đại học tại Đại học Cần Thơ sẽ được sử dụng như thế nào trong tuyển sinh?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "c7ba157c-2516-4a91-ae25-7a118327cdfb"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "10f6843b-863b-4dd7-8a32-35e0b59317d7",
+      "generated_questions": [
+        {
+          "question": "Sinh viên Đại học Cần Thơ được xếp loại học lực \"Giỏi\" khi có điểm trung bình chung học kỳ hoặc năm học trong khoảng nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a0809919-7892-4fd8-aff8-0fc9be9ae492"
+          ]
+        },
+        {
+          "question": "Điều kiện để một sinh viên bị xếp loại học lực \"Kém\" tại Đại học Cần Thơ là gì?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a0809919-7892-4fd8-aff8-0fc9be9ae492"
+          ]
+        },
+        {
+          "question": "Học lực \"Khá\" tại Đại học Cần Thơ được xác định dựa trên khoảng điểm trung bình chung nào?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a0809919-7892-4fd8-aff8-0fc9be9ae492"
+          ]
+        },
+        {
+          "question": "Nếu một sinh viên có điểm trung bình chung năm học là 2,45, họ sẽ được xếp loại học lực gì theo quy định của Đại học Cần Thơ?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a0809919-7892-4fd8-aff8-0fc9be9ae492"
+          ]
+        },
+        {
+          "question": "So sánh tiêu chí xếp loại \"Xuất sắc\" và \"Giỏi\" về điểm trung bình chung học kỳ tại Đại học Cần Thơ.",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a0809919-7892-4fd8-aff8-0fc9be9ae492"
+          ]
+        },
+        {
+          "question": "Có bao nhiêu mức xếp loại học lực khác nhau được quy định cho sinh viên Đại học Cần Thơ dựa trên điểm trung bình chung?",
+          "num_referenced_chunks": 1,
+          "referenced_chunk_indices": [
+            0
+          ],
+          "referenced_chunk_ids": [
+            "a0809919-7892-4fd8-aff8-0fc9be9ae492"
+          ]
+        }
+      ]
+    }
+  ]
+}

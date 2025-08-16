@@ -1,11 +1,28 @@
-import { OpenAPI } from '@/client';
+import type { ChatMessagePublic } from '@/client';
+import { ChatsService, OpenAPI } from '@/client';
 import { generateId, getErrorMessage } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const useChat = () => {
+interface UseChatProps {
+  sessionId?: string;
+}
+
+type UseChatReturn = {
+  messages: MessageType[];
+  isLoading: boolean;
+  isLoadingMessages: boolean;
+  isLoadingFromBackend: boolean;
+  handleSendMessage: (content: string) => Promise<void>;
+  clearMessages: () => void;
+  loadMessages: (chatSessionId: string) => Promise<void>;
+};
+
+export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isLoadingFromBackend, setIsLoadingFromBackend] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Cleanup function to abort ongoing requests
@@ -20,98 +37,175 @@ export const useChat = () => {
     return cleanup;
   }, [cleanup]);
 
-  const streamResponse = useCallback(async (userMessage: string) => {
-    setIsLoading(true);
+  // Load messages from backend when sessionId changes
+  useEffect(() => {
+    if (sessionId) {
+      loadMessages(sessionId);
+    } else {
+      // Clear messages if no session
+      setMessages([]);
+    }
+  }, [sessionId]);
 
-    // Create abort controller for this request
-    abortControllerRef.current = new AbortController();
+  // Function to load messages from backend
+  const loadMessages = async (chatSessionId: string) => {
+    if (!chatSessionId) return;
 
-    const botResponse: MessageType = {
-      id: generateId(),
-      role: 'assistant',
-      content: '',
-      timestamp: new Date(),
-    };
-
-    // Add the initial empty bot message
-    setMessages((prevMessages) => [...prevMessages, botResponse]);
-
-    let response: Response | undefined;
-
+    setIsLoadingMessages(true);
+    setIsLoadingFromBackend(true);
     try {
-      response = await fetch(`${OpenAPI.BASE}/api/v1/chatbot/query`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'text/stream',
-        },
-        body: JSON.stringify({
-          query: userMessage,
+      const response = await ChatsService.getChatMessages({ chatSessionId });
+
+      // Convert backend messages to our message format
+      const backendMessages = (
+        Array.isArray(response) ? response : []
+      ) as ChatMessagePublic[];
+      const convertedMessages: MessageType[] = backendMessages.map(
+        (msg: ChatMessagePublic) => ({
+          id: msg.id || generateId(),
+          role:
+            msg.sender === 'USER'
+              ? 'user'
+              : msg.sender === 'BOT'
+                ? 'assistant'
+                : 'system',
+          content: msg.content || '',
+          // Parse ISO datetime format like "2025-08-11T16:34:53.066705Z"
+          timestamp: new Date(msg.created_at || new Date()),
         }),
-        signal: abortControllerRef.current.signal,
-        credentials: OpenAPI.CREDENTIALS,
-      });
+      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      setMessages(convertedMessages);
+    } catch (error) {
+      console.error('Failed to load messages:', error);
+      // Don't clear messages on error, keep current state
+    } finally {
+      setIsLoadingMessages(false);
+      // Clear the flag after a short delay to ensure typing effect doesn't trigger
+      setTimeout(() => {
+        setIsLoadingFromBackend(false);
+      }, 100);
+    }
+  };
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
+  const streamResponse = useCallback(
+    async (userMessage: string, chatSessionId?: string) => {
+      setIsLoading(true);
 
-      if (!reader) {
-        throw new Error('No reader available');
-      }
+      // Create abort controller for this request
+      abortControllerRef.current = new AbortController();
 
-      let accumulatedContent = '';
+      const botResponse: MessageType = {
+        id: generateId(),
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+      };
 
-      while (true) {
-        const { done, value } = await reader.read();
+      // Add the initial empty bot message
+      setMessages((prevMessages) => [...prevMessages, botResponse]);
 
-        if (done) {
-          break;
+      let response: Response | undefined;
+
+      try {
+        response = await fetch(`${OpenAPI.BASE}/api/v1/chatbot/query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'text/plain',
+          },
+          body: JSON.stringify({
+            query: userMessage,
+            chat_session_id: chatSessionId ?? null,
+          }),
+          signal: abortControllerRef.current.signal,
+          credentials: OpenAPI.CREDENTIALS,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Decode the chunk
-        const chunk = decoder.decode(value, { stream: true });
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
 
-        accumulatedContent += chunk;
+        if (!reader) {
+          throw new Error('No reader available');
+        }
 
-        // Update the message with the processed content
+        let accumulatedContent = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            break;
+          }
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+
+          accumulatedContent += chunk;
+
+          // Update the message with the processed content
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === botResponse.id
+                ? { ...msg, content: accumulatedContent }
+                : msg,
+            ),
+          );
+        }
+
+        // Flush decoder to capture any pending multi-byte sequence at chunk boundaries
+        const tail = decoder.decode();
+        if (tail) {
+          accumulatedContent += tail;
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === botResponse.id
+                ? { ...msg, content: accumulatedContent }
+                : msg,
+            ),
+          );
+        }
+        // Set final timestamp when response completes
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === botResponse.id ? { ...msg, timestamp: new Date() } : msg,
+          ),
+        );
+      } catch (error) {
+        console.error('Streaming error:', error);
+
+        // Get user-friendly error message
+        const errorMessage = await getErrorMessage(error, response);
+
+        const finalErrorContent = `❌ **Error**: ${errorMessage}${error instanceof Error && error.name === 'AbortError' ? '' : '\n\nPlease try again.'}`;
+
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === botResponse.id
-              ? { ...msg, content: accumulatedContent }
+              ? { ...msg, content: finalErrorContent, timestamp: new Date() }
               : msg,
           ),
         );
+      } finally {
+        setIsLoading(false);
+        abortControllerRef.current = null;
       }
-
-      // Final update is already handled in the streaming loop above
-    } catch (error) {
-      console.error('Streaming error:', error);
-
-      // Get user-friendly error message
-      const errorMessage = await getErrorMessage(error, response);
-
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          msg.id === botResponse.id
-            ? {
-                ...msg,
-                content: `❌ **Error**: ${errorMessage}${error instanceof Error && error.name === 'AbortError' ? '' : '\n\nPlease try again.'}`,
-              }
-            : msg,
-        ),
-      );
-    } finally {
-      setIsLoading(false);
-      abortControllerRef.current = null;
-    }
-  }, []);
+    },
+    [],
+  );
 
   const handleSendMessage = useCallback(
     async (content: string) => {
+      // Ensure session is available before sending message
+      if (!sessionId) {
+        console.warn('Cannot send message: no active session');
+        return;
+      }
+
       // Cancel any ongoing request
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -124,15 +218,26 @@ export const useChat = () => {
         timestamp: new Date(),
       };
 
+      // Add user message to UI immediately (optimistic update)
       setMessages((prevMessages) => [...prevMessages, userMessage]);
-      await streamResponse(content);
+
+      // Stream the response; backend persists user and bot messages for the session
+      await streamResponse(content, sessionId);
     },
-    [streamResponse],
+    [streamResponse, sessionId],
   );
+
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+  }, []);
 
   return {
     messages,
     isLoading,
+    isLoadingMessages,
+    isLoadingFromBackend,
     handleSendMessage,
+    clearMessages,
+    loadMessages,
   };
 };

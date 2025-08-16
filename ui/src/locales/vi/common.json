@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "selectLanguage": "Chọn ngôn ngữ"
+  },
+  "chat": {
+    "placeholder": "Hỏi về Chương trình Tuyển sinh của CTU...",
+    "send": "Gửi",
+    "clear": "Xóa cuộc hội thoại",
+    "newConversation": "Trò chuyện mới",
+    "typing": "Đang nhập...",
+    "error": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "welcomeTitle": "Chào mừng đến với SEAS",
+    "welcomeGreeting": "Xin chào, {{name}}!",
+    "welcomeMessage": "Hỏi tôi bất kỳ câu hỏi nào liên quan đến Chương trình Tuyển sinh của CTU!",
+    "loadingSessions": "Đang tải phiên trò chuyện...",
+    "loadingConversation": "Đang tải cuộc hội thoại...",
+    "recommendedQuestions": {
+      "admissionRequirements": "Yêu cầu tuyển sinh là gì?",
+      "scholarships": "Làm thế nào để nộp đơn xin học bổng?",
+      "programs": "Trường có những chương trình học nào?",
+      "campusLife": "Hãy kể cho tôi về cuộc sống trong khuôn viên trường.",
+      "tuitionFees": "Học phí là bao nhiêu?",
+      "applicationDeadline": "Hạn chót nộp đơn là khi nào?"
+    }
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "signup": "Đăng ký",
+    "signIn": "Đăng nhập",
+    "signInHeading": "Đăng nhập",
+    "signInSubtext": "Đăng nhập vào tài khoản của bạn để tiếp tục",
+    "createAccount": "Tạo tài khoản",
+    "createAccountSubtext": "Tham gia để khám phá Chương trình Tuyển sinh của CTU",
+    "email": "Email",
+    "emailAddress": "Địa chỉ email",
+    "fullName": "Họ và tên",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "signInWithGoogle": "Đăng nhập bằng Google",
+    "continueWithGoogle": "Tiếp tục với Google",
+    "signingInWithGoogle": "Đang đăng nhập với Google",
+    "continueWithGitHub": "Tiếp tục với GitHub",
+    "signingInWithGitHub": "Đang đăng nhập với GitHub",
+    "dontHaveAccount": "Chưa có tài khoản?",
+    "alreadyHaveAccount": "Đã có tài khoản?",
+    "signingIn": "Đang đăng nhập...",
+    "creatingAccount": "Đang tạo tài khoản...",
+    "createAccountButton": "Tạo tài khoản",
+    "or": "Hoặc",
+    "placeholders": {
+      "enterUsername": "Nhập tên đăng nhập của bạn",
+      "enterPassword": "Nhập mật khẩu của bạn",
+      "enterEmail": "Nhập email của bạn",
+      "enterFullName": "Nhập họ và tên của bạn",
+      "confirmPassword": "Xác nhận mật khẩu của bạn"
+    },
+    "validation": {
+      "usernameRequired": "Tên đăng nhập là bắt buộc",
+      "usernameMinLength": "Tên đăng nhập phải có ít nhất 3 ký tự",
+      "passwordRequired": "Mật khẩu là bắt buộc",
+      "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+      "emailRequired": "Email là bắt buộc",
+      "emailInvalid": "Địa chỉ email không hợp lệ",
+      "fullNameRequired": "Họ và tên là bắt buộc",
+      "fullNameMinLength": "Họ và tên phải có ít nhất 3 ký tự",
+      "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+      "passwordsNoMatch": "Mật khẩu không khớp"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "yes": "Có",
+    "no": "Không",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "sort": "Sắp xếp",
+    "clear": "Xóa",
+    "apply": "Áp dụng",
+    "reset": "Đặt lại"
+  },
+  "messages": {
+    "success": "Thao tác hoàn thành thành công",
+    "error": "Đã xảy ra lỗi",
+    "warning": "Cảnh báo",
+    "info": "Thông tin",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa mục này không?",
+    "unsavedChanges": "Bạn có thay đổi chưa được lưu. Bạn có chắc chắn muốn rời khỏi không?"
+  },
+  "languages": {
+    "en": "English",
+    "vi": "Tiếng Việt"
+  },
+  "sidebar": {
+    "pinned": "Đã ghim",
+    "history": "Lịch sử",
+    "openSidebar": "Mở thanh bên",
+    "collapseSidebar": "Thu gọn thanh bên",
+    "newChat": "Chat mới",
+    "rename": "Đổi tên",
+    "sessionName": "Tên phiên",
+    "pinSession": "Ghim phiên",
+    "unpinSession": "Bỏ ghim phiên",
+    "delete": "Xóa",
+    "deleteSession": "Xóa Phiên",
+    "deleteSessionConfirm": "Bạn có chắc chắn muốn xóa '{{sessionName}}' không? Hành động này không thể hoàn tác.",
+    "sessionPinned": "Đã ghim phiên thành công",
+    "sessionUnpinned": "Đã bỏ ghim phiên thành công",
+    "reportIssue": "Báo lỗi",
+    "ctuHomepage": "Trang chủ CTU",
+    "ctuAdmissions": "Thông tin tuyển sinh"
+  },
+  "loading": {
+    "checkingAuth": "Đang kiểm tra xác thực...",
+    "default": "Đang tải..."
+  },
+  "errors": {
+    "googleLoginFailed": "Đăng nhập Google thất bại. Vui lòng thử lại.",
+    "githubLoginFailed": "Đăng nhập GitHub thất bại. Vui lòng thử lại.",
+    "oauthFailed": "Đăng nhập OAuth thất bại. Vui lòng thử lại."
+  }
+}

@@ -1,104 +1,81 @@
 import asyncio
+import time
 from collections.abc import AsyncGenerator
-from datetime import datetime
-from html import escape as html_escape
+from io import StringIO
 
 from fastapi import HTTPException, status
 from fastapi.responses import StreamingResponse
-from langchain_core.messages import HumanMessage, SystemMessage
 from loguru import logger
 
-import app.utils as app_utils
-from app.chatbot.schemas import ChatQuery
-from app.core.config import settings
+from app.chatbot.rag_chat_llm import RagChatLLM
+from app.chatbot.schemas import (
+    ChatEvaluationResponse,
+)
+from app.chats.schemas import ChatMessageCreate
+from app.chats.service import create_new_message
 from app.core.database import AsyncSession
-from app.rag.schemas import SimilaritySearchParams
-from app.rag.service import RagService
-from app.templates import prompt_templates
+from app.rag.schemas import QueryParams
+from app.schemas import Sender
 from app.users.models import User
+from app.utils import extract_content_from_base_message
 
 
 async def process_query(
-    chat_query: ChatQuery,
+    query_params: QueryParams,
     session: AsyncSession,
     current_user: User,
 ) -> StreamingResponse:
-    llm = app_utils.get_langchain_llm(
-        model_name=settings.CHAT_MODEL,
-        temperature=0,
-    )
-
-    human_message = chat_query.query.strip()
-    if not human_message:
+    query_params.query = query_params.query.strip()
+    if not query_params.query:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Query cannot be empty.",
         )
 
-    # get prompt templates
-    system_prompt_template = prompt_templates.get_template(
-        "system_prompt_vi.j2"
-    )
-    chat_prompt_template = prompt_templates.get_template("chat_prompt.j2")
-    system_prompt = system_prompt_template.render(
-        currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
-        currentYear=datetime.now().year,
-    )
-
-    # similarity search
-    rag_service = RagService(session=session)
-    context_chunks = await rag_service.similarity_search(
-        search_params=SimilaritySearchParams(
-            query=human_message,
-            limit=settings.SIMILARITY_SEARCH_TOP_K,
-            threshold=settings.SIMILARITY_SEARCH_THRESHOLD,
+    if query_params.chat_session_id is not None:
+        await create_new_message(
+            session=session,
+            chat_session_id=str(query_params.chat_session_id),
+            chat_message_create=ChatMessageCreate(
+                sender=Sender.USER, content=query_params.query
+            ),
+            user_id=str(current_user.id),
         )
-    )
-    context_str = "\n".join([
-        f'<Document title="{html_escape(chunk.chunk_metadata.get("title", ""))}" url="{html_escape(chunk.chunk_metadata.get("url", ""))}">{html_escape(chunk.content)}</Document>\n'
-        for chunk in context_chunks
-    ])
-    chat_prompt = chat_prompt_template.render(
-        context=context_str,
-        query=human_message,
-    )
-    messages = [
-        SystemMessage(content=system_prompt),
-        HumanMessage(content=chat_prompt),
-    ]
-    logger.debug(f"Processing query: {human_message = }")
+
+    chat_llm = RagChatLLM()
 
     async def stream_generator() -> AsyncGenerator[str, None]:
+        response_buffer = StringIO()
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
-                async for chunk in llm.astream(input=messages):
-                    if isinstance(chunk, str):
-                        yield chunk
+                async for chunk in chat_llm.astream(
+                    session=session, query_params=query_params
+                ):
+                    chunk_content = extract_content_from_base_message(chunk)
+                    if not chunk_content:
                         continue
+                    yield chunk_content
 
-                    if not hasattr(chunk, "content") or not chunk.content:
-                        continue
+                    response_buffer.write(chunk_content)
 
-                    if isinstance(chunk.content, str):
-                        yield chunk.content
-                    elif isinstance(chunk.content, list):  # pyright: ignore[reportUnnecessaryIsInstance]
-                        for item in chunk.content:
-                            if isinstance(item, str):
-                                yield item
-                            elif isinstance(item, dict) and "text" in item:  # pyright: ignore[reportUnnecessaryIsInstance]
-                                yield item["text"]
-                            else:
-                                raise AssertionError(
-                                    f"Unexpected item type in chunk.content: {type(item)}. Expected str or dict with 'text' key."
-                                )
-                    else:
-                        raise AssertionError(
-                            f"Unexpected chunk type: {type(chunk.content)}. Expected str or list of str/dict."
-                        )
+            final_response = response_buffer.getvalue()
+            if (
+                query_params.chat_session_id is not None
+                and final_response.strip()
+            ):
+                await create_new_message(
+                    session=session,
+                    chat_session_id=str(query_params.chat_session_id),
+                    chat_message_create=ChatMessageCreate(
+                        sender=Sender.BOT, content=final_response
+                    ),
+                    user_id=str(current_user.id),
+                )
+
         except asyncio.TimeoutError as timeout_err:
             logger.error("Streaming timeout")
             raise HTTPException(
-                status_code=504,
+                status_code=status.HTTP_504_GATEWAY_TIMEOUT,
                 detail="Request timeout. Please try again.",
             ) from timeout_err
         except Exception as err:
@@ -106,12 +83,86 @@ async def process_query(
             # More specific error handling
             if "quota" in str(err).lower():
                 raise HTTPException(
-                    status_code=429,
+                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                     detail="API quota exceeded. Please try again later.",
                 ) from err
             raise HTTPException(
-                status_code=500,
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="An error occurred while processing your request.",
             ) from err
+        finally:
+            response_buffer.close()
 
     return StreamingResponse(stream_generator(), media_type="text/plain")
+
+
+async def process_query_for_evaluation(
+    query_params: QueryParams,
+    session: AsyncSession,
+    current_user: User,
+) -> ChatEvaluationResponse:
+    query_params.query = query_params.query.strip()
+    if not query_params.query:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Query cannot be empty.",
+        )
+
+    start_time = time.perf_counter()
+
+    try:
+        chat_llm = RagChatLLM()
+
+        # Stream response while collecting metadata
+        (
+            similarity_search_result,
+            complete_response,
+            _llm_response_time,
+            time_to_first_chunk,
+        ) = await chat_llm.astream_for_evaluation(
+            session=session, query_params=query_params
+        )
+
+        end_time = time.perf_counter()
+        total_response_time = end_time - start_time
+
+        return ChatEvaluationResponse(
+            query=query_params.query,
+            response=complete_response,
+            retrieved_chunks=similarity_search_result.chunks,
+            num_chunks_retrieved=len(similarity_search_result.chunks),
+            reranked=similarity_search_result.reranked,
+            response_time=total_response_time,
+            time_to_first_chunk=time_to_first_chunk,
+            query_expansion_time=similarity_search_result.query_expansion_time,
+            embedding_time=similarity_search_result.embedding_time,
+            similarity_search_time=similarity_search_result.similarity_search_time,
+            chunk_retrieval_time=similarity_search_result.chunk_retrieval_time,
+            rerank_time=similarity_search_result.rerank_time,
+            success=True,
+        )
+
+    except asyncio.TimeoutError:
+        logger.error("Evaluation timeout")
+        return ChatEvaluationResponse(
+            query=query_params.query,
+            response="",
+            retrieved_chunks=[],
+            num_chunks_retrieved=0,
+            reranked=False,
+            response_time=time.perf_counter() - start_time,
+            success=False,
+            error="Request timeout. Please try again.",
+        )
+    except Exception as err:
+        logger.error(f"Error in evaluation: {err}")
+        return ChatEvaluationResponse(
+            query=query_params.query,
+            response="",
+            retrieved_chunks=[],
+            num_chunks_retrieved=0,
+            reranked=False,
+            response_time=time.perf_counter() - start_time,
+            success=False,
+            error=str(err),
+        )

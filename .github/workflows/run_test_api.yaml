@@ -43,14 +43,17 @@ jobs:
           python-version: "3.12"
           enable-cache: true
 
+      - name: Install optional dependencies
+        run: |
+          uv sync --extra flagembedding-cpu
+
       - name: Generate random password for testing
         run: |
           echo "FIRST_USER_PASSWORD=$(openssl rand -base64 16)" >> $GITHUB_ENV
 
       - name: Lint with ruff
         run: |
-          uv run ruff check app tests
-          uv run ruff format app tests
+          uv run ruff check --output-format=github app tests
 
       - name: run tests with pytest
         env:
