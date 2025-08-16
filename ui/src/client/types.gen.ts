@@ -328,6 +328,12 @@ export type ChatsUpdateChatSessionData = {
 
 export type ChatsUpdateChatSessionResponse = (ChatSessionPublic);
 
+export type ChatsDeleteChatSessionData = {
+    chatSessionId: string;
+};
+
+export type ChatsDeleteChatSessionResponse = (MessageResponse);
+
 export type ChatsGetChatMessagesData = {
     chatSessionId: string;
 };

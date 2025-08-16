@@ -1,5 +1,6 @@
 import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/dialog';
 import {
   Dropdown,
   DropdownItem,
@@ -18,13 +19,20 @@ import {
   IconSearch,
   IconTrash,
 } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface SidebarProps {
   onNewChat: () => void;
   onSelectSession?: (sessionId: string) => void;
   isCreatingNewChat?: boolean;
   currentSessionId?: string;
+}
+
+interface DialogState {
+  type: 'delete' | null;
+  sessionId: string | null;
+  sessionName: string | null;
 }
 
 interface SidebarHeaderProps {
@@ -44,6 +52,12 @@ interface ChatItemProps {
   isPinned?: boolean;
   onSelect?: (sessionId: string) => void;
   isSelected?: boolean;
+  onRename: (sessionId: string, newName: string) => void;
+  onPin: (sessionId: string, isPinned: boolean) => void;
+  onDelete: (sessionId: string, sessionName: string) => void;
+  isRenaming?: boolean;
+  onStartRename: (sessionId: string) => void;
+  onCancelRename: () => void;
 }
 
 interface ChatSectionProps {
@@ -53,6 +67,12 @@ interface ChatSectionProps {
   isLoading?: boolean;
   onSelectSession?: (sessionId: string) => void;
   currentSessionId?: string;
+  onRename: (sessionId: string, newName: string) => void;
+  onPin: (sessionId: string, isPinned: boolean) => void;
+  onDelete: (sessionId: string, sessionName: string) => void;
+  renamingSessionId?: string;
+  onStartRename: (sessionId: string) => void;
+  onCancelRename: () => void;
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
@@ -161,11 +181,64 @@ const ChatItemComponent: React.FC<ChatItemProps> = ({
   isPinned = false,
   onSelect,
   isSelected = false,
+  onRename,
+  onPin,
+  onDelete,
+  isRenaming = false,
+  onStartRename,
+  onCancelRename,
 }) => {
   const { t } = useLanguage();
+  const [editingName, setEditingName] = useState(item.label);
+
+  // Reset editing name when item changes or rename mode changes
+  useEffect(() => {
+    setEditingName(item.label);
+  }, [item.label, isRenaming]);
 
   const handleClick = () => {
-    onSelect?.(item.id);
+    if (!isRenaming) {
+      onSelect?.(item.id);
+    }
+  };
+
+  const handleStartRename = () => {
+    onStartRename(item.id);
+  };
+
+  const handleRenameSubmit = () => {
+    if (editingName.trim() && editingName.trim() !== item.label) {
+      onRename(item.id, editingName.trim());
+    } else {
+      onCancelRename();
+    }
+  };
+
+  const handleRenameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleRenameSubmit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setEditingName(item.label);
+      onCancelRename();
+    }
+  };
+
+  const handleRenameBlur = () => {
+    handleRenameSubmit();
+  };
+
+  const handlePin = () => {
+    onPin(item.id, !isPinned);
+  };
+
+  const handleDelete = () => {
+    onDelete(item.id, item.label);
+  };
+
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   return (
@@ -184,37 +257,61 @@ const ChatItemComponent: React.FC<ChatItemProps> = ({
             className="text-gray-500 dark:text-gray-400 flex-shrink-0"
           />
         )}
-        <button
-          type="button"
-          className="truncate text-left cursor-pointer min-w-0"
-        >
-          {item.label}
-        </button>
-      </div>
-      <Dropdown
-        trigger={
+        {isRenaming ? (
+          <input
+            type="text"
+            value={editingName}
+            onChange={(e) => setEditingName(e.target.value)}
+            onKeyDown={handleRenameKeyDown}
+            onBlur={handleRenameBlur}
+            className="flex-1 bg-transparent border-none outline-none text-sm min-w-0 px-1 py-0.5 rounded border border-primary focus:border-primary"
+            autoFocus
+            onClick={(e) => e.stopPropagation()}
+          />
+        ) : (
           <button
             type="button"
-            className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer flex-shrink-0"
+            className="truncate text-left cursor-pointer min-w-0 flex-1"
           >
-            <IconDots size={16} />
+            {item.label}
           </button>
-        }
-        align="left"
-        width="w-40"
-        offsetX={-128}
-      >
-        <DropdownItem icon={<IconEdit size={16} />}>
-          {t('sidebar.rename')}
-        </DropdownItem>
-        <DropdownItem icon={<IconPin size={16} />}>
-          {isPinned ? t('sidebar.unpinSession') : t('sidebar.pinSession')}
-        </DropdownItem>
-        <DropdownSeparator />
-        <DropdownItem icon={<IconTrash size={16} />} danger>
-          {t('sidebar.delete')}
-        </DropdownItem>
-      </Dropdown>
+        )}
+      </div>
+      {!isRenaming && (
+        <div onClick={handleDropdownClick}>
+          <Dropdown
+            trigger={
+              <button
+                type="button"
+                className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-opacity cursor-pointer flex-shrink-0"
+              >
+                <IconDots size={16} />
+              </button>
+            }
+            align="left"
+            width="w-40"
+            offsetX={-128}
+          >
+            <DropdownItem
+              icon={<IconEdit size={16} />}
+              onClick={handleStartRename}
+            >
+              {t('sidebar.rename')}
+            </DropdownItem>
+            <DropdownItem icon={<IconPin size={16} />} onClick={handlePin}>
+              {isPinned ? t('sidebar.unpinSession') : t('sidebar.pinSession')}
+            </DropdownItem>
+            <DropdownSeparator />
+            <DropdownItem
+              icon={<IconTrash size={16} />}
+              danger
+              onClick={handleDelete}
+            >
+              {t('sidebar.delete')}
+            </DropdownItem>
+          </Dropdown>
+        </div>
+      )}
     </div>
   );
 };
@@ -226,6 +323,12 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   isLoading = false,
   onSelectSession,
   currentSessionId,
+  onRename,
+  onPin,
+  onDelete,
+  renamingSessionId,
+  onStartRename,
+  onCancelRename,
 }) => {
   if (isLoading) {
     return (
@@ -264,6 +367,12 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             isPinned={isPinned}
             onSelect={onSelectSession}
             isSelected={currentSessionId === item.id}
+            onRename={onRename}
+            onPin={onPin}
+            onDelete={onDelete}
+            isRenaming={renamingSessionId === item.id}
+            onStartRename={onStartRename}
+            onCancelRename={onCancelRename}
           />
         ))}
       </div>
@@ -292,21 +401,104 @@ export const Sidebar: React.FC<SidebarProps> = ({
   currentSessionId,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [renamingSessionId, setRenamingSessionId] = useState<string | null>(
+    null,
+  );
+  const [dialogState, setDialogState] = useState<DialogState>({
+    type: null,
+    sessionId: null,
+    sessionName: null,
+  });
   const { t } = useLanguage();
 
-  const { pinnedSessions, regularSessions, isLoading, isError, isCreating } =
-    useChatSessions();
+  const {
+    pinnedSessions,
+    regularSessions,
+    isLoading,
+    isError,
+    isCreating,
+    renameSession,
+    togglePinSession,
+    deleteSession,
+    isDeletingSession,
+  } = useChatSessions();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  // Remove the duplicate handleNewChat - use the prop from parent instead!
-  // The parent Chat component has the proper empty session validation
-
   const handleRetry = () => {
     // Force a page reload as a simple retry mechanism
     window.location.reload();
+  };
+
+  const handleStartRename = (sessionId: string) => {
+    setRenamingSessionId(sessionId);
+  };
+
+  const handleCancelRename = () => {
+    setRenamingSessionId(null);
+  };
+
+  const openDeleteDialog = (sessionId: string, sessionName: string) => {
+    setDialogState({
+      type: 'delete',
+      sessionId,
+      sessionName,
+    });
+  };
+
+  const closeDialog = () => {
+    setDialogState({
+      type: null,
+      sessionId: null,
+      sessionName: null,
+    });
+  };
+
+  const handleRename = async (sessionId: string, newName: string) => {
+    try {
+      await renameSession({
+        sessionId,
+        newTitle: newName,
+      });
+      toast.success(t('messages.success'));
+      setRenamingSessionId(null);
+    } catch (error) {
+      console.error('Failed to rename session:', error);
+      toast.error('Failed to rename session');
+    }
+  };
+
+  const handlePin = async (sessionId: string, isPinned: boolean) => {
+    try {
+      await togglePinSession({ sessionId, isPinned });
+      toast.success(
+        isPinned ? t('sidebar.sessionPinned') : t('sidebar.sessionUnpinned'),
+      );
+    } catch (error) {
+      console.error('Failed to toggle pin session:', error);
+      toast.error('Failed to update session');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!dialogState.sessionId) return;
+
+    try {
+      await deleteSession({ sessionId: dialogState.sessionId });
+      toast.success(t('messages.success'));
+      closeDialog();
+
+      // If the deleted session was the current one, clear selection
+      if (currentSessionId === dialogState.sessionId) {
+        onSelectSession?.('');
+      }
+    } catch (error) {
+      console.error('Failed to delete session:', error);
+      toast.error('Delete functionality not available yet');
+      closeDialog();
+    }
   };
 
   return (
@@ -323,7 +515,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       />
 
       {!isCollapsed && (
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
           {isError ? (
             <ErrorState onRetry={handleRetry} />
           ) : (
@@ -336,6 +528,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 isLoading={isLoading}
                 onSelectSession={onSelectSession}
                 currentSessionId={currentSessionId}
+                onRename={handleRename}
+                onPin={handlePin}
+                onDelete={openDeleteDialog}
+                renamingSessionId={renamingSessionId || undefined}
+                onStartRename={handleStartRename}
+                onCancelRename={handleCancelRename}
               />
 
               {/* History Section */}
@@ -346,6 +544,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 isLoading={isLoading}
                 onSelectSession={onSelectSession}
                 currentSessionId={currentSessionId}
+                onRename={handleRename}
+                onPin={handlePin}
+                onDelete={openDeleteDialog}
+                renamingSessionId={renamingSessionId || undefined}
+                onStartRename={handleStartRename}
+                onCancelRename={handleCancelRename}
               />
             </>
           )}
@@ -354,6 +558,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="p-1"></div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog - Keep only this dialog */}
+      <ConfirmDialog
+        open={dialogState.type === 'delete'}
+        onClose={closeDialog}
+        onConfirm={handleDelete}
+        title={t('sidebar.deleteSession')}
+        message={t('sidebar.deleteSessionConfirm', {
+          sessionName: dialogState.sessionName,
+        })}
+        confirmText={t('sidebar.delete')}
+        confirmButtonVariant="primary"
+        isLoading={isDeletingSession}
+      />
     </div>
   );
 };

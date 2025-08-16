@@ -15,7 +15,15 @@
     "welcomeGreeting": "Xin chào, {{name}}!",
     "welcomeMessage": "Hỏi tôi bất kỳ câu hỏi nào liên quan đến Chương trình Tuyển sinh của CTU!",
     "loadingSessions": "Đang tải phiên trò chuyện...",
-    "loadingConversation": "Đang tải cuộc hội thoại..."
+    "loadingConversation": "Đang tải cuộc hội thoại...",
+    "recommendedQuestions": {
+      "admissionRequirements": "Yêu cầu tuyển sinh là gì?",
+      "scholarships": "Làm thế nào để nộp đơn xin học bổng?",
+      "programs": "Trường có những chương trình học nào?",
+      "campusLife": "Hãy kể cho tôi về cuộc sống trong khuôn viên trường.",
+      "tuitionFees": "Học phí là bao nhiêu?",
+      "applicationDeadline": "Hạn chót nộp đơn là khi nào?"
+    }
   },
   "auth": {
     "login": "Đăng nhập",
@@ -99,11 +107,16 @@
     "history": "Lịch sử",
     "openSidebar": "Mở thanh bên",
     "collapseSidebar": "Thu gọn thanh bên",
-    "newChat": "Trò chuyện mới",
+    "newChat": "Chat mới",
     "rename": "Đổi tên",
+    "sessionName": "Tên phiên",
     "pinSession": "Ghim phiên",
     "unpinSession": "Bỏ ghim phiên",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "deleteSession": "Xóa Phiên",
+    "deleteSessionConfirm": "Bạn có chắc chắn muốn xóa '{{sessionName}}' không? Hành động này không thể hoàn tác.",
+    "sessionPinned": "Đã ghim phiên thành công",
+    "sessionUnpinned": "Đã bỏ ghim phiên thành công"
   },
   "loading": {
     "checkingAuth": "Đang kiểm tra xác thực...",

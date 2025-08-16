@@ -32,27 +32,7 @@ const getSessionTitle = (session: ChatSessionPublic): string => {
     return truncated || 'New Chat';
   }
 
-  let date: Date;
-
-  try {
-    date = new Date(session.created_at);
-
-    if (isNaN(date.getTime())) {
-      date = new Date();
-    }
-  } catch (error) {
-    date = new Date();
-  }
-
-  const timeString = date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
-
-  return `Chat ${timeString}`;
+  return 'New Chat';
 };
 
 export interface ChatSessionItem {
@@ -122,6 +102,66 @@ export const useChatSessions = () => {
     },
   });
 
+  // Mutation to rename a chat session
+  const renameSessionMutation = useMutation({
+    mutationFn: async ({
+      sessionId,
+      newTitle,
+    }: {
+      sessionId: string;
+      newTitle: string;
+    }) => {
+      const session = sessionsQuery.data?.find((s) => s.id === sessionId);
+      if (!session) {
+        throw new Error('Session not found');
+      }
+
+      const updatedMetadata = {
+        ...session.session_metadata,
+        firstMessage: newTitle,
+      };
+
+      return ChatsService.updateChatSession({
+        chatSessionId: sessionId,
+        requestBody: { session_metadata: updatedMetadata },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    },
+  });
+
+  // Mutation to pin/unpin a chat session
+  const togglePinSessionMutation = useMutation({
+    mutationFn: async ({
+      sessionId,
+      isPinned,
+    }: {
+      sessionId: string;
+      isPinned: boolean;
+    }) => {
+      return ChatsService.updateChatSession({
+        chatSessionId: sessionId,
+        requestBody: { is_favorite: isPinned },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    },
+  });
+
+  // Mutation for delete session
+  const deleteSessionMutation = useMutation({
+    mutationFn: async ({ sessionId }: { sessionId: string }) => {
+      return ChatsService.deleteChatSession({
+        chatSessionId: sessionId,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    },
+  });
+
   // Transform sessions to the format expected by the Sidebar
   const transformedSessions: ChatSessionItem[] =
     sessionsQuery.data?.map((session) => ({
@@ -130,27 +170,16 @@ export const useChatSessions = () => {
       isPinned: session.is_favorite,
     })) || [];
 
-  // Filter out empty sessions (sessions without a firstMessage in metadata)
-  const nonEmptySessions = transformedSessions.filter((session) => {
-    const originalSession = sessionsQuery.data?.find(
-      (s) => s.id === session.id,
-    );
-    if (!originalSession) return false;
-
-    // Only show sessions that have a firstMessage in their metadata
-    // This means the user has sent at least one message
-    return originalSession.session_metadata?.firstMessage;
-  });
-
-  // Sort all sessions by updated_at (most recently active first)
-  const sortedSessions = [...nonEmptySessions].sort((a, b) => {
+  // Sort all sessions by created_at (most recently active first)
+  // Show all sessions, including empty ones
+  const sortedSessions = [...transformedSessions].sort((a, b) => {
     const sessionA = sessionsQuery.data?.find((s) => s.id === a.id);
     const sessionB = sessionsQuery.data?.find((s) => s.id === b.id);
 
     if (!sessionA || !sessionB) return 0;
 
-    const dateA = new Date(sessionA.updated_at);
-    const dateB = new Date(sessionB.updated_at);
+    const dateA = new Date(sessionA.created_at);
+    const dateB = new Date(sessionB.created_at);
     return dateB.getTime() - dateA.getTime();
   });
 
@@ -191,19 +220,25 @@ export const useChatSessions = () => {
     regularSessions,
     rawSessions: sessionsQuery.data || [],
 
-    // Loading states
+    // Status
     isLoading: sessionsQuery.isLoading,
     isError: sessionsQuery.isError,
-    error: sessionsQuery.error,
+    isCreating: createSessionMutation.isPending,
 
-    // Mutations
+    // Actions
     createSession: createSessionMutation.mutateAsync,
+    updateSession: updateSessionMutation.mutateAsync,
     createSessionWithFirstMessage,
     updateSessionWithFirstMessage,
-    isCreating: createSessionMutation.isPending,
-    isUpdating: updateSessionMutation.isPending,
 
-    // Utilities
-    refetch: sessionsQuery.refetch,
+    // New actions for session management
+    renameSession: renameSessionMutation.mutateAsync,
+    togglePinSession: togglePinSessionMutation.mutateAsync,
+    deleteSession: deleteSessionMutation.mutateAsync,
+
+    // Loading states for new actions
+    isRenamingSession: renameSessionMutation.isPending,
+    isTogglingPin: togglePinSessionMutation.isPending,
+    isDeletingSession: deleteSessionMutation.isPending,
   };
 };

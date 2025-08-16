@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthLoginViaGithubOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatbotQueryData, ChatbotQueryResponse, ChatbotQueryEvalData, ChatbotQueryEvalResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetLatestChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, RagAddDocumentToDatabaseData, RagAddDocumentToDatabaseResponse, RagAddDocumentToDatabaseInBatchData, RagAddDocumentToDatabaseInBatchResponse, RagSimilaritySearchData, RagSimilaritySearchResponse, RagSplitMarkdownOnHeadersData, RagSplitMarkdownOnHeadersResponse, RagQueryExpansionData, RagQueryExpansionResponse, RagExportDocumentSectionsChunksResponse, RagGetRagModelsStatusResponse, RagRecomputeEmbeddingsData, RagRecomputeEmbeddingsResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
+import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthLoginViaGithubOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatbotQueryData, ChatbotQueryResponse, ChatbotQueryEvalData, ChatbotQueryEvalResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetLatestChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsDeleteChatSessionData, ChatsDeleteChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, RagAddDocumentToDatabaseData, RagAddDocumentToDatabaseResponse, RagAddDocumentToDatabaseInBatchData, RagAddDocumentToDatabaseInBatchResponse, RagSimilaritySearchData, RagSimilaritySearchResponse, RagSplitMarkdownOnHeadersData, RagSplitMarkdownOnHeadersResponse, RagQueryExpansionData, RagQueryExpansionResponse, RagExportDocumentSectionsChunksResponse, RagGetRagModelsStatusResponse, RagRecomputeEmbeddingsData, RagRecomputeEmbeddingsResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
 
 export class AuthService {
     /**
@@ -337,6 +337,27 @@ export class ChatsService {
             },
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Chat Session
+     * Delete a chat session by ID.
+     * @param data The data for the request.
+     * @param data.chatSessionId
+     * @returns MessageResponse Successful Response
+     * @throws ApiError
+     */
+    public static deleteChatSession(data: ChatsDeleteChatSessionData): CancelablePromise<ChatsDeleteChatSessionResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/chats/chat_sessions/{chat_session_id}',
+            path: {
+                chat_session_id: data.chatSessionId
+            },
             errors: {
                 422: 'Validation Error'
             }
