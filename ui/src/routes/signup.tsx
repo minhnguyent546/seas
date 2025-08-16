@@ -3,7 +3,6 @@ import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LanguageSelector } from '@/components/ui/language-selector';
-import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
@@ -22,7 +21,7 @@ export const Route = createFileRoute('/signup')({
 });
 
 function SignupComponent() {
-  const { signupMutation, error, resetError, isAuthenticated, isLoading } =
+  const { signupMutation, error, resetError, isAuthenticated } =
     useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -53,11 +52,6 @@ function SignupComponent() {
   });
 
   const password = watch('password');
-
-  // Show loading while checking authentication
-  if (isLoading) {
-    return <Loading message={t('loading.checkingAuth')} />;
-  }
 
   // Redirect to home if already authenticated
   if (isAuthenticated) {

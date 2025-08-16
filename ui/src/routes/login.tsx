@@ -7,7 +7,6 @@ import { GitHubIcon, GoogleIcon, SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LanguageSelector } from '@/components/ui/language-selector';
-import { Loading } from '@/components/ui/loading';
 import { PasswordInput } from '@/components/ui/password-input';
 import { ROUTE_PATHS } from '@/constants/path_routes';
 import useAuth from '@/hooks/useAuth';
@@ -23,7 +22,7 @@ export const Route = createFileRoute('/login')({
 });
 
 function Login() {
-  const { loginMutation, error, resetError, isAuthenticated, isLoading } =
+  const { loginMutation, error, resetError, isAuthenticated } =
     useAuth();
   const { t } = useLanguage();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -76,11 +75,6 @@ function Login() {
       window.history.replaceState({}, document.title, newUrl);
     }
   }, []);
-
-  // Show loading while checking authentication
-  if (isLoading) {
-    return <Loading message={t('loading.checkingAuth')} />;
-  }
 
   // Redirect to home if already authenticated
   if (isAuthenticated) {
