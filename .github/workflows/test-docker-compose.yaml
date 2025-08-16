@@ -51,7 +51,7 @@ jobs:
         run: docker compose ${{ env.COMPOSE_FILES_OPTION }} down -v --remove-orphans
 
       - name: Start containers
-        run: docker compose "" up -d --wait api
+        run: docker compose ${{ env.COMPOSE_FILES_OPTION }} up -d --wait api
 
       - name: Test if backend is up
         run: curl -f http://localhost:8444/api/v1/health
