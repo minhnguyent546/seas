@@ -85,3 +85,36 @@ h1:not([class]) {
   }
   /* Removed button style override to prevent conflicts with Tailwind */
 }
+
+/* Fluid viewport height utilities with fallbacks for better mobile + emulator support */
+.min-h-fluid {
+  min-height: 100vh;
+}
+.max-h-fluid {
+  max-height: 100vh;
+}
+.h-fluid {
+  height: 100vh;
+}
+@supports (min-height: 100dvh) {
+  .min-h-fluid {
+    min-height: 100dvh;
+  }
+  .max-h-fluid {
+    max-height: 100dvh;
+  }
+  .h-fluid {
+    height: 100dvh;
+  }
+}
+@supports (min-height: 100svh) {
+  .min-h-fluid {
+    min-height: 100svh;
+  }
+  .max-h-fluid {
+    max-height: 100svh;
+  }
+  .h-fluid {
+    height: 100svh;
+  }
+}
