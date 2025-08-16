@@ -1,4 +1,4 @@
-import { ChatsService, OpenAPI, type ChatMessageCreate } from '@/client';
+import { ChatsService, OpenAPI } from '@/client';
 import { generateId, getErrorMessage } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -7,44 +7,10 @@ interface UseChatProps {
   sessionId?: string;
 }
 
-// Background task queue for saving messages
-class MessageSaveQueue {
-  private queue: Array<() => Promise<void>> = [];
-  private isProcessing = false;
-
-  async add(saveTask: () => Promise<void>) {
-    this.queue.push(saveTask);
-    if (!this.isProcessing) {
-      this.processQueue();
-    }
-  }
-
-  private async processQueue() {
-    this.isProcessing = true;
-
-    while (this.queue.length > 0) {
-      const task = this.queue.shift();
-      if (task) {
-        try {
-          await task();
-        } catch (error) {
-          console.warn('Background message save failed:', error);
-          // Continue processing other messages even if one fails
-        }
-      }
-    }
-
-    this.isProcessing = false;
-  }
-}
-
-const messageSaveQueue = new MessageSaveQueue();
-
 export const useChat = ({ sessionId }: UseChatProps = {}) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const [pendingSaves, setPendingSaves] = useState(0);
   const [isLoadingFromBackend, setIsLoadingFromBackend] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -109,50 +75,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
     }
   };
 
-  // Background function to save message to backend
-  const saveMessageToBackend = async (
-    message: MessageType,
-    chatSessionId: string,
-  ) => {
-    if (!chatSessionId) {
-      console.warn('Cannot save message: no session ID provided');
-      return;
-    }
-
-    try {
-      const messageData: ChatMessageCreate = {
-        sender:
-          message.role === 'user'
-            ? 'USER'
-            : message.role === 'assistant'
-              ? 'BOT'
-              : 'SYSTEM',
-        content: message.content,
-      };
-
-      await ChatsService.createNewMessage({
-        chatSessionId,
-        requestBody: messageData,
-      });
-    } catch (error) {
-      console.error('Failed to save message to backend:', error);
-      throw error; // Re-throw to let the queue handle it
-    }
-  };
-
-  // Queue message for background saving (non-blocking)
-  const queueMessageSave = (message: MessageType, chatSessionId: string) => {
-    setPendingSaves((prev) => prev + 1);
-
-    messageSaveQueue.add(async () => {
-      try {
-        await saveMessageToBackend(message, chatSessionId);
-      } finally {
-        setPendingSaves((prev) => Math.max(0, prev - 1));
-      }
-    });
-  };
-
   const streamResponse = useCallback(
     async (userMessage: string, chatSessionId?: string) => {
       setIsLoading(true);
@@ -177,10 +99,11 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Accept: 'text/stream',
+            Accept: 'text/plain',
           },
           body: JSON.stringify({
             query: userMessage,
+            chat_session_id: chatSessionId ?? null,
           }),
           signal: abortControllerRef.current.signal,
           credentials: OpenAPI.CREDENTIALS,
@@ -220,15 +143,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
             ),
           );
         }
-
-        // Save the complete bot response to backend (non-blocking)
-        if (chatSessionId && accumulatedContent) {
-          const finalBotMessage = {
-            ...botResponse,
-            content: accumulatedContent,
-          };
-          queueMessageSave(finalBotMessage, chatSessionId);
-        }
       } catch (error) {
         console.error('Streaming error:', error);
 
@@ -244,15 +158,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
               : msg,
           ),
         );
-
-        // Save the error message to backend (non-blocking)
-        if (chatSessionId) {
-          const errorBotMessage = {
-            ...botResponse,
-            content: finalErrorContent,
-          };
-          queueMessageSave(errorBotMessage, chatSessionId);
-        }
       } finally {
         setIsLoading(false);
         abortControllerRef.current = null;
@@ -284,10 +189,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
       // Add user message to UI immediately (optimistic update)
       setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-      // Save user message to backend in background (non-blocking)
-      queueMessageSave(userMessage, sessionId);
-
-      // Stream the response
+      // Stream the response; backend persists user and bot messages for the session
       await streamResponse(content, sessionId);
     },
     [streamResponse, sessionId],
@@ -301,8 +203,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
     messages,
     isLoading,
     isLoadingMessages,
-    isSavingMessages: pendingSaves > 0,
-    pendingSaves,
     isLoadingFromBackend,
     handleSendMessage,
     clearMessages,
