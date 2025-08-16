@@ -524,6 +524,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const handleNewChatClick = () => {
+    onNewChat();
+    if (onRequestClose) {
+      onRequestClose();
+    }
+  };
+
   return (
     <div
       className={`flex h-full flex-col bg-gray-50 dark:bg-gray-900 transition-all duration-300 ${effectiveCollapsed ? 'w-16' : 'w-64'}`}
@@ -536,7 +543,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       <ActionButtons
         isCollapsed={effectiveCollapsed}
-        onNewChat={onNewChat}
+        onNewChat={handleNewChatClick}
         isCreatingSession={isCreating}
         isCreatingNewChat={isCreatingNewChat}
       />
