@@ -10,7 +10,11 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { IconLogout, IconSettings } from '@tabler/icons-react';
 import { useState } from 'react';
 
-export function UserControls() {
+interface UserControlsProps {
+  inline?: boolean;
+}
+
+export function UserControls({ inline = false }: UserControlsProps) {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
   const [testUser] = useState({
@@ -36,7 +40,13 @@ export function UserControls() {
     .toUpperCase();
 
   return (
-    <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
+    <div
+      className={
+        inline
+          ? 'flex items-center gap-3'
+          : 'absolute top-4 right-4 z-10 flex items-center gap-3'
+      }
+    >
       {/* Language Toggle Button */}
       <LanguageSelector />
 

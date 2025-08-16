@@ -19,6 +19,7 @@ import {
   IconPlus,
   IconSearch,
   IconTrash,
+  IconX,
 } from '@tabler/icons-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -28,6 +29,8 @@ interface SidebarProps {
   onSelectSession?: (sessionId: string) => void;
   isCreatingNewChat?: boolean;
   currentSessionId?: string;
+  forceExpanded?: boolean;
+  onRequestClose?: () => void;
 }
 
 interface DialogState {
@@ -39,6 +42,7 @@ interface DialogState {
 interface SidebarHeaderProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  onClose?: () => void;
 }
 
 interface ActionButtonsProps {
@@ -79,6 +83,7 @@ interface ChatSectionProps {
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   isCollapsed,
   onToggle,
+  onClose,
 }) => {
   const { t } = useLanguage();
 
@@ -102,12 +107,14 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          onClick={onToggle}
+          onClick={onClose ?? onToggle}
           className="h-6 w-6 cursor-pointer rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          aria-label={t('sidebar.collapseSidebar')}
-          title={t('sidebar.collapseSidebar')}
+          aria-label={
+            onClose ? t('common.close') : t('sidebar.collapseSidebar')
+          }
+          title={onClose ? t('common.close') : t('sidebar.collapseSidebar')}
         >
-          <IconChevronLeft size={20} />
+          {onClose ? <IconX size={20} /> : <IconChevronLeft size={20} />}
         </Button>
       )}
     </div>
@@ -400,6 +407,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectSession,
   isCreatingNewChat,
   currentSessionId,
+  forceExpanded,
+  onRequestClose,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [renamingSessionId, setRenamingSessionId] = useState<string | null>(
@@ -414,6 +423,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const reportIssueUrl = import.meta.env.VITE_REPORT_ISSUE_LINK as
     | string
     | undefined;
+
+  // Collapse sidebar by default on mobile screens
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) {
+      setIsCollapsed(true);
+    }
+  }, []);
+
+  const effectiveCollapsed = forceExpanded ? false : isCollapsed;
 
   const {
     pinnedSessions,
@@ -507,18 +526,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div
-      className={`flex h-full flex-col bg-gray-50 dark:bg-gray-900 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}
+      className={`flex h-full flex-col bg-gray-50 dark:bg-gray-900 transition-all duration-300 ${effectiveCollapsed ? 'w-16' : 'w-64'}`}
     >
-      <SidebarHeader isCollapsed={isCollapsed} onToggle={toggleSidebar} />
+      <SidebarHeader
+        isCollapsed={effectiveCollapsed}
+        onToggle={toggleSidebar}
+        onClose={onRequestClose}
+      />
 
       <ActionButtons
-        isCollapsed={isCollapsed}
+        isCollapsed={effectiveCollapsed}
         onNewChat={onNewChat}
         isCreatingSession={isCreating}
         isCreatingNewChat={isCreatingNewChat}
       />
 
-      {!isCollapsed && (
+      {!effectiveCollapsed && (
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           {isError ? (
             <ErrorState onRetry={handleRetry} />
@@ -564,7 +587,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <SidebarFooter
-        isCollapsed={isCollapsed}
+        isCollapsed={effectiveCollapsed}
         reportIssueUrl={reportIssueUrl}
       />
 
