@@ -170,12 +170,12 @@ export const useChatSessions = () => {
     },
   });
 
-  // Mutation for delete session (placeholder for now since API doesn't exist)
+  // Mutation for delete session
   const deleteSessionMutation = useMutation({
     mutationFn: async ({ sessionId }: { sessionId: string }) => {
-      // TODO: Implement when backend API is available
-      console.log('Delete session:', sessionId);
-      throw new Error('Delete endpoint not available yet');
+      return ChatsService.deleteChatSession({
+        chatSessionId: sessionId,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });

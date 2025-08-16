@@ -45,8 +45,12 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        className: 'rounded-xl',
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: '1rem', // 16px equivalent to rounded-2xl
+          },
+        },
       }}
     >
       <DialogTitle className="text-lg font-medium">{title}</DialogTitle>
@@ -56,10 +60,16 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions className="px-6 pb-4">
-        <Button variant="outline" onClick={onClose} disabled={isLoading}>
+        <Button
+          className="cursor-pointer"
+          variant="outline"
+          onClick={onClose}
+          disabled={isLoading}
+        >
           {cancelText || t('common.cancel')}
         </Button>
         <Button
+          className="cursor-pointer"
           variant={confirmButtonVariant}
           onClick={onConfirm}
           isLoading={isLoading}
