@@ -116,7 +116,10 @@
     "deleteSession": "Xóa Phiên",
     "deleteSessionConfirm": "Bạn có chắc chắn muốn xóa '{{sessionName}}' không? Hành động này không thể hoàn tác.",
     "sessionPinned": "Đã ghim phiên thành công",
-    "sessionUnpinned": "Đã bỏ ghim phiên thành công"
+    "sessionUnpinned": "Đã bỏ ghim phiên thành công",
+    "reportIssue": "Báo lỗi",
+    "ctuHomepage": "Trang chủ CTU",
+    "ctuAdmissions": "Thông tin tuyển sinh"
   },
   "loading": {
     "checkingAuth": "Đang kiểm tra xác thực...",

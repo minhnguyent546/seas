@@ -116,7 +116,10 @@
     "deleteSession": "Delete Session",
     "deleteSessionConfirm": "Are you sure you want to delete '{{sessionName}}'? This action cannot be undone.",
     "sessionPinned": "Session pinned successfully",
-    "sessionUnpinned": "Session unpinned successfully"
+    "sessionUnpinned": "Session unpinned successfully",
+    "reportIssue": "Report issue",
+    "ctuHomepage": "CTU homepage",
+    "ctuAdmissions": "Admissions info"
   },
   "loading": {
     "checkingAuth": "Checking authentication...",
