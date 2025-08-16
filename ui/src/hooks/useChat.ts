@@ -143,6 +143,13 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
             ),
           );
         }
+
+        // Set final timestamp when response completes
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === botResponse.id ? { ...msg, timestamp: new Date() } : msg,
+          ),
+        );
       } catch (error) {
         console.error('Streaming error:', error);
 
@@ -154,7 +161,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}) => {
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === botResponse.id
-              ? { ...msg, content: finalErrorContent }
+              ? { ...msg, content: finalErrorContent, timestamp: new Date() }
               : msg,
           ),
         );
