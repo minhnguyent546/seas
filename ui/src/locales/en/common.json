@@ -17,10 +17,8 @@
     "loadingSessions": "Loading chat sessions...",
     "loadingConversation": "Loading conversation...",
     "recommendedQuestions": {
-      "admissionRequirements": "What are the admission requirements?",
-      "scholarships": "How do I apply for scholarships?",
+      "admissionMethods": "What are the admission methods?",
       "programs": "What programs do you offer?",
-      "campusLife": "Tell me about campus life.",
       "tuitionFees": "What are the tuition fees?",
       "applicationDeadline": "When is the application deadline?"
     }
