@@ -102,7 +102,7 @@ function SignupComponent() {
             <div>
               <label
                 htmlFor="fullName"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.fullName')}
               </label>
@@ -125,7 +125,7 @@ function SignupComponent() {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.username')}
               </label>
@@ -148,7 +148,7 @@ function SignupComponent() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.emailAddress')}
               </label>
@@ -172,7 +172,7 @@ function SignupComponent() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.password')}
               </label>
@@ -194,7 +194,7 @@ function SignupComponent() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.confirmPassword')}
               </label>
@@ -228,7 +228,7 @@ function SignupComponent() {
               : t('auth.createAccountButton')}
           </Button>
         </form>
-        <div className="text-center text-sm mt-4 text-gray-800">
+        <div className="text-center text-sm mt-4 text-gray-700 dark:text-gray-100">
           {t('auth.alreadyHaveAccount')}{' '}
           <Link to="/login" className="text-primary hover:underline">
             {t('auth.signIn')}

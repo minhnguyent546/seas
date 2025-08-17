@@ -186,7 +186,7 @@ function Login() {
           <h2 className="text-3xl font-bold text-gray-900">
             {t('auth.signInHeading')}
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-100">
             {t('auth.signInSubtext')}
           </p>
         </div>
@@ -195,7 +195,7 @@ function Login() {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.username')}
               </label>
@@ -218,7 +218,7 @@ function Login() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-100"
               >
                 {t('auth.password')}
               </label>
@@ -300,7 +300,7 @@ function Login() {
             )}
           </Button>
         </form>
-        <div className="text-center text-sm mt-4 text-gray-800">
+        <div className="text-center text-sm mt-4 text-gray-700 dark:text-gray-100">
           {t('auth.dontHaveAccount')}{' '}
           <Link to="/signup" className="text-primary hover:underline">
             {t('auth.signup')}
