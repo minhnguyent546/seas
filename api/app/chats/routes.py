@@ -1,7 +1,7 @@
 import uuid
-from typing import Literal
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 import app.chats.service as chats_service
 from app.chats.schemas import (
@@ -24,8 +24,8 @@ router = APIRouter(prefix="/chats", tags=["chats"])
 async def get_chat_sessions(
     session: AsyncSessionDep,
     current_user: CurrentActiveUserDep,
-    offset: int = 0,
-    limit: int = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
     sort_by: Literal["created_at", "updated_at"] | None = None,
     sort_order: Literal["asc", "desc"] = "desc",
 ):
