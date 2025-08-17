@@ -1,7 +1,7 @@
 # SEAS
 
 <p align="center">
-  <a href="https://yarnpkg.com/">
+  <a href="https://ctu-seas.vercel.app/">
     <img alt="SEAS-logo" src="ui/public/images/seas-logo.svg" width="256"/>
   </a>
 </p>
@@ -66,6 +66,8 @@ The repository contains multiple Compose files:
 - `docker-compose.dev.yaml`: development overrides (local builds, hot reload, extra services)
 - `docker-compose.cuda.yaml`: production GPU overrides
 - `docker-compose.dev-cuda.yaml`: development GPU overrides
+- `docker-compose.external-dbs.yaml`: use external Postgres and Qdrant (disables internal `db` and `qdrant` services)
+
 
 First, create a `.env` file in the project root with the following content:
 
@@ -189,7 +191,7 @@ The base compose expects an existing API image (`API_IMAGE` and optional `API_TA
 ```bash
 # Build API image
 cd api
-docker build -t your-registry/seas-api:latest .
+docker build -t your-registry/seas-api:latest -f Dockerfile.cuda .
 # (Optional) push to registry
 # docker push your-registry/seas-api:latest
 
@@ -211,5 +213,5 @@ The provided Compose files do not include the UI container by default. Deploy th
 ```bash
 cd ui
 yarn build
-yarn dlx serve -s dist -l 0.0.0.0:5333
+yarn dlx serve -s dist -l tcp://0.0.0.0:5333
 ```
