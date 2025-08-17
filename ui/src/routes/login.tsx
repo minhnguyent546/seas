@@ -22,8 +22,7 @@ export const Route = createFileRoute('/login')({
 });
 
 function Login() {
-  const { loginMutation, error, resetError, isAuthenticated } =
-    useAuth();
+  const { loginMutation, error, resetError, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
@@ -165,7 +164,7 @@ function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      className="w-full flex items-center justify-center bg-cover bg-center relative h-fluid md:min-h-screen"
       style={{
         backgroundImage: 'url("/images/ctu-background.jpg")',
         backgroundColor: 'rgba(0,0,0,0.5)',
@@ -178,7 +177,7 @@ function Login() {
         className="absolute top-4 right-4 z-10"
       />
 
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-xl">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-none md:rounded-lg shadow-xl flex flex-col justify-center h-full max-h-fluid overflow-auto md:h-auto md:max-h-none md:overflow-visible">
         <div className="text-center">
           <h1 className="mb-5 flex items-center justify-center gap-2 text-4xl font-bold text-blue-600">
             <SeasLogo size={48} className="text-primary" />

@@ -1,9 +1,7 @@
 import { useLanguage } from '@/hooks/useLanguage';
 import {
   IconBooks,
-  IconBuildingCommunity,
   IconCalendarEvent,
-  IconCash,
   IconFileText,
   IconReceipt2,
 } from '@tabler/icons-react';
@@ -20,20 +18,12 @@ export const RecommendedQuestions: React.FC<RecommendedQuestionsProps> = ({
 
   const questions = [
     {
-      textKey: 'chat.recommendedQuestions.admissionRequirements',
+      textKey: 'chat.recommendedQuestions.admissionMethods',
       icon: <IconFileText className="h-6 w-6 text-primary" />,
-    },
-    {
-      textKey: 'chat.recommendedQuestions.scholarships',
-      icon: <IconCash className="h-6 w-6 text-secondary" />,
     },
     {
       textKey: 'chat.recommendedQuestions.programs',
       icon: <IconBooks className="h-6 w-6 text-tertiary" />,
-    },
-    {
-      textKey: 'chat.recommendedQuestions.campusLife',
-      icon: <IconBuildingCommunity className="h-6 w-6 text-primary" />,
     },
     {
       textKey: 'chat.recommendedQuestions.tuitionFees',
