@@ -2,8 +2,11 @@ import {
   ChatsService,
   type ChatSessionCreate,
   type ChatSessionPublic,
+  type ChatSessionUpdate,
+  type ChatsGetChatSessionsData,
 } from '@/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export const CHAT_QUERY_KEYS = {
   sessions: ['chatSessions'] as const,
@@ -48,7 +51,14 @@ export const useChatSessions = () => {
     queryKey: CHAT_QUERY_KEYS.sessions,
     queryFn: async () => {
       try {
-        const sessions = await ChatsService.getChatSessions();
+        const getChatSessionsData: ChatsGetChatSessionsData = {
+          offset: 0,
+          limit: 50,
+          sortBy: 'created_at',
+          sortOrder: 'desc',
+        };
+        const sessions =
+          await ChatsService.getChatSessions(getChatSessionsData);
 
         // If user has no sessions, automatically create one
         if (sessions.length === 0) {
@@ -89,16 +99,98 @@ export const useChatSessions = () => {
       data,
     }: {
       sessionId: string;
-      data: any;
+      data: ChatSessionUpdate;
     }) => {
       return ChatsService.updateChatSession({
         chatSessionId: sessionId,
         requestBody: data,
       });
     },
-    onSuccess: () => {
-      // Invalidate and refetch sessions when updated
-      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    onMutate: async ({ sessionId, data }) => {
+      await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+
+      // Also cancel any in-flight fetch for this session
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
+
+      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
+        CHAT_QUERY_KEYS.sessions,
+      );
+      const previousSession = queryClient.getQueryData<ChatSessionPublic>(
+        CHAT_QUERY_KEYS.session(sessionId),
+      );
+
+      const applyUpdate = (
+        session: ChatSessionPublic,
+        update: Record<string, unknown>,
+      ): ChatSessionPublic => {
+        let updated: ChatSessionPublic = { ...session } as ChatSessionPublic;
+        if (update && typeof update === 'object') {
+          for (const key of Object.keys(update)) {
+            if (
+              key === 'session_metadata' &&
+              typeof (update as any).session_metadata === 'object'
+            ) {
+              updated = {
+                ...updated,
+                session_metadata: {
+                  ...updated.session_metadata,
+                  ...(update as any).session_metadata,
+                },
+              } as ChatSessionPublic;
+            } else {
+              (updated as any)[key] = (update as any)[key];
+            }
+          }
+        }
+        return updated;
+      };
+
+      // Optimistically update sessions list
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === sessionId ? applyUpdate(chat, data || {}) : chat,
+          ) || old,
+      );
+
+      // Optimistically update individual session cache if present
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(sessionId),
+        (old) => (old ? applyUpdate(old, data || {}) : old),
+      );
+
+      return { previousSessions, previousSession };
+    },
+    onError: (_err, variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.sessions,
+          context.previousSessions,
+        );
+      }
+      if (context?.previousSession && variables?.sessionId) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.session(variables.sessionId),
+          context.previousSession,
+        );
+      }
+    },
+    onSuccess: (updatedSession) => {
+      if (!updatedSession) return;
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === updatedSession.id ? updatedSession : chat,
+          ) || old,
+      );
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(updatedSession.id),
+        updatedSession,
+      );
     },
   });
 
@@ -126,8 +218,82 @@ export const useChatSessions = () => {
         requestBody: { session_metadata: updatedMetadata },
       });
     },
-    onSuccess: () => {
+
+    // Optimistic update
+    onMutate: async ({ sessionId, newTitle }) => {
+      await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
+
+      // Snapshot current state
+      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
+        CHAT_QUERY_KEYS.sessions,
+      );
+
+      const previousSession = queryClient.getQueryData<ChatSessionPublic>(
+        CHAT_QUERY_KEYS.session(sessionId),
+      );
+
+      // Optimistically update sessions list
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === sessionId
+              ? {
+                  ...chat,
+                  session_metadata: {
+                    ...chat.session_metadata,
+                    firstMessage: newTitle,
+                  },
+                }
+              : chat,
+          ) || old,
+      );
+
+      // Optimistically update individual session cache if present
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(sessionId),
+        (old) =>
+          old
+            ? {
+                ...old,
+                session_metadata: {
+                  ...old.session_metadata,
+                  firstMessage: newTitle,
+                },
+              }
+            : old,
+      );
+
+      return { previousSessions, previousSession };
+    },
+
+    // Rollback on error
+    onError: (_err, variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.sessions,
+          context.previousSessions,
+        );
+      }
+      if (context?.previousSession && variables?.sessionId) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.session(variables.sessionId),
+          context.previousSession,
+        );
+      }
+    },
+
+    // Refetch for consistency
+    onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      if (variables?.sessionId) {
+        queryClient.invalidateQueries({
+          queryKey: CHAT_QUERY_KEYS.session(variables.sessionId),
+        });
+      }
     },
   });
 
@@ -145,8 +311,63 @@ export const useChatSessions = () => {
         requestBody: { is_favorite: isPinned },
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    onMutate: async ({ sessionId, isPinned }) => {
+      await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
+
+      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
+        CHAT_QUERY_KEYS.sessions,
+      );
+      const previousSession = queryClient.getQueryData<ChatSessionPublic>(
+        CHAT_QUERY_KEYS.session(sessionId),
+      );
+
+      // Optimistically update sessions list
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === sessionId ? { ...chat, is_favorite: isPinned } : chat,
+          ) || old,
+      );
+
+      // Optimistically update individual session cache if present
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(sessionId),
+        (old) => (old ? { ...old, is_favorite: isPinned } : old),
+      );
+
+      return { previousSessions, previousSession };
+    },
+    onError: (_err, variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.sessions,
+          context.previousSessions,
+        );
+      }
+      if (context?.previousSession && variables?.sessionId) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.session(variables.sessionId),
+          context.previousSession,
+        );
+      }
+    },
+    onSuccess: (updatedSession) => {
+      if (!updatedSession) return;
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === updatedSession.id ? updatedSession : chat,
+          ) || old,
+      );
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(updatedSession.id),
+        updatedSession,
+      );
     },
   });
 
@@ -157,34 +378,71 @@ export const useChatSessions = () => {
         chatSessionId: sessionId,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    onMutate: async ({ sessionId }: { sessionId: string }) => {
+      await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
+
+      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
+        CHAT_QUERY_KEYS.sessions,
+      );
+      const previousSession = queryClient.getQueryData<ChatSessionPublic>(
+        CHAT_QUERY_KEYS.session(sessionId),
+      );
+
+      // Optimistically remove from sessions list
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) => old?.filter((chat) => chat.id !== sessionId) || old,
+      );
+
+      // Remove individual session cache for the deleted id
+      queryClient.removeQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
+
+      return { previousSessions, previousSession };
     },
+    onError: (_err, variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.sessions,
+          context.previousSessions,
+        );
+      }
+      if (context?.previousSession && variables?.sessionId) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.session(variables.sessionId),
+          context.previousSession,
+        );
+      }
+    },
+    // No invalidation to avoid extra latency; backend is source of truth but cache already reflects deletion
   });
+
+  const sessionsData = sessionsQuery.data || [];
 
   // Transform sessions to the format expected by the Sidebar
-  const transformedSessions: ChatSessionItem[] =
-    sessionsQuery.data?.map((session) => ({
-      id: session.id,
-      label: getSessionTitle(session),
-      isPinned: session.is_favorite,
-    })) || [];
+  const transformedSessions: ChatSessionItem[] = useMemo(
+    () =>
+      sessionsData.map((session) => ({
+        id: session.id,
+        label: getSessionTitle(session),
+        isPinned: session.is_favorite,
+      })),
+    [sessionsData],
+  );
 
-  // Sort all sessions by created_at (most recently active first)
-  // Show all sessions, including empty ones
-  const sortedSessions = [...transformedSessions].sort((a, b) => {
-    const sessionA = sessionsQuery.data?.find((s) => s.id === a.id);
-    const sessionB = sessionsQuery.data?.find((s) => s.id === b.id);
-
-    if (!sessionA || !sessionB) return 0;
-
-    const dateA = new Date(sessionA.created_at);
-    const dateB = new Date(sessionB.created_at);
-    return dateB.getTime() - dateA.getTime();
-  });
-
-  const pinnedSessions = sortedSessions.filter((session) => session.isPinned);
-  const regularSessions = sortedSessions.filter((session) => !session.isPinned);
+  // Backend returns sessions sorted by created_at desc; preserve order and only split into groups
+  const pinnedSessions = useMemo(
+    () => transformedSessions.filter((s) => s.isPinned),
+    [transformedSessions],
+  );
+  const regularSessions = useMemo(
+    () => transformedSessions.filter((s) => !s.isPinned),
+    [transformedSessions],
+  );
 
   const createSessionWithFirstMessage = async (firstMessage: string) => {
     const session = await createSessionMutation.mutateAsync({
@@ -215,7 +473,7 @@ export const useChatSessions = () => {
 
   return {
     // Data
-    sessions: sortedSessions,
+    sessions: transformedSessions,
     pinnedSessions,
     regularSessions,
     rawSessions: sessionsQuery.data || [],

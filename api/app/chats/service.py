@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
@@ -41,13 +42,28 @@ async def get_chat_session_by_id(
 
 
 async def get_chat_sessions_by_user_id(
-    session: AsyncSession, user_id: str
+    session: AsyncSession,
+    user_id: str,
+    offset: int = 0,
+    limit: int = 50,
+    sort_by: Literal["created_at", "updated_at"] | None = None,
+    sort_order: Literal["asc", "desc"] = "desc",
 ) -> list[ChatSession]:
-    chat_sessions_result = await session.execute(
-        select(ChatSession)
-        .where(ChatSession.user_id == user_id)
-        .order_by(ChatSession.created_at)
-    )
+    statement = select(ChatSession).where(ChatSession.user_id == user_id)
+    if sort_by is not None:
+        sort_field = getattr(ChatSession, sort_by, None)
+        if sort_field is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid sort_by value.",
+            )
+        if sort_order == "asc":
+            statement = statement.order_by(sort_field)
+        else:
+            statement = statement.order_by(sort_field.desc())
+
+    statement = statement.offset(offset).limit(limit)
+    chat_sessions_result = await session.execute(statement)
     chat_sessions = chat_sessions_result.scalars().all()
     return list(chat_sessions)
 

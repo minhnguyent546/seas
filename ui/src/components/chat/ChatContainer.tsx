@@ -36,12 +36,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       messages.length > 0 &&
       isLoadingFromBackend === false
     ) {
-      // Use a small delay to ensure messages are rendered
-      const timer = setTimeout(() => {
+      // Schedule after paint to ensure DOM is ready
+      const raf = requestAnimationFrame(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-
-      return () => clearTimeout(timer);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [isLoadingMessages, messages.length, isLoadingFromBackend, scrollRef]);
 
@@ -93,7 +92,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
               <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full">
                 <SeasLogo size={80} className="text-primary" />
               </div>
-              <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-800 dark:text-white sm:text-4xl">
+              <h1 className="mb-4 text-4xl sm:text-5xl font-bold tracking-tight text-gray-800 dark:text-white">
                 {t('chat.welcomeGreeting', { name: userName })}
               </h1>
               <p className="mb-8 text-lg text-gray-500 dark:text-gray-400">

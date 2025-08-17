@@ -5,7 +5,7 @@
     "selectLanguage": "Chọn ngôn ngữ"
   },
   "chat": {
-    "placeholder": "Hỏi về Chương trình Tuyển sinh của CTU...",
+    "placeholder": "Hỏi về Chương trình Tuyển sinh",
     "send": "Gửi",
     "clear": "Xóa cuộc hội thoại",
     "newConversation": "Trò chuyện mới",
@@ -17,10 +17,8 @@
     "loadingSessions": "Đang tải phiên trò chuyện...",
     "loadingConversation": "Đang tải cuộc hội thoại...",
     "recommendedQuestions": {
-      "admissionRequirements": "Yêu cầu tuyển sinh là gì?",
-      "scholarships": "Làm thế nào để nộp đơn xin học bổng?",
+      "admissionMethods": "Các phương thức xét tuyển của trường?",
       "programs": "Trường có những chương trình học nào?",
-      "campusLife": "Hãy kể cho tôi về cuộc sống trong khuôn viên trường.",
       "tuitionFees": "Học phí là bao nhiêu?",
       "applicationDeadline": "Hạn chót nộp đơn là khi nào?"
     }
@@ -107,7 +105,7 @@
     "history": "Lịch sử",
     "openSidebar": "Mở thanh bên",
     "collapseSidebar": "Thu gọn thanh bên",
-    "newChat": "Chat mới",
+    "newChat": "Phiên trò chuyện mới",
     "rename": "Đổi tên",
     "sessionName": "Tên phiên",
     "pinSession": "Ghim phiên",

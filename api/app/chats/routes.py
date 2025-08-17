@@ -1,6 +1,7 @@
 import uuid
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 import app.chats.service as chats_service
 from app.chats.schemas import (
@@ -21,13 +22,23 @@ router = APIRouter(prefix="/chats", tags=["chats"])
 
 @router.get("/chat_sessions", response_model=list[ChatSessionPublic])
 async def get_chat_sessions(
-    session: AsyncSessionDep, current_user: CurrentActiveUserDep
+    session: AsyncSessionDep,
+    current_user: CurrentActiveUserDep,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    sort_by: Literal["created_at", "updated_at"] | None = None,
+    sort_order: Literal["asc", "desc"] = "desc",
 ):
     """
     Get all chat sessions for the current user.
     """
     chat_sessions = await chats_service.get_chat_sessions_by_user_id(
-        session=session, user_id=str(current_user.id)
+        session=session,
+        user_id=str(current_user.id),
+        offset=offset,
+        limit=limit,
+        sort_by=sort_by,
+        sort_order=sort_order,
     )
 
     return chat_sessions
