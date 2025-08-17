@@ -36,12 +36,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       messages.length > 0 &&
       isLoadingFromBackend === false
     ) {
-      // Use a small delay to ensure messages are rendered
-      const timer = setTimeout(() => {
+      // Schedule after paint to ensure DOM is ready
+      const raf = requestAnimationFrame(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-
-      return () => clearTimeout(timer);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [isLoadingMessages, messages.length, isLoadingFromBackend, scrollRef]);
 
