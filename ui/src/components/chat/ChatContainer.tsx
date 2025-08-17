@@ -26,7 +26,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     handleSendMessage,
     submitMessageFeedback,
   } = useChat({ sessionId });
-  const { scrollRef } = useAutoScroll(messages);
+  const { scrollRef } = useAutoScroll(messages.length);
   const { t } = useLanguage();
   const hasHandledFirstMessage = useRef(false);
 
