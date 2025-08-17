@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 from collections.abc import AsyncGenerator
 from io import StringIO
@@ -63,7 +64,7 @@ async def process_query(
                 query_params.chat_session_id is not None
                 and final_response.strip()
             ):
-                await create_new_message(
+                response_message_db = await create_new_message(
                     session=session,
                     chat_session_id=str(query_params.chat_session_id),
                     chat_message_create=ChatMessageCreate(
@@ -71,6 +72,7 @@ async def process_query(
                     ),
                     user_id=str(current_user.id),
                 )
+                yield f"<metadata>{json.dumps({'message_id': str(response_message_db.id)})}</metadata>"
 
         except asyncio.TimeoutError as timeout_err:
             logger.error("Streaming timeout")

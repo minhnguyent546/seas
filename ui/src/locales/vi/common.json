@@ -86,7 +86,8 @@
     "sort": "Sắp xếp",
     "clear": "Xóa",
     "apply": "Áp dụng",
-    "reset": "Đặt lại"
+    "reset": "Đặt lại",
+    "submit": "Gửi"
   },
   "messages": {
     "success": "Thao tác hoàn thành thành công",
@@ -99,6 +100,21 @@
   "languages": {
     "en": "English",
     "vi": "Tiếng Việt"
+  },
+  "feedback": {
+    "reason": "Lý do",
+    "detailsOptional": "Chi tiết (không bắt buộc)",
+    "detailsPlaceholder": "Thêm chi tiết để giúp chúng tôi cải thiện câu trả lời",
+    "like": {
+      "accurateInformation": "Thông tin chính xác",
+      "helpfulAnswer": "Câu trả lời hữu ích"
+    },
+    "dislike": {
+      "notRelevant": "Không liên quan",
+      "incorrectInformation": "Thông tin không chính xác",
+      "incompleteAnswer": "Câu trả lời chưa đầy đủ",
+      "other": "Khác"
+    }
   },
   "sidebar": {
     "pinned": "Đã ghim",
