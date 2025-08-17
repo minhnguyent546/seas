@@ -427,6 +427,7 @@ export class ChatsService {
      * Create Message Feedback
      * Create a message feedback.
      * @param data The data for the request.
+     * @param data.chatMessageId
      * @param data.requestBody
      * @returns ChatMessageFeedbackPublic Successful Response
      * @throws ApiError
@@ -434,7 +435,10 @@ export class ChatsService {
     public static createMessageFeedback(data: ChatsCreateMessageFeedbackData): CancelablePromise<ChatsCreateMessageFeedbackResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/chats/message-feedback',
+            url: '/api/v1/chats/messages/{chat_message_id}/feedback',
+            path: {
+                chat_message_id: data.chatMessageId
+            },
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {

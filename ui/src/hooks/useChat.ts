@@ -251,8 +251,8 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
       detail?: string;
     }) => {
       return ChatsService.createMessageFeedback({
+        chatMessageId: messageId,
         requestBody: {
-          chat_message_id: messageId,
           feedback,
           detail: detail ?? undefined,
         },

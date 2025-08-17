@@ -61,6 +61,7 @@ class ChatMessage(Base):
     chat_message_feedback: Mapped["ChatMessageFeedback | None"] = relationship(
         back_populates="chat_message",
         cascade="all, delete, delete-orphan",
+        single_parent=True,
         uselist=False,
     )
 

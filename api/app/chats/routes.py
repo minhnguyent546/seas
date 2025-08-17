@@ -188,11 +188,12 @@ async def create_new_message(
 
 
 @router.post(
-    "/message-feedback",
+    "/messages/{chat_message_id}/feedback",
     response_model=ChatMessageFeedbackPublic,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_message_feedback(
+    chat_message_id: uuid.UUID,
     chat_message_feedback_create: ChatMessageFeedbackCreate,
     session: AsyncSessionDep,
     current_user: CurrentActiveUserDep,
@@ -200,6 +201,7 @@ async def create_message_feedback(
     """Create a message feedback."""
     message_feedback = await chats_service.create_message_feedback(
         session=session,
+        chat_message_id=str(chat_message_id),
         chat_message_feedback_create=chat_message_feedback_create,
         current_user=current_user,
     )

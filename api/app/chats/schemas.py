@@ -1,8 +1,8 @@
 import enum
 from datetime import datetime
-from typing import Any
+from typing import Annotated, Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas import Sender
 
@@ -42,9 +42,8 @@ class ChatMessageFeedbackType(str, enum.Enum):
 
 
 class ChatMessageFeedbackCreate(BaseModel):
-    chat_message_id: str
     feedback: ChatMessageFeedbackType
-    detail: str | None = None
+    detail: Annotated[str | None, Field(max_length=1024)] = None
 
 
 class ChatMessageFeedbackPublic(BaseModel):

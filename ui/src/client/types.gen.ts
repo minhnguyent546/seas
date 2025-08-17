@@ -47,7 +47,6 @@ export type ChatMessageCreate = {
 };
 
 export type ChatMessageFeedbackCreate = {
-    chat_message_id: string;
     feedback: ChatMessageFeedbackType;
     detail?: (string | null);
 };
@@ -375,6 +374,7 @@ export type ChatsCreateNewMessageData = {
 export type ChatsCreateNewMessageResponse = (ChatMessagePublic);
 
 export type ChatsCreateMessageFeedbackData = {
+    chatMessageId: string;
     requestBody: ChatMessageFeedbackCreate;
 };
 

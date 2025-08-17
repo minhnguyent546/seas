@@ -3,6 +3,7 @@ from typing import Literal
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import load_only, selectinload
 
 from app.chats.models import ChatMessage, ChatMessageFeedback, ChatSession
@@ -239,12 +240,13 @@ async def create_new_message(
 
 async def create_message_feedback(
     session: AsyncSession,
+    chat_message_id: str,
     chat_message_feedback_create: ChatMessageFeedbackCreate,
     current_user: User,
 ) -> ChatMessageFeedback:
     chat_message_result = await session.execute(
         select(ChatMessage)
-        .where(ChatMessage.id == chat_message_feedback_create.chat_message_id)
+        .where(ChatMessage.id == chat_message_id)
         .options(
             selectinload(ChatMessage.chat_session),
             load_only(
@@ -286,9 +288,19 @@ async def create_message_feedback(
         )
 
     message_feedback = ChatMessageFeedback(
-        **chat_message_feedback_create.model_dump()
+        **chat_message_feedback_create.model_dump(),
+        chat_message_id=chat_message_id,
     )
     session.add(message_feedback)
-    await session.commit()
-    await session.refresh(message_feedback)
+    try:
+        await session.commit()
+        await session.refresh(message_feedback)
+    except IntegrityError as err:
+        await session.rollback()
+        # Unique constraint on chat_message_id violated due to a concurrent insert
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Feedback already exists",
+        ) from err
+
     return message_feedback
