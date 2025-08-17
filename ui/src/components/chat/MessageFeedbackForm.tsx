@@ -20,11 +20,11 @@ interface FeedbackOption {
 }
 
 const LIKE_OPTIONS: FeedbackOption[] = [
+  { value: 'LIKE_HELPFUL_ANSWER', labelKey: 'feedback.like.helpfulAnswer' },
   {
     value: 'LIKE_ACCURATE_INFORMATION',
     labelKey: 'feedback.like.accurateInformation',
   },
-  { value: 'LIKE_HELPFUL_ANSWER', labelKey: 'feedback.like.helpfulAnswer' },
 ];
 
 const DISLIKE_OPTIONS: FeedbackOption[] = [

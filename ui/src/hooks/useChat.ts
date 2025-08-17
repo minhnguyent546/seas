@@ -183,11 +183,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
             msg.id === botResponse.id ? { ...msg, timestamp: new Date() } : msg,
           ),
         );
-
-        // After streaming completes, refresh messages from backend to sync real IDs and feedback state
-        if (chatSessionId) {
-          await loadMessages(chatSessionId);
-        }
       } catch (error) {
         console.error('Streaming error:', error);
 
