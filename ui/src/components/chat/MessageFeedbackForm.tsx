@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/hooks/useLanguage';
 import { IconX } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface MessageFeedbackFormProps {
   intent: 'like' | 'dislike';
@@ -51,6 +51,18 @@ export const MessageFeedbackForm: React.FC<MessageFeedbackFormProps> = ({
     options[0].value,
   );
   const [detail, setDetail] = useState('');
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'nearest',
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +71,7 @@ export const MessageFeedbackForm: React.FC<MessageFeedbackFormProps> = ({
 
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit}
       className="relative mt-2 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/40"
     >
