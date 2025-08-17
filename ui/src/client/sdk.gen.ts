@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthLoginViaGithubOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatbotQueryData, ChatbotQueryResponse, ChatbotQueryEvalData, ChatbotQueryEvalResponse, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetLatestChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsDeleteChatSessionData, ChatsDeleteChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, RagAddDocumentToDatabaseData, RagAddDocumentToDatabaseResponse, RagAddDocumentToDatabaseInBatchData, RagAddDocumentToDatabaseInBatchResponse, RagSimilaritySearchData, RagSimilaritySearchResponse, RagSplitMarkdownOnHeadersData, RagSplitMarkdownOnHeadersResponse, RagQueryExpansionData, RagQueryExpansionResponse, RagExportDocumentSectionsChunksResponse, RagGetRagModelsStatusResponse, RagRecomputeEmbeddingsData, RagRecomputeEmbeddingsResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
+import type { AuthLoginData, AuthLoginResponse, AuthLoginViaGoogleOauth2Data, AuthLoginViaGithubOauth2Data, AuthSignupData, AuthSignupResponse, AuthTestTokenResponse, AuthSignoutResponse, AuthRecoverPasswordData, AuthRecoverPasswordResponse, AuthResetPasswordData, AuthResetPasswordResponse, AuthRecoverPasswordHtmlContentData, AuthRecoverPasswordHtmlContentResponse, ChatbotQueryData, ChatbotQueryResponse, ChatbotQueryEvalData, ChatbotQueryEvalResponse, ChatsGetChatSessionsData, ChatsGetChatSessionsResponse, ChatsCreateChatSessionData, ChatsCreateChatSessionResponse, ChatsGetLatestChatSessionResponse, ChatsGetChatSessionData, ChatsGetChatSessionResponse, ChatsUpdateChatSessionData, ChatsUpdateChatSessionResponse, ChatsDeleteChatSessionData, ChatsDeleteChatSessionResponse, ChatsGetChatMessagesData, ChatsGetChatMessagesResponse, ChatsCreateNewMessageData, ChatsCreateNewMessageResponse, RagAddDocumentToDatabaseData, RagAddDocumentToDatabaseResponse, RagAddDocumentToDatabaseInBatchData, RagAddDocumentToDatabaseInBatchResponse, RagSimilaritySearchData, RagSimilaritySearchResponse, RagSplitMarkdownOnHeadersData, RagSplitMarkdownOnHeadersResponse, RagQueryExpansionData, RagQueryExpansionResponse, RagExportDocumentSectionsChunksResponse, RagGetRagModelsStatusResponse, RagRecomputeEmbeddingsData, RagRecomputeEmbeddingsResponse, UsersGetUsersData, UsersGetUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersGetUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateMyPasswordData, UsersUpdateMyPasswordResponse, UsersGetUserByIdData, UsersGetUserByIdResponse, UsersUpdateUserByIdData, UsersUpdateUserByIdResponse, UsersDeleteUserByIdData, UsersDeleteUserByIdResponse, UtilsHealthCheckResponse, UtilsTestSendEmailData, UtilsTestSendEmailResponse, UtilsTestSendEmailBackgroundData, UtilsTestSendEmailBackgroundResponse } from './types.gen';
 
 export class AuthService {
     /**
@@ -254,14 +254,28 @@ export class ChatbotService {
 export class ChatsService {
     /**
      * Get Chat Sessions
-     * Get all chat sessions for the current user.
+     * Get all chat sessions (sorted by created_at in descending order) for the current user.
+     * @param data The data for the request.
+     * @param data.offset
+     * @param data.limit
+     * @param data.sortBy
+     * @param data.sortOrder
      * @returns ChatSessionPublic Successful Response
      * @throws ApiError
      */
-    public static getChatSessions(): CancelablePromise<ChatsGetChatSessionsResponse> {
+    public static getChatSessions(data: ChatsGetChatSessionsData = {}): CancelablePromise<ChatsGetChatSessionsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/chats/chat_sessions'
+            url: '/api/v1/chats/chat_sessions',
+            query: {
+                offset: data.offset,
+                limit: data.limit,
+                sort_by: data.sortBy,
+                sort_order: data.sortOrder
+            },
+            errors: {
+                422: 'Validation Error'
+            }
         });
     }
     
