@@ -10,6 +10,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.chats.schemas import ChatMessageFeedbackType
 from app.core.base import Base
 from app.core.config import timezone_vi
 from app.schemas import Sender
@@ -53,6 +54,36 @@ class ChatMessage(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(tz=timezone_vi)
     )
+
     chat_session: Mapped["ChatSession"] = relationship(
         back_populates="chat_messages"
+    )
+    chat_message_feedback: Mapped["ChatMessageFeedback | None"] = relationship(
+        back_populates="chat_message",
+        cascade="all, delete, delete-orphan",
+        uselist=False,
+    )
+
+
+class ChatMessageFeedback(Base):
+    __tablename__ = "chat_message_feedback"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    chat_message_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("chat_messages.id", ondelete="CASCADE"),
+        index=True,
+        unique=True,
+    )
+    feedback: Mapped[ChatMessageFeedbackType] = mapped_column(
+        Enum(ChatMessageFeedbackType)
+    )
+    detail: Mapped[str | None] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(tz=timezone_vi)
+    )
+
+    chat_message: Mapped["ChatMessage"] = relationship(
+        back_populates="chat_message_feedback"
     )
