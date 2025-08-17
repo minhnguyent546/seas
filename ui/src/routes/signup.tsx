@@ -228,7 +228,7 @@ function SignupComponent() {
               : t('auth.createAccountButton')}
           </Button>
         </form>
-        <div className="text-center text-sm mt-4">
+        <div className="text-center text-sm mt-4 text-gray-800">
           {t('auth.alreadyHaveAccount')}{' '}
           <Link to="/login" className="text-primary hover:underline">
             {t('auth.signIn')}

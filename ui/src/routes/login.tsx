@@ -300,7 +300,7 @@ function Login() {
             )}
           </Button>
         </form>
-        <div className="text-center text-sm mt-4">
+        <div className="text-center text-sm mt-4 text-gray-800">
           {t('auth.dontHaveAccount')}{' '}
           <Link to="/signup" className="text-primary hover:underline">
             {t('auth.signup')}
