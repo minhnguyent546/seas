@@ -46,12 +46,28 @@ export type ChatMessageCreate = {
     content: string;
 };
 
+export type ChatMessageFeedbackCreate = {
+    chat_message_id: string;
+    feedback: ChatMessageFeedbackType;
+    detail?: (string | null);
+};
+
+export type ChatMessageFeedbackPublic = {
+    id: string;
+    chat_message_id: string;
+    feedback: ChatMessageFeedbackType;
+    created_at: string;
+};
+
+export type ChatMessageFeedbackType = 'LIKE_ACCURATE_INFORMATION' | 'LIKE_HELPFUL_ANSWER' | 'DISLIKE_NOT_RELEVANT' | 'DISLIKE_INCORRECT_INFORMATION' | 'DISLIKE_INCOMPLETE_ANSWER' | 'DISLIKE_OTHER';
+
 export type ChatMessagePublic = {
     id: string;
     chat_session_id: string;
     sender: Sender;
     content: string;
     created_at: string;
+    chat_message_feedback?: (ChatMessageFeedbackPublic | null);
 };
 
 export type ChatSessionCreate = {
@@ -349,7 +365,7 @@ export type ChatsGetChatMessagesData = {
     chatSessionId: string;
 };
 
-export type ChatsGetChatMessagesResponse = (unknown);
+export type ChatsGetChatMessagesResponse = (Array<ChatMessagePublic>);
 
 export type ChatsCreateNewMessageData = {
     chatSessionId: string;
@@ -357,6 +373,12 @@ export type ChatsCreateNewMessageData = {
 };
 
 export type ChatsCreateNewMessageResponse = (ChatMessagePublic);
+
+export type ChatsCreateMessageFeedbackData = {
+    requestBody: ChatMessageFeedbackCreate;
+};
+
+export type ChatsCreateMessageFeedbackResponse = (ChatMessageFeedbackPublic);
 
 export type RagAddDocumentToDatabaseData = {
     formData: Body_rag_add_document_to_database;
