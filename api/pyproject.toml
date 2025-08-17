@@ -55,8 +55,8 @@ dev = [
 ]
 
 [project.optional-dependencies]
-flagembedding-cpu = ["flagembedding>=1.3.5", "torch>=2.6.0,<3.0.0"]
-flagembedding-cu126 = ["flagembedding>=1.3.5", "torch>=2.6.0,<3.0.0"]
+flagembedding-cpu = ["flagembedding>=1.3.5,<1.4.0", "torch>=2.6.0,<2.8.0"]
+flagembedding-cu126 = ["flagembedding>=1.3.5,<1.4.0", "torch>=2.6.0,<2.8.0"]
 
 [tool.uv]
 conflicts = [

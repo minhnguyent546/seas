@@ -309,6 +309,13 @@ export type ChatbotQueryEvalData = {
 
 export type ChatbotQueryEvalResponse = (unknown);
 
+export type ChatsGetChatSessionsData = {
+    limit?: number;
+    offset?: number;
+    sortBy?: ('created_at' | 'updated_at' | null);
+    sortOrder?: 'asc' | 'desc';
+};
+
 export type ChatsGetChatSessionsResponse = (Array<ChatSessionPublic>);
 
 export type ChatsCreateChatSessionData = {
