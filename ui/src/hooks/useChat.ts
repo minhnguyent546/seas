@@ -1,7 +1,8 @@
-import type { ChatMessagePublic } from '@/client';
+import type { ChatMessageFeedbackType, ChatMessagePublic } from '@/client';
 import { ChatsService, OpenAPI } from '@/client';
 import { generateId, getErrorMessage } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
+import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseChatProps {
@@ -16,6 +17,11 @@ type UseChatReturn = {
   handleSendMessage: (content: string) => Promise<void>;
   clearMessages: () => void;
   loadMessages: (chatSessionId: string) => Promise<void>;
+  submitMessageFeedback: (args: {
+    messageId: string;
+    feedback: ChatMessageFeedbackType;
+    detail?: string;
+  }) => Promise<void>;
 };
 
 export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
@@ -72,6 +78,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
           content: msg.content || '',
           // Parse ISO datetime format like "2025-08-11T16:34:53.066705Z"
           timestamp: new Date(msg.created_at || new Date()),
+          feedback: msg.chat_message_feedback?.feedback ?? null,
         }),
       );
 
@@ -100,6 +107,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
         role: 'assistant',
         content: '',
         timestamp: new Date(),
+        feedback: null,
       };
 
       // Add the initial empty bot message
@@ -175,6 +183,11 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
             msg.id === botResponse.id ? { ...msg, timestamp: new Date() } : msg,
           ),
         );
+
+        // After streaming completes, refresh messages from backend to sync real IDs and feedback state
+        if (chatSessionId) {
+          await loadMessages(chatSessionId);
+        }
       } catch (error) {
         console.error('Streaming error:', error);
 
@@ -227,6 +240,48 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
     [streamResponse, sessionId],
   );
 
+  const feedbackMutation = useMutation({
+    mutationFn: async ({
+      messageId,
+      feedback,
+      detail,
+    }: {
+      messageId: string;
+      feedback: ChatMessageFeedbackType;
+      detail?: string;
+    }) => {
+      return ChatsService.createMessageFeedback({
+        requestBody: {
+          chat_message_id: messageId,
+          feedback,
+          detail: detail ?? undefined,
+        },
+      });
+    },
+    onMutate: async (variables) => {
+      const { messageId, feedback } = variables;
+      // Snapshot previous state for rollback
+      const previousMessages = messages;
+      // Optimistically set feedback
+      setMessages((prev) =>
+        prev.map((m) => (m.id === messageId ? { ...m, feedback } : m)),
+      );
+      return { previousMessages };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousMessages) {
+        setMessages(context.previousMessages);
+      }
+    },
+    // Removed onSettled refetch to avoid reloading all messages after feedback submission
+  });
+
+  const submitMessageFeedback: UseChatReturn['submitMessageFeedback'] = async (
+    args,
+  ) => {
+    await feedbackMutation.mutateAsync(args);
+  };
+
   const clearMessages = useCallback(() => {
     setMessages([]);
   }, []);
@@ -239,5 +294,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
     handleSendMessage,
     clearMessages,
     loadMessages,
+    submitMessageFeedback,
   };
 };

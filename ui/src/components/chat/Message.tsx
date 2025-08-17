@@ -15,6 +15,11 @@ interface MessageProps {
   isLastMessage?: boolean;
   isLoading?: boolean;
   isLoadingFromBackend?: boolean;
+  onSubmitFeedback?: (args: {
+    messageId: string;
+    feedback: ChatMessageFeedbackType;
+    detail?: string;
+  }) => Promise<void>;
 }
 
 export const UserMessage: React.FC<MessageProps> = ({ message }) => {
@@ -39,6 +44,7 @@ export const BotMessage: React.FC<MessageProps> = ({
   isLoading = false,
   isLastMessage = false,
   isLoadingFromBackend = false,
+  onSubmitFeedback,
 }) => {
   // Only apply typing effect if this is the last message, not loading from backend, and has content
   const shouldUseTypingEffect =
@@ -52,13 +58,20 @@ export const BotMessage: React.FC<MessageProps> = ({
     null | 'like' | 'dislike'
   >(null);
 
+  const hasFeedback = Boolean(message.feedback);
+  const isLike = hasFeedback && String(message.feedback).startsWith('LIKE');
+
   const handleSubmitFeedback = useCallback(
-    (_payload: { feedback: ChatMessageFeedbackType; detail?: string }) => {
-      // For now just close the form; API integration will be added next step
-      // console.log('Submit feedback', message.id, payload);
+    async (payload: { feedback: ChatMessageFeedbackType; detail?: string }) => {
+      if (!onSubmitFeedback) return;
+      await onSubmitFeedback({
+        messageId: message.id,
+        feedback: payload.feedback,
+        detail: payload.detail,
+      });
       setFeedbackIntent(null);
     },
-    [],
+    [message.id, onSubmitFeedback],
   );
 
   return (
@@ -92,27 +105,53 @@ export const BotMessage: React.FC<MessageProps> = ({
                 >
                   <IconCopy className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
-                  onClick={() => setFeedbackIntent('like')}
-                  title="Useful"
-                >
-                  <IconThumbUp className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
-                  onClick={() => setFeedbackIntent('dislike')}
-                  title="Needs improvement"
-                >
-                  <IconThumbDown className="h-4 w-4" />
-                </Button>
+                {hasFeedback ? (
+                  isLike ? (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      disabled
+                      className="h-8 w-8 bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                      title="Feedback: Like"
+                    >
+                      <IconThumbUp className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      disabled
+                      className="h-8 w-8 bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                      title="Feedback: Dislike"
+                    >
+                      <IconThumbDown className="h-4 w-4" />
+                    </Button>
+                  )
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
+                      onClick={() => setFeedbackIntent('like')}
+                      title="Useful"
+                    >
+                      <IconThumbUp className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
+                      onClick={() => setFeedbackIntent('dislike')}
+                      title="Needs improvement"
+                    >
+                      <IconThumbDown className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
-            {feedbackIntent && (
+            {feedbackIntent && !hasFeedback && (
               <MessageFeedbackForm
                 intent={feedbackIntent}
                 onCancel={() => setFeedbackIntent(null)}
@@ -141,6 +180,7 @@ export const Message: React.FC<MessageProps> = ({
   isLoading,
   isLastMessage,
   isLoadingFromBackend,
+  onSubmitFeedback,
 }) => {
   switch (message.role) {
     case 'user':
@@ -152,6 +192,7 @@ export const Message: React.FC<MessageProps> = ({
           isLoading={isLoading}
           isLastMessage={isLastMessage}
           isLoadingFromBackend={isLoadingFromBackend}
+          onSubmitFeedback={onSubmitFeedback}
         />
       );
     case 'system':
