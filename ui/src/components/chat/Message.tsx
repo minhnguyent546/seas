@@ -24,7 +24,7 @@ interface MessageProps {
 
 export const UserMessage: React.FC<MessageProps> = ({ message }) => {
   return (
-    <div className="group flex justify-end py-4">
+    <div className="group flex justify-end py-4 text-gray-700 dark:text-gray-100">
       <div className="max-w-[80%] space-y-2">
         <div className="prose prose-sm dark:prose-invert bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
           {message.content}
@@ -75,7 +75,7 @@ export const BotMessage: React.FC<MessageProps> = ({
   );
 
   return (
-    <div className="group relative flex items-start pb-4">
+    <div className="group relative flex items-start pb-4 text-gray-700 dark:text-gray-100">
       <div className="flex-1 space-y-2">
         <div className="p-4 pl-0 pb-0 rounded-xl bg-white dark:bg-gray-900">
           {isEmptyAndLoading ? (

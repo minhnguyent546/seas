@@ -17,10 +17,13 @@ export function Loading({
       sx={{
         display: 'flex',
         height: fullScreen ? '100vh' : '100%',
+        width: fullScreen ? '100vw' : '100%',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         gap: 2,
+        bgcolor: fullScreen ? '#ffffff' : 'transparent',
+        color: fullScreen ? '#111827' : 'inherit',
       }}
     >
       <SeasLogo size={60} className="text-primary mb-2" />

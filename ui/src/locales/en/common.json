@@ -2,7 +2,7 @@
   "nav": {
     "settings": "Settings",
     "logout": "Sign out",
-    "selectLanguage": "Select Language"
+    "selectLanguage": "Select language"
   },
   "chat": {
     "placeholder": "Ask about the Enrollment Program",
