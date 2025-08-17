@@ -1,3 +1,5 @@
+import { type ChatMessageFeedbackType } from '@/client';
+import { MessageFeedbackForm } from '@/components/chat/MessageFeedbackForm';
 import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useMarkdownRenderer } from '@/hooks/useMarkdownRenderer';
@@ -6,7 +8,7 @@ import { useTypingEffect } from '@/hooks/useTypingEffect';
 import { formatMessageDate } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
 import { IconCopy, IconThumbDown, IconThumbUp } from '@tabler/icons-react';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 interface MessageProps {
   message: MessageType;
@@ -43,10 +45,21 @@ export const BotMessage: React.FC<MessageProps> = ({
     isLastMessage && !isLoadingFromBackend && Boolean(message.content);
   const displayText = useTypingEffect(message.content, shouldUseTypingEffect);
   const renderedMarkdown = useMarkdownRenderer(displayText);
-  const { handleCopyMessage, handleLikeMessage, handleDislikeMessage } =
-    useMessageActions();
+  const { handleCopyMessage } = useMessageActions();
 
   const isEmptyAndLoading = !message.content && isLoading;
+  const [feedbackIntent, setFeedbackIntent] = useState<
+    null | 'like' | 'dislike'
+  >(null);
+
+  const handleSubmitFeedback = useCallback(
+    (_payload: { feedback: ChatMessageFeedbackType; detail?: string }) => {
+      // For now just close the form; API integration will be added next step
+      // console.log('Submit feedback', message.id, payload);
+      setFeedbackIntent(null);
+    },
+    [],
+  );
 
   return (
     <div className="group relative flex items-start pb-4">
@@ -64,39 +77,48 @@ export const BotMessage: React.FC<MessageProps> = ({
           )}
         </div>
         {!isEmptyAndLoading && (
-          <div className="flex items-center gap-2">
-            <div className="text-xs text-gray-500">
-              {formatMessageDate(message.timestamp)}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <div className="text-xs text-gray-500">
+                {formatMessageDate(message.timestamp)}
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
+                  onClick={() => handleCopyMessage(message.content)}
+                  title="Copy"
+                >
+                  <IconCopy className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
+                  onClick={() => setFeedbackIntent('like')}
+                  title="Useful"
+                >
+                  <IconThumbUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300 cursor-pointer"
+                  onClick={() => setFeedbackIntent('dislike')}
+                  title="Needs improvement"
+                >
+                  <IconThumbDown className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300"
-                onClick={() => handleCopyMessage(message.content)}
-                title="Copy"
-              >
-                <IconCopy className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300"
-                onClick={() => handleLikeMessage(message.id)}
-                title="Useful"
-              >
-                <IconThumbUp className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 animate-in fade-in-0 slide-in-from-left-2 duration-300"
-                onClick={() => handleDislikeMessage(message.id)}
-                title="Needs improvement"
-              >
-                <IconThumbDown className="h-4 w-4" />
-              </Button>
-            </div>
+            {feedbackIntent && (
+              <MessageFeedbackForm
+                intent={feedbackIntent}
+                onCancel={() => setFeedbackIntent(null)}
+                onSubmit={handleSubmitFeedback}
+              />
+            )}
           </div>
         )}
       </div>
