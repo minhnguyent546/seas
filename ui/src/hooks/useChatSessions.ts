@@ -105,9 +105,86 @@ export const useChatSessions = () => {
         requestBody: data,
       });
     },
-    onSuccess: () => {
-      // Invalidate and refetch sessions when updated
-      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+    onMutate: async ({ sessionId, data }) => {
+      await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+
+      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
+        CHAT_QUERY_KEYS.sessions,
+      );
+      const previousSession = queryClient.getQueryData<ChatSessionPublic>(
+        CHAT_QUERY_KEYS.session(sessionId),
+      );
+
+      const applyUpdate = (
+        session: ChatSessionPublic,
+        update: Record<string, unknown>,
+      ): ChatSessionPublic => {
+        let updated: ChatSessionPublic = { ...session } as ChatSessionPublic;
+        if (update && typeof update === 'object') {
+          for (const key of Object.keys(update)) {
+            if (
+              key === 'session_metadata' &&
+              typeof (update as any).session_metadata === 'object'
+            ) {
+              updated = {
+                ...updated,
+                session_metadata: {
+                  ...updated.session_metadata,
+                  ...(update as any).session_metadata,
+                },
+              } as ChatSessionPublic;
+            } else {
+              (updated as any)[key] = (update as any)[key];
+            }
+          }
+        }
+        return updated;
+      };
+
+      // Optimistically update sessions list
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === sessionId ? applyUpdate(chat, data || {}) : chat,
+          ) || old,
+      );
+
+      // Optimistically update individual session cache if present
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(sessionId),
+        (old) => (old ? applyUpdate(old, data || {}) : old),
+      );
+
+      return { previousSessions, previousSession };
+    },
+    onError: (_err, variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.sessions,
+          context.previousSessions,
+        );
+      }
+      if (context?.previousSession && variables?.sessionId) {
+        queryClient.setQueryData(
+          CHAT_QUERY_KEYS.session(variables.sessionId),
+          context.previousSession,
+        );
+      }
+    },
+    onSuccess: (updatedSession) => {
+      if (!updatedSession) return;
+      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
+        CHAT_QUERY_KEYS.sessions,
+        (old) =>
+          old?.map((chat) =>
+            chat.id === updatedSession.id ? updatedSession : chat,
+          ) || old,
+      );
+      queryClient.setQueryData<ChatSessionPublic | undefined>(
+        CHAT_QUERY_KEYS.session(updatedSession.id),
+        updatedSession,
+      );
     },
   });
 
