@@ -1,0 +1,21 @@
+# This optional compose file may be used to deploy with external databases.
+
+services:
+  db:
+    deploy:
+      replicas: 0
+
+  qdrant:
+    deploy:
+      replicas: 0
+
+  api:
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST?Variable not set}
+      - POSTGRES_PORT=${POSTGRES_PORT?Variable not set}
+      - QDRANT_HOST=${QDRANT_HOST?Variable not set}
+      - QDRANT_PORT=${QDRANT_PORT?Variable not set}
+
+volumes:
+  seas-db-data: null
+  seas-qdrant-data: null
