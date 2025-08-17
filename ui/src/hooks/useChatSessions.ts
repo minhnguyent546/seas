@@ -2,6 +2,7 @@ import {
   ChatsService,
   type ChatSessionCreate,
   type ChatSessionPublic,
+  type ChatSessionUpdate,
   type ChatsGetChatSessionsData,
 } from '@/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -98,7 +99,7 @@ export const useChatSessions = () => {
       data,
     }: {
       sessionId: string;
-      data: any;
+      data: ChatSessionUpdate;
     }) => {
       return ChatsService.updateChatSession({
         chatSessionId: sessionId,
@@ -107,6 +108,11 @@ export const useChatSessions = () => {
     },
     onMutate: async ({ sessionId, data }) => {
       await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+
+      // Also cancel any in-flight fetch for this session
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
 
       const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
         CHAT_QUERY_KEYS.sessions,
@@ -216,6 +222,9 @@ export const useChatSessions = () => {
     // Optimistic update
     onMutate: async ({ sessionId, newTitle }) => {
       await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
 
       // Snapshot current state
       const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
@@ -304,6 +313,9 @@ export const useChatSessions = () => {
     },
     onMutate: async ({ sessionId, isPinned }) => {
       await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
 
       const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
         CHAT_QUERY_KEYS.sessions,
@@ -368,6 +380,9 @@ export const useChatSessions = () => {
     },
     onMutate: async ({ sessionId }: { sessionId: string }) => {
       await queryClient.cancelQueries({ queryKey: CHAT_QUERY_KEYS.sessions });
+      await queryClient.cancelQueries({
+        queryKey: CHAT_QUERY_KEYS.session(sessionId),
+      });
 
       const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
         CHAT_QUERY_KEYS.sessions,
