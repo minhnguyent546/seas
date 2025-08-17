@@ -43,18 +43,8 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
     return cleanup;
   }, [cleanup]);
 
-  // Load messages from backend when sessionId changes
-  useEffect(() => {
-    if (sessionId) {
-      loadMessages(sessionId);
-    } else {
-      // Clear messages if no session
-      setMessages([]);
-    }
-  }, [sessionId]);
-
   // Function to load messages from backend
-  const loadMessages = async (chatSessionId: string) => {
+  const loadMessages = useCallback(async (chatSessionId: string) => {
     if (!chatSessionId) return;
 
     setIsLoadingMessages(true);
@@ -69,6 +59,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
       const convertedMessages: MessageType[] = backendMessages.map(
         (msg: ChatMessagePublic) => ({
           id: msg.id || generateId(),
+          backendId: msg.id || undefined,
           role:
             msg.sender === 'USER'
               ? 'user'
@@ -93,7 +84,18 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
         setIsLoadingFromBackend(false);
       }, 100);
     }
-  };
+  }, []);
+
+  // Load messages from backend when sessionId changes
+  useEffect(() => {
+    if (sessionId) {
+      console.log('useEffect: Loading messages for sessionId:', sessionId);
+      loadMessages(sessionId);
+    } else {
+      // Clear messages if no session
+      setMessages([]);
+    }
+  }, [sessionId]);
 
   const streamResponse = useCallback(
     async (userMessage: string, chatSessionId?: string) => {
@@ -152,6 +154,30 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
 
           // Decode the chunk
           const chunk = decoder.decode(value, { stream: true });
+          if (
+            chunk &&
+            chunk.startsWith('<metadata>') &&
+            chunk.endsWith('</metadata>')
+          ) {
+            // This should be the last chunk
+            try {
+              const metadata = JSON.parse(chunk.slice(10, -11));
+              console.log('Parsed metadata:', metadata);
+              if (metadata.message_id) {
+                // Update the message with the real backend ID, without changing the UI key id
+                setMessages((prevMessages) =>
+                  prevMessages.map((msg) =>
+                    msg.id === botResponse.id
+                      ? { ...msg, backendId: metadata.message_id }
+                      : msg,
+                  ),
+                );
+              }
+            } catch (error) {
+              console.error('Failed to parse metadata:', error);
+            }
+            break;
+          }
 
           accumulatedContent += chunk;
 
@@ -165,24 +191,14 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
           );
         }
 
-        // Flush decoder to capture any pending multi-byte sequence at chunk boundaries
-        const tail = decoder.decode();
-        if (tail) {
-          accumulatedContent += tail;
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-              msg.id === botResponse.id
-                ? { ...msg, content: accumulatedContent }
-                : msg,
-            ),
-          );
-        }
         // Set final timestamp when response completes
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === botResponse.id ? { ...msg, timestamp: new Date() } : msg,
           ),
         );
+
+        // No longer need to reload messages since we get the real ID from metadata
       } catch (error) {
         console.error('Streaming error:', error);
 
@@ -259,7 +275,11 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
       const previousMessages = messages;
       // Optimistically set feedback
       setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, feedback } : m)),
+        prev.map((m) =>
+          m.backendId === messageId || m.id === messageId
+            ? { ...m, feedback }
+            : m,
+        ),
       );
       return { previousMessages };
     },

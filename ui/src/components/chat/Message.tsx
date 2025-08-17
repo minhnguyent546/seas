@@ -65,13 +65,13 @@ export const BotMessage: React.FC<MessageProps> = ({
     async (payload: { feedback: ChatMessageFeedbackType; detail?: string }) => {
       if (!onSubmitFeedback) return;
       await onSubmitFeedback({
-        messageId: message.id,
+        messageId: message.backendId || message.id,
         feedback: payload.feedback,
         detail: payload.detail,
       });
       setFeedbackIntent(null);
     },
-    [message.id, onSubmitFeedback],
+    [message.backendId, message.id, onSubmitFeedback],
   );
 
   return (

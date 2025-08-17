@@ -4,6 +4,7 @@ import type { ChatMessageFeedbackType } from '@/client';
 
 export interface Message {
   id: string;
+  backendId?: string;
   role: MessageRole;
   content: string;
   timestamp: Date;
