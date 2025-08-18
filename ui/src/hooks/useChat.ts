@@ -1,7 +1,8 @@
-import type { ChatMessagePublic } from '@/client';
+import type { ChatMessageFeedbackType, ChatMessagePublic } from '@/client';
 import { ChatsService, OpenAPI } from '@/client';
 import { generateId, getErrorMessage } from '@/lib/utils';
 import type { Message as MessageType } from '@/types/chat';
+import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseChatProps {
@@ -16,6 +17,11 @@ type UseChatReturn = {
   handleSendMessage: (content: string) => Promise<void>;
   clearMessages: () => void;
   loadMessages: (chatSessionId: string) => Promise<void>;
+  submitMessageFeedback: (args: {
+    messageId: string;
+    feedback: ChatMessageFeedbackType;
+    detail?: string;
+  }) => Promise<void>;
 };
 
 export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
@@ -37,18 +43,8 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
     return cleanup;
   }, [cleanup]);
 
-  // Load messages from backend when sessionId changes
-  useEffect(() => {
-    if (sessionId) {
-      loadMessages(sessionId);
-    } else {
-      // Clear messages if no session
-      setMessages([]);
-    }
-  }, [sessionId]);
-
   // Function to load messages from backend
-  const loadMessages = async (chatSessionId: string) => {
+  const loadMessages = useCallback(async (chatSessionId: string) => {
     if (!chatSessionId) return;
 
     setIsLoadingMessages(true);
@@ -63,6 +59,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
       const convertedMessages: MessageType[] = backendMessages.map(
         (msg: ChatMessagePublic) => ({
           id: msg.id || generateId(),
+          backendId: msg.id || undefined,
           role:
             msg.sender === 'USER'
               ? 'user'
@@ -72,6 +69,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
           content: msg.content || '',
           // Parse ISO datetime format like "2025-08-11T16:34:53.066705Z"
           timestamp: new Date(msg.created_at || new Date()),
+          feedback: msg.chat_message_feedback?.feedback ?? null,
         }),
       );
 
@@ -86,7 +84,18 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
         setIsLoadingFromBackend(false);
       }, 100);
     }
-  };
+  }, []);
+
+  // Load messages from backend when sessionId changes
+  useEffect(() => {
+    if (sessionId) {
+      console.log('useEffect: Loading messages for sessionId:', sessionId);
+      loadMessages(sessionId);
+    } else {
+      // Clear messages if no session
+      setMessages([]);
+    }
+  }, [sessionId]);
 
   const streamResponse = useCallback(
     async (userMessage: string, chatSessionId?: string) => {
@@ -100,6 +109,7 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
         role: 'assistant',
         content: '',
         timestamp: new Date(),
+        feedback: null,
       };
 
       // Add the initial empty bot message
@@ -144,6 +154,30 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
 
           // Decode the chunk
           const chunk = decoder.decode(value, { stream: true });
+          if (
+            chunk &&
+            chunk.startsWith('<metadata>') &&
+            chunk.endsWith('</metadata>')
+          ) {
+            // This should be the last chunk
+            try {
+              const metadata = JSON.parse(chunk.slice(10, -11));
+              console.log('Parsed metadata:', metadata);
+              if (metadata.message_id) {
+                // Update the message with the real backend ID, without changing the UI key id
+                setMessages((prevMessages) =>
+                  prevMessages.map((msg) =>
+                    msg.id === botResponse.id
+                      ? { ...msg, backendId: metadata.message_id }
+                      : msg,
+                  ),
+                );
+              }
+            } catch (error) {
+              console.error('Failed to parse metadata:', error);
+            }
+            break;
+          }
 
           accumulatedContent += chunk;
 
@@ -157,24 +191,14 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
           );
         }
 
-        // Flush decoder to capture any pending multi-byte sequence at chunk boundaries
-        const tail = decoder.decode();
-        if (tail) {
-          accumulatedContent += tail;
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-              msg.id === botResponse.id
-                ? { ...msg, content: accumulatedContent }
-                : msg,
-            ),
-          );
-        }
         // Set final timestamp when response completes
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.id === botResponse.id ? { ...msg, timestamp: new Date() } : msg,
           ),
         );
+
+        // No longer need to reload messages since we get the real ID from metadata
       } catch (error) {
         console.error('Streaming error:', error);
 
@@ -227,6 +251,52 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
     [streamResponse, sessionId],
   );
 
+  const feedbackMutation = useMutation({
+    mutationFn: async ({
+      messageId,
+      feedback,
+      detail,
+    }: {
+      messageId: string;
+      feedback: ChatMessageFeedbackType;
+      detail?: string;
+    }) => {
+      return ChatsService.createMessageFeedback({
+        chatMessageId: messageId,
+        requestBody: {
+          feedback,
+          detail: detail ?? undefined,
+        },
+      });
+    },
+    onMutate: async (variables) => {
+      const { messageId, feedback } = variables;
+      // Snapshot previous state for rollback
+      const previousMessages = messages;
+      // Optimistically set feedback
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.backendId === messageId || m.id === messageId
+            ? { ...m, feedback }
+            : m,
+        ),
+      );
+      return { previousMessages };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousMessages) {
+        setMessages(context.previousMessages);
+      }
+    },
+    // Removed onSettled refetch to avoid reloading all messages after feedback submission
+  });
+
+  const submitMessageFeedback: UseChatReturn['submitMessageFeedback'] = async (
+    args,
+  ) => {
+    await feedbackMutation.mutateAsync(args);
+  };
+
   const clearMessages = useCallback(() => {
     setMessages([]);
   }, []);
@@ -239,5 +309,6 @@ export const useChat = ({ sessionId }: UseChatProps = {}): UseChatReturn => {
     handleSendMessage,
     clearMessages,
     loadMessages,
+    submitMessageFeedback,
   };
 };

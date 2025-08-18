@@ -44,8 +44,8 @@ class RagModelsManager:
                         lambda: BGEM3FlagModel(  # pyright: ignore[reportPossiblyUnboundVariable]
                             model_name_or_path=settings.BAAI_EMBEDDING_MODEL,
                             normalize_embeddings=True,
-                            use_fp16=True,
-                            device=device,
+                            use_fp16=(device == "cuda"),
+                            devices=["cuda:0"] if (device == "cuda") else None,
                             cache_dir=settings.HF_HOME,
                         ),  # type: ignore
                     )
@@ -78,8 +78,8 @@ class RagModelsManager:
                         None,
                         lambda: FlagReranker(  # pyright: ignore[reportPossiblyUnboundVariable]
                             model_name_or_path=settings.BAAI_RERANKER_MODEL,
-                            use_fp16=True,
-                            device=device,
+                            use_fp16=(device == "cuda"),
+                            devices=["cuda:0"] if (device == "cuda") else None,
                             cache_dir=settings.HF_HOME,
                         ),  # type: ignore
                     )

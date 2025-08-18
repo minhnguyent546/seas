@@ -1,8 +1,4 @@
 # Base compose file
-# Run this compose file with the following command:
-# ```bash
-# docker compose -f docker-compose.yaml up --build
-# ```
 
 services:
   db:
@@ -53,18 +49,19 @@ services:
   api:
     image: "${API_IMAGE}:${API_TAG-latest}"
     restart: always
-    ports:
-      - "8444:8444"
     env_file:
       - .env
     environment:
       - API_PORT=8444
       - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - FIRST_USER_PASSWORD=${FIRST_USER_PASSWORD?Variable not set}
       - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - ENVIRONMENT=${ENVIRONMENT:-production}
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8444/health" ]
       interval: 10s

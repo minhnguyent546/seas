@@ -2,7 +2,7 @@
   "nav": {
     "settings": "Settings",
     "logout": "Sign out",
-    "selectLanguage": "Select Language"
+    "selectLanguage": "Select language"
   },
   "chat": {
     "placeholder": "Ask about the Enrollment Program",
@@ -86,7 +86,8 @@
     "sort": "Sort",
     "clear": "Clear",
     "apply": "Apply",
-    "reset": "Reset"
+    "reset": "Reset",
+    "submit": "Submit"
   },
   "messages": {
     "success": "Operation completed successfully",
@@ -99,6 +100,21 @@
   "languages": {
     "en": "English",
     "vi": "Tiếng Việt"
+  },
+  "feedback": {
+    "reason": "Reason",
+    "detailsOptional": "Details (optional)",
+    "detailsPlaceholder": "Add more details to help us improve the model response",
+    "like": {
+      "accurateInformation": "Accurate information",
+      "helpfulAnswer": "Helpful answer"
+    },
+    "dislike": {
+      "notRelevant": "Not relevant",
+      "incorrectInformation": "Incorrect information",
+      "incompleteAnswer": "Incomplete answer",
+      "other": "Other"
+    }
   },
   "sidebar": {
     "pinned": "Pinned",

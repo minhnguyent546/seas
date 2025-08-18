@@ -52,7 +52,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="relative rounded-3xl border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div className="relative rounded-3xl border border-gray-200 bg-white p-2 shadow-sm dark:border-gray-700 dark:bg-gray-800 text-gray-700 dark:text-gray-100">
       <div className="flex w-full items-end gap-1">
         <div className="flex flex-1 flex-col">
           <textarea
