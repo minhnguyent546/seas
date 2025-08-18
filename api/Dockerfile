@@ -4,6 +4,7 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
 ENV HF_HUB_DISABLE_TELEMETRY=1
+ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 # disable tokenizers parallelism to avoid overloading the CPU
 ENV TOKENIZERS_PARALLELISM=false

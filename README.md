@@ -67,6 +67,7 @@ The repository contains multiple Compose files:
 - `docker-compose.cuda.yaml`: production GPU overrides
 - `docker-compose.dev-cuda.yaml`: development GPU overrides
 - `docker-compose.external-dbs.yaml`: use external Postgres and Qdrant (disables internal `db` and `qdrant` services)
+- `docker-compose.prod.yaml`: production overrides
 
 
 First, create a `.env` file in the project root with the following content:
@@ -163,7 +164,7 @@ Build and run the stack with live reload for the API:
 docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build --watch
 
 # Development with GPU (requires NVIDIA runtime and drivers)
-docker compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compose.dev-cuda.yaml up --build
+docker compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compose.dev-cuda.yaml up --build --watch
 
 # Use external databases (external Postgres and Qdrant)
 # Update the following variables in .env file to point to the remote host
@@ -176,7 +177,7 @@ docker compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compo
 
 ```
 
-Services:
+Port mappings:
 
 - FastAPI backend: http://localhost:8444/docs
 - Postgres: localhost:5433
@@ -191,21 +192,24 @@ The base compose expects an existing API image (`API_IMAGE` and optional `API_TA
 ```bash
 # Build API image
 cd api
-docker build -t your-registry/seas-api:latest -f Dockerfile.cuda .
+docker build -t your-registry/seas-api:0.1.0 -f Dockerfile .
+
 # (Optional) push to registry
-# docker push your-registry/seas-api:latest
+# docker push your-registry/seas-api:0.1.0
 
 # From repo root, run with the image
 cd ..
-API_IMAGE=your-registry/seas-api API_TAG=latest ENVIRONMENT=production \
-docker compose -f docker-compose.yaml up -d --build
+API_IMAGE=your-registry/seas-api API_TAG=0.1.0 ENVIRONMENT=production \
+docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
 ```
 
 For GPU-enabled production (CUDA 12.6):
 
 ```bash
-API_IMAGE=your-registry/seas-api API_TAG=latest ENVIRONMENT=production \
-docker compose -f docker-compose.yaml -f docker-compose.cuda.yaml up -d --build
+docker build -t your-registry/seas-api:0.1.0-cuda -f Dockerfile.cuda .
+
+API_IMAGE=your-registry/seas-api API_TAG=0.1.0-cuda ENVIRONMENT=production \
+docker compose -f docker-compose.yaml -f docker-compose.prod.yaml -f docker-compose.cuda.yaml up -d
 ```
 
 The provided Compose files do not include the UI container by default. Deploy the UI separately. Here is an example of using `serve` for deploying static files from `ui/`:

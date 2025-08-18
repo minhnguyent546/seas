@@ -1,0 +1,14 @@
+# This compose file overrides the default compose file for production
+
+services:
+  qdrant:
+    ports:
+      - "6333:6333" # REST API
+
+  adminer:
+    ports:
+      - "8555:8080"
+
+  api:
+    ports:
+      - "8444:8444"

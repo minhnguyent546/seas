@@ -38,6 +38,8 @@ services:
       context: ./api
       dockerfile: Dockerfile
     restart: "no"
+    ports:
+      - "8444:8444"
     environment:
       - SMTP_TLS=false
       - SMTP_SSL=false
