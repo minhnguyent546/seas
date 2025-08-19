@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://ctu-seas.vercel.app/">
-    <img alt="SEAS-logo" src="ui/public/images/seas-logo.svg" width="256"/>
+    <img alt="SEAS-logo" src="ui/public/images/seas-logo.svg" width="256px"/>
   </a>
 </p>
 
