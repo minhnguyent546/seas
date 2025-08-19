@@ -66,7 +66,7 @@ class RagService:
                 host=settings.QDRANT_HOST,
                 port=settings.QDRANT_PORT,
                 api_key=settings.QDRANT_API_KEY,
-                https=(settings.ENVIRONMENT == 'production'),
+                https=False
             )
         return self.__qdrant_client
 
