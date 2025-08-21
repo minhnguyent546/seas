@@ -10,7 +10,28 @@
   SEAS - A Smart Enrollment Advisory System for CTU
 </p>
 
+<p align="center">
+  <a href="https://github.com/minhnguyent546/seas/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/minhnguyent546/seas"></a>
+  <a href="https://github.com/minhnguyent546/seas/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/minhnguyent546/seas?sort=semver"></a>
+  <img alt="Python" src="https://img.shields.io/badge/python-3.12-blue?logo=python">
+  <a href="https://hub.docker.com/r/minhnguyent546/seas-api"><img alt="Docker" src="https://img.shields.io/docker/pulls/minhnguyent546/seas-api"></a>
+  <a href="https://github.com/minhnguyent546/seas/issues"><img alt="Issues" src="https://img.shields.io/github/issues/minhnguyent546/seas"></a>
+  <a href="https://github.com/minhnguyent546/seas/pulls"><img alt="PRs" src="https://img.shields.io/github/issues-pr/minhnguyent546/seas"></a>
+</p>
+
 ---
+
+## Chat pipeline
+
+<p align="center">
+  <img alt="Diagram of the SEAS chat pipeline" src="./assets/chat-pipeline.svg">
+</p>
+
+## Data collection pipeline
+
+<p align="center">
+  <img alt="Diagram of the SEAS data collection pipeline" src="./assets/data-collection-pipeline.svg">
+</p>
 
 ## Prerequisites
 
