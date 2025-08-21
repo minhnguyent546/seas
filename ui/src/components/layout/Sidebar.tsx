@@ -12,6 +12,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import {
   IconAlertCircle,
   IconChevronLeft,
+  IconChevronsRight,
   IconDots,
   IconEdit,
   IconMessage,
@@ -86,6 +87,9 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
   onClose,
 }) => {
   const { t } = useLanguage();
+  const handleLogoClick = () => {
+    window.location.href = '/';
+  };
 
   return (
     <div className="flex items-center justify-between p-4">
@@ -93,14 +97,21 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          onClick={isCollapsed ? onToggle : undefined}
-          className={`h-6 w-6 rounded-md text-primary hover:text-primary/80 ${isCollapsed ? 'cursor-pointer' : 'cursor-default'}`}
-          title={isCollapsed ? t('sidebar.openSidebar') : 'SEAS'}
+          onClick={handleLogoClick}
+          className={`h-6 w-6 rounded-md text-primary hover:text-primary/80 cursor-pointer`}
+          title={'SEAS'}
         >
           <SeasLogo size={32} className="text-primary" />
         </Button>
         {!isCollapsed && (
-          <span className="text-lg font-semibold text-primary">SEAS</span>
+          <button
+            type="button"
+            onClick={handleLogoClick}
+            className="text-lg font-semibold text-primary cursor-pointer"
+            title="SEAS"
+          >
+            SEAS
+          </button>
         )}
       </div>
       {!isCollapsed && (
@@ -582,6 +593,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
         onToggle={toggleSidebar}
         onClose={onRequestClose}
       />
+
+      {effectiveCollapsed && (
+        <div className="px-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
+            aria-label={t('sidebar.expandSidebar')}
+            title={t('sidebar.expandSidebar')}
+          >
+            <IconChevronsRight size={20} />
+          </Button>
+        </div>
+      )}
 
       <ActionButtons
         isCollapsed={effectiveCollapsed}

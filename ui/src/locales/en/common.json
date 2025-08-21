@@ -121,6 +121,7 @@
     "history": "History",
     "openSidebar": "Open Sidebar",
     "collapseSidebar": "Collapse Sidebar",
+    "expandSidebar": "Expand Sidebar",
     "newChat": "New Chat",
     "rename": "Rename",
     "sessionName": "Session name",
