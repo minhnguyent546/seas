@@ -1,6 +1,7 @@
 import { ChatsService } from '@/client';
 import { ChatContainer } from '@/components/chat/ChatContainer';
 import { UserControls } from '@/components/chat/UserControls';
+import { SeasLogo } from '@/components/icons';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Loading } from '@/components/ui/loading';
 import { LOCAL_STORAGE_KEYS } from '@/constants/localStorageKeys';
@@ -187,7 +188,7 @@ export function Chat() {
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-lg font-semibold text-primary">SEAS</span>
+          <SeasLogo size={28} className="text-primary" />
         </div>
         <div className="flex items-center gap-3">
           <UserControls inline />
