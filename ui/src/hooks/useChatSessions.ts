@@ -5,7 +5,12 @@ import {
   type ChatSessionUpdate,
   type ChatsGetChatSessionsData,
 } from '@/client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+  type InfiniteData,
+} from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 export const CHAT_QUERY_KEYS = {
@@ -47,13 +52,16 @@ export interface ChatSessionItem {
 export const useChatSessions = () => {
   const queryClient = useQueryClient();
 
-  const sessionsQuery = useQuery({
+  const PAGE_SIZE = 30;
+
+  const sessionsQuery = useInfiniteQuery({
     queryKey: CHAT_QUERY_KEYS.sessions,
-    queryFn: async () => {
+    initialPageParam: 0 as number, // offset
+    queryFn: async ({ pageParam }) => {
       try {
         const getChatSessionsData: ChatsGetChatSessionsData = {
-          offset: 0,
-          limit: 50,
+          offset: pageParam as number,
+          limit: PAGE_SIZE,
           sortBy: 'created_at',
           sortOrder: 'desc',
         };
@@ -61,11 +69,11 @@ export const useChatSessions = () => {
           await ChatsService.getChatSessions(getChatSessionsData);
 
         // If user has no sessions, automatically create one
-        if (sessions.length === 0) {
+        if ((pageParam as number) === 0 && sessions.length === 0) {
           const newSession = await ChatsService.createChatSession({
             requestBody: { session_metadata: {} },
           });
-          // Return the new session as an array
+          // Return the new session as the only page item
           return [newSession];
         }
 
@@ -74,6 +82,13 @@ export const useChatSessions = () => {
         console.error('Failed to fetch chat sessions:', error);
         throw error;
       }
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      // If the last page returned fewer than PAGE_SIZE, there are no more pages
+      if (!lastPage || lastPage.length < PAGE_SIZE) return undefined;
+      // Next offset is the total number of items we have so far
+      const nextOffset = allPages.reduce((sum, page) => sum + page.length, 0);
+      return nextOffset;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
@@ -114,9 +129,9 @@ export const useChatSessions = () => {
         queryKey: CHAT_QUERY_KEYS.session(sessionId),
       });
 
-      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
-        CHAT_QUERY_KEYS.sessions,
-      );
+      const previousSessions = queryClient.getQueryData<
+        InfiniteData<ChatSessionPublic[], number>
+      >(CHAT_QUERY_KEYS.sessions);
       const previousSession = queryClient.getQueryData<ChatSessionPublic>(
         CHAT_QUERY_KEYS.session(sessionId),
       );
@@ -147,14 +162,20 @@ export const useChatSessions = () => {
         return updated;
       };
 
-      // Optimistically update sessions list
-      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
-        CHAT_QUERY_KEYS.sessions,
-        (old) =>
-          old?.map((chat) =>
-            chat.id === sessionId ? applyUpdate(chat, data || {}) : chat,
-          ) || old,
-      );
+      // Optimistically update sessions list across pages
+      queryClient.setQueryData<
+        InfiniteData<ChatSessionPublic[], number> | undefined
+      >(CHAT_QUERY_KEYS.sessions, (old) => {
+        if (!old) return old;
+        return {
+          pageParams: old.pageParams,
+          pages: old.pages.map((page) =>
+            page.map((chat) =>
+              chat.id === sessionId ? applyUpdate(chat, data || {}) : chat,
+            ),
+          ),
+        };
+      });
 
       // Optimistically update individual session cache if present
       queryClient.setQueryData<ChatSessionPublic | undefined>(
@@ -180,13 +201,19 @@ export const useChatSessions = () => {
     },
     onSuccess: (updatedSession) => {
       if (!updatedSession) return;
-      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
-        CHAT_QUERY_KEYS.sessions,
-        (old) =>
-          old?.map((chat) =>
-            chat.id === updatedSession.id ? updatedSession : chat,
-          ) || old,
-      );
+      queryClient.setQueryData<
+        InfiniteData<ChatSessionPublic[], number> | undefined
+      >(CHAT_QUERY_KEYS.sessions, (old) => {
+        if (!old) return old;
+        return {
+          pageParams: old.pageParams,
+          pages: old.pages.map((page) =>
+            page.map((chat) =>
+              chat.id === updatedSession.id ? updatedSession : chat,
+            ),
+          ),
+        };
+      });
       queryClient.setQueryData<ChatSessionPublic | undefined>(
         CHAT_QUERY_KEYS.session(updatedSession.id),
         updatedSession,
@@ -203,7 +230,9 @@ export const useChatSessions = () => {
       sessionId: string;
       newTitle: string;
     }) => {
-      const session = sessionsQuery.data?.find((s) => s.id === sessionId);
+      const session = sessionsQuery.data?.pages
+        .flat()
+        .find((s) => s.id === sessionId);
       if (!session) {
         throw new Error('Session not found');
       }
@@ -227,30 +256,36 @@ export const useChatSessions = () => {
       });
 
       // Snapshot current state
-      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
-        CHAT_QUERY_KEYS.sessions,
-      );
+      const previousSessions = queryClient.getQueryData<
+        InfiniteData<ChatSessionPublic[], number>
+      >(CHAT_QUERY_KEYS.sessions);
 
       const previousSession = queryClient.getQueryData<ChatSessionPublic>(
         CHAT_QUERY_KEYS.session(sessionId),
       );
 
-      // Optimistically update sessions list
-      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
-        CHAT_QUERY_KEYS.sessions,
-        (old) =>
-          old?.map((chat) =>
-            chat.id === sessionId
-              ? {
-                  ...chat,
-                  session_metadata: {
-                    ...chat.session_metadata,
-                    firstMessage: newTitle,
-                  },
-                }
-              : chat,
-          ) || old,
-      );
+      // Optimistically update sessions list across pages
+      queryClient.setQueryData<
+        InfiniteData<ChatSessionPublic[], number> | undefined
+      >(CHAT_QUERY_KEYS.sessions, (old) => {
+        if (!old) return old;
+        return {
+          pageParams: old.pageParams,
+          pages: old.pages.map((page) =>
+            page.map((chat) =>
+              chat.id === sessionId
+                ? {
+                    ...chat,
+                    session_metadata: {
+                      ...chat.session_metadata,
+                      firstMessage: newTitle,
+                    },
+                  }
+                : chat,
+            ),
+          ),
+        };
+      });
 
       // Optimistically update individual session cache if present
       queryClient.setQueryData<ChatSessionPublic | undefined>(
@@ -317,21 +352,27 @@ export const useChatSessions = () => {
         queryKey: CHAT_QUERY_KEYS.session(sessionId),
       });
 
-      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
-        CHAT_QUERY_KEYS.sessions,
-      );
+      const previousSessions = queryClient.getQueryData<
+        InfiniteData<ChatSessionPublic[], number>
+      >(CHAT_QUERY_KEYS.sessions);
       const previousSession = queryClient.getQueryData<ChatSessionPublic>(
         CHAT_QUERY_KEYS.session(sessionId),
       );
 
-      // Optimistically update sessions list
-      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
-        CHAT_QUERY_KEYS.sessions,
-        (old) =>
-          old?.map((chat) =>
-            chat.id === sessionId ? { ...chat, is_favorite: isPinned } : chat,
-          ) || old,
-      );
+      // Optimistically update sessions list across pages
+      queryClient.setQueryData<
+        InfiniteData<ChatSessionPublic[], number> | undefined
+      >(CHAT_QUERY_KEYS.sessions, (old) => {
+        if (!old) return old;
+        return {
+          pageParams: old.pageParams,
+          pages: old.pages.map((page) =>
+            page.map((chat) =>
+              chat.id === sessionId ? { ...chat, is_favorite: isPinned } : chat,
+            ),
+          ),
+        };
+      });
 
       // Optimistically update individual session cache if present
       queryClient.setQueryData<ChatSessionPublic | undefined>(
@@ -357,13 +398,19 @@ export const useChatSessions = () => {
     },
     onSuccess: (updatedSession) => {
       if (!updatedSession) return;
-      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
-        CHAT_QUERY_KEYS.sessions,
-        (old) =>
-          old?.map((chat) =>
-            chat.id === updatedSession.id ? updatedSession : chat,
-          ) || old,
-      );
+      queryClient.setQueryData<
+        InfiniteData<ChatSessionPublic[], number> | undefined
+      >(CHAT_QUERY_KEYS.sessions, (old) => {
+        if (!old) return old;
+        return {
+          pageParams: old.pageParams,
+          pages: old.pages.map((page) =>
+            page.map((chat) =>
+              chat.id === updatedSession.id ? updatedSession : chat,
+            ),
+          ),
+        };
+      });
       queryClient.setQueryData<ChatSessionPublic | undefined>(
         CHAT_QUERY_KEYS.session(updatedSession.id),
         updatedSession,
@@ -384,18 +431,25 @@ export const useChatSessions = () => {
         queryKey: CHAT_QUERY_KEYS.session(sessionId),
       });
 
-      const previousSessions = queryClient.getQueryData<ChatSessionPublic[]>(
-        CHAT_QUERY_KEYS.sessions,
-      );
+      const previousSessions = queryClient.getQueryData<
+        InfiniteData<ChatSessionPublic[], number>
+      >(CHAT_QUERY_KEYS.sessions);
       const previousSession = queryClient.getQueryData<ChatSessionPublic>(
         CHAT_QUERY_KEYS.session(sessionId),
       );
 
-      // Optimistically remove from sessions list
-      queryClient.setQueryData<ChatSessionPublic[] | undefined>(
-        CHAT_QUERY_KEYS.sessions,
-        (old) => old?.filter((chat) => chat.id !== sessionId) || old,
-      );
+      // Optimistically remove from sessions list across pages
+      queryClient.setQueryData<
+        InfiniteData<ChatSessionPublic[], number> | undefined
+      >(CHAT_QUERY_KEYS.sessions, (old) => {
+        if (!old) return old;
+        return {
+          pageParams: old.pageParams,
+          pages: old.pages.map((page) =>
+            page.filter((chat) => chat.id !== sessionId),
+          ),
+        };
+      });
 
       // Remove individual session cache for the deleted id
       queryClient.removeQueries({
@@ -421,7 +475,8 @@ export const useChatSessions = () => {
     // No invalidation to avoid extra latency; backend is source of truth but cache already reflects deletion
   });
 
-  const sessionsData = sessionsQuery.data || [];
+  const sessionsData: ChatSessionPublic[] =
+    sessionsQuery.data?.pages.flat() || [];
 
   // Transform sessions to the format expected by the Sidebar
   const transformedSessions: ChatSessionItem[] = useMemo(
@@ -457,7 +512,9 @@ export const useChatSessions = () => {
     sessionId: string,
     firstMessage: string,
   ) => {
-    const session = sessionsQuery.data?.find((s) => s.id === sessionId);
+    const session = sessionsQuery.data?.pages
+      .flat()
+      .find((s) => s.id === sessionId);
     if (!session) return;
 
     const updatedMetadata = {
@@ -476,18 +533,21 @@ export const useChatSessions = () => {
     sessions: transformedSessions,
     pinnedSessions,
     regularSessions,
-    rawSessions: sessionsQuery.data || [],
+    rawSessions: sessionsData,
 
     // Status
     isLoading: sessionsQuery.isLoading,
     isError: sessionsQuery.isError,
     isCreating: createSessionMutation.isPending,
+    hasNextPage: sessionsQuery.hasNextPage,
+    isFetchingNextPage: sessionsQuery.isFetchingNextPage,
 
     // Actions
     createSession: createSessionMutation.mutateAsync,
     updateSession: updateSessionMutation.mutateAsync,
     createSessionWithFirstMessage,
     updateSessionWithFirstMessage,
+    fetchNextPage: sessionsQuery.fetchNextPage,
 
     // New actions for session management
     renameSession: renameSessionMutation.mutateAsync,
