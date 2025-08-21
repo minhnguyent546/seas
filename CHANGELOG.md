@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.2](https://github.com/minhnguyent546/seas/compare/v0.1.1..v0.1.2) - 2025-08-21
+## [v0.1.2](https://github.com/minhnguyent546/seas/compare/v0.1.1...v0.1.2) - 2025-08-21
 
 ### Changed
 
@@ -11,7 +11,7 @@
 - Add pipeline diagrams to README ([#82](https://github.com/minhnguyent546/seas/pull/82))
 
 
-## [v0.1.1](https://github.com/minhnguyent546/seas/compare/v0.1.0..v0.1.1) - 2025-08-20
+## [v0.1.1](https://github.com/minhnguyent546/seas/compare/v0.1.0...v0.1.1) - 2025-08-20
 
 ### Bug fixes
 
