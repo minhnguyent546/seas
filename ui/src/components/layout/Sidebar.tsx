@@ -21,7 +21,7 @@ import {
   IconTrash,
   IconX,
 } from '@tabler/icons-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 interface SidebarProps {
@@ -444,7 +444,49 @@ export const Sidebar: React.FC<SidebarProps> = ({
     togglePinSession,
     deleteSession,
     isDeletingSession,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
   } = useChatSessions();
+
+  // Infinite scroll: observe a sentinel at the bottom of the scroll area
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const userHasScrolledRef = useRef(false);
+
+  useEffect(() => {
+    if (!scrollContainerRef.current || !sentinelRef.current) return;
+    const root = scrollContainerRef.current;
+    const sentinel = sentinelRef.current;
+
+    // Track whether user has scrolled to prevent immediate prefetching
+    const onScroll = () => {
+      if (root.scrollTop > 0) {
+        userHasScrolledRef.current = true;
+      }
+    };
+    root.addEventListener('scroll', onScroll, { passive: true });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (
+          entry.isIntersecting &&
+          userHasScrolledRef.current &&
+          hasNextPage &&
+          !isFetchingNextPage
+        ) {
+          fetchNextPage();
+        }
+      },
+      { root, rootMargin: '0px', threshold: 0.01 },
+    );
+    observer.observe(sentinel);
+    return () => {
+      observer.disconnect();
+      root.removeEventListener('scroll', onScroll);
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, effectiveCollapsed]);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -549,7 +591,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       />
 
       {!effectiveCollapsed && (
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto scrollbar-hide"
+        >
           {isError ? (
             <ErrorState onRetry={handleRetry} />
           ) : (
@@ -590,6 +635,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Bottom padding space */}
           <div className="p-1"></div>
+          {/* Infinite scroll sentinel and loader */}
+          {hasNextPage && <div ref={sentinelRef} />}
+          {isFetchingNextPage && (
+            <div className="pl-2 pr-3 py-2 border-t border-gray-200">
+              <div className="space-y-2">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse flex items-center gap-2 px-2 py-1.5"
+                  >
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded flex-1"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
