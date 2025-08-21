@@ -86,8 +86,8 @@ export const useChatSessions = () => {
     getNextPageParam: (lastPage, allPages) => {
       // If the last page returned fewer than PAGE_SIZE, there are no more pages
       if (!lastPage || lastPage.length < PAGE_SIZE) return undefined;
-      // Next offset is the total number of items we have so far
-      const nextOffset = allPages.reduce((sum, page) => sum + page.length, 0);
+      // Compute next offset by number of pages loaded to avoid brittleness from optimistic updates
+      const nextOffset = allPages.length * PAGE_SIZE;
       return nextOffset;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
