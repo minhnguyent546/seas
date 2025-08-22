@@ -40,7 +40,9 @@ class Settings(BaseSettings):
     SENDER_ADDRESS: str = "HCMC, Vietnam"
 
     # environment
-    ENVIRONMENT: Literal["development", "production"] = "development"
+    ENVIRONMENT: Literal["development", "staging", "production"] = (
+        "development"
+    )
 
     # frontend
     FRONTEND_HOST: str = "http://localhost:5173"

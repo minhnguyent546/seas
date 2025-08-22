@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 from pydantic import EmailStr
@@ -56,10 +55,14 @@ async def lifespan(app: FastAPI):
         pass
 
 
+openapi_url = None
+if settings.ENVIRONMENT == "development" or settings.ENVIRONMENT == "staging":
+    openapi_url = f"{settings.API_PREFIX}/openapi.json"
+
 app = FastAPI(
     title="FastAPI",
     lifespan=lifespan,
-    openapi_url=f"{settings.API_PREFIX}/openapi.json",
+    openapi_url=openapi_url,
     generate_unique_id_function=custom_generate_unique_id,
 )
 
@@ -82,11 +85,6 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["utils"])
 async def health_check():
     return await check_health(start_time=_start_time)
-
-
-@app.get("/", response_class=RedirectResponse, include_in_schema=False)
-async def redirect_to_docs():
-    return RedirectResponse(url="/docs", status_code=status.HTTP_302_FOUND)
 
 
 @app.get(
