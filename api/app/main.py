@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
     global _start_time
     _start_time = time.time()
 
-    logger.info('"Starting application...')
+    logger.info("Starting application...")
     logger.debug(f"CORS origins: {settings.CORS_ORIGINS}")
     logger.debug(f"HF_HOME: {settings.HF_HOME}")
 
@@ -56,13 +56,19 @@ async def lifespan(app: FastAPI):
 
 
 openapi_url = None
-if settings.ENVIRONMENT == "development" or settings.ENVIRONMENT == "staging":
+docs_url = None
+redoc_url = None
+if settings.OPENAPI_ENABLED:
     openapi_url = f"{settings.API_PREFIX}/openapi.json"
+    docs_url = f"{settings.API_PREFIX}/docs"
+    redoc_url = f"{settings.API_PREFIX}/redoc"
 
 app = FastAPI(
-    title="FastAPI",
+    title=settings.PROJECT_NAME,
     lifespan=lifespan,
     openapi_url=openapi_url,
+    docs_url=docs_url,
+    redoc_url=redoc_url,
     generate_unique_id_function=custom_generate_unique_id,
 )
 
