@@ -24,6 +24,20 @@ _start_time = 0
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for the FastAPI application that performs startup initialization and prepares runtime resources.
+    
+    On entry this sets the module-level start time, ensures the document upload directory exists, initializes the database schema via an async session, and—if configured—starts an asynchronous task to preload Hugging Face models. Yields control to run the application, and if any exception occurs during startup it raises an HTTP 500 indicating a startup failure.
+    
+    Side effects:
+    - Sets the global `_start_time`.
+    - Creates `settings.DOC_UPLOAD_DIR` if it does not exist.
+    - Initializes the database by calling `init_db` with an async session.
+    - If `settings.PRELOAD_HF_MODELS` is true, schedules `rag_models_manager.preload_models()` as a background task.
+    
+    Exceptions:
+    - Raises `fastapi.HTTPException` with status 500 on any startup error.
+    """
     global _start_time
     _start_time = time.time()
 
@@ -84,6 +98,14 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["utils"])
 async def health_check():
+    """
+    Asynchronously perform an application health check.
+    
+    Calls check_health with the module startup timestamp and returns its result.
+    
+    Returns:
+        The value returned by check_health — health status information.
+    """
     return await check_health(start_time=_start_time)
 
 

@@ -61,6 +61,12 @@ class RagService:
 
     @property
     def _qdrant_client(self) -> AsyncQdrantClient:
+        """
+        Lazily initialize and return a cached AsyncQdrantClient configured from settings.
+        
+        Returns:
+            AsyncQdrantClient: A cached Qdrant async client connected using settings.QDRANT_HOST, settings.QDRANT_PORT and settings.QDRANT_API_KEY. The client is created once and stored on the instance for reuse.
+        """
         if self.__qdrant_client is None:
             self.__qdrant_client = AsyncQdrantClient(
                 host=settings.QDRANT_HOST,
