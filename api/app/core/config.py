@@ -36,11 +36,13 @@ class Settings(BaseSettings):
     )
 
     # project name
-    PROJECT_NAME: str = "SEAS"
+    PROJECT_NAME: str = "SEAS API"
     SENDER_ADDRESS: str = "HCMC, Vietnam"
 
     # environment
-    ENVIRONMENT: Literal["development", "production"] = "development"
+    ENVIRONMENT: Literal["development", "staging", "production"] = (
+        "development"
+    )
 
     # frontend
     FRONTEND_HOST: str = "http://localhost:5173"
@@ -130,6 +132,7 @@ class Settings(BaseSettings):
     # qdrant
     QDRANT_HOST: str = "localhost"
     QDRANT_PORT: int = 6333
+    QDRANT_HTTPS: bool = False
     QDRANT_API_KEY: str | None = None
     QDRANT_COLLECTION_NAME: str = "seas_documents"
     QDRANT_VECTOR_SIZE: int = 1024  # embeddings dimension
@@ -145,6 +148,11 @@ class Settings(BaseSettings):
     # Hugging Face stuff
     PRELOAD_HF_MODELS: bool = False
     HF_HOME: str = "/app/.hf_models"
+
+    @computed_field
+    @property
+    def OPENAPI_ENABLED(self) -> bool:
+        return self.ENVIRONMENT in ("development", "staging")
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:

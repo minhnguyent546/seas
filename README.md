@@ -198,13 +198,15 @@ docker compose -f docker-compose.yaml -f docker-compose.dev.yaml -f docker-compo
 
 ```
 
-Port mappings:
 
-- FastAPI backend: http://localhost:8444/docs
-- Postgres: localhost:5433
-- Qdrant: http://localhost:6333/dashboard
-- Adminer: http://localhost:8555
-- Maildev: http://localhost:1080
+| Service | URL/Port |
+|---------|----------|
+| FastAPI backend (docs) | http://localhost:8444/api/v1/docs |
+| FastAPI backend (redoc) | http://localhost:8444/api/v1/redoc |
+| Postgres | localhost:5433 |
+| Qdrant | http://localhost:6333/dashboard |
+| Adminer | http://localhost:8555 |
+| Maildev | http://localhost:1080 |
 
 ### Production setup
 
