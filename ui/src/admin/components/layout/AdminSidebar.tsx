@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ROUTE_PATHS } from '@/constants/path_routes';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import {
   IconChevronLeft,
   IconChevronsRight,

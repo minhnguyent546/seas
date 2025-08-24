@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LanguageSelector } from '@/components/ui/language-selector';
 import { PasswordInput } from '@/components/ui/password-input';
-import { ROUTE_PATHS } from '@/constants/path_routes';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import useAuth from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { usePageMeta } from '@/hooks/usePageTitle';

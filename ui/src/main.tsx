@@ -1,6 +1,6 @@
 import { ApiError, OpenAPI } from '@/client';
 import { Loading } from '@/components/ui/loading';
-import { ROUTE_PATHS } from '@/constants/path_routes';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import '@/lib/i18n'; // Initialize i18n
 import {
   MutationCache,
