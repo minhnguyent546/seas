@@ -1,5 +1,6 @@
 import type { UserPublic } from '@/client';
 import useAuth from '@/hooks/useAuth';
+import { isAdminUser } from '@/lib/roles';
 
 type useAdminAuthReturn = {
   user: UserPublic | null | undefined;
@@ -11,7 +12,7 @@ type useAdminAuthReturn = {
 export const useAdminAuth = (): useAdminAuthReturn => {
   const { user, isAuthenticated, isLoading } = useAuth();
 
-  const isAdmin = isAuthenticated && user?.role === 'ADMIN';
+  const isAdmin = isAuthenticated && isAdminUser(user);
 
   return {
     user,
