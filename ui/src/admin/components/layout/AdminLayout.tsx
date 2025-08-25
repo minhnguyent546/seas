@@ -28,7 +28,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-800">
+        <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-xl">
           <div className="p-6">{children || <Outlet />}</div>
         </main>
       </div>

@@ -1,5 +1,7 @@
+import { SeasLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { ROUTE_PATHS } from '@/constants/routePaths';
+import useAuth from '@/hooks/useAuth';
 import {
   IconChevronLeft,
   IconChevronsRight,
@@ -10,7 +12,7 @@ import {
   IconSettings,
   IconUsers,
 } from '@tabler/icons-react';
-import { Link, useLocation } from '@tanstack/react-router';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import React from 'react';
 
 interface AdminSidebarProps {
@@ -33,20 +35,28 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isCollapsed,
   isActive = false,
 }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate({ to });
+  };
+
   return (
-    <Link
-      to={to}
-      className={`flex items-center px-3 py-2 rounded-md transition-colors duration-200 ${
+    <div
+      onClick={handleClick}
+      className={`flex items-center w-full ${
+        isCollapsed ? 'justify-center px-0' : 'justify-start px-2'
+      } py-1.5 rounded-xl transition-colors duration-200 cursor-pointer ${
         isActive
-          ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+          ? 'bg-primary/15 text-primary dark:bg-primary/25 dark:text-primary-light'
+          : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
       }`}
     >
       <div className="flex-shrink-0">{icon}</div>
       {!isCollapsed && (
         <span className="ml-3 text-sm font-medium">{label}</span>
       )}
-    </Link>
+    </div>
   );
 };
 
@@ -56,6 +66,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 }) => {
   // const { t } = useLanguage(); // TODO: Add translations when needed
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const displayName = user?.full_name || user?.email || '';
 
   const menuItems = [
     {
@@ -86,33 +99,70 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   };
 
   return (
-    <div className="flex h-full flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
+    <div className="flex h-full flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 rounded-xl">
       {/* Header */}
       <div className="flex items-center justify-between p-4">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => (window.location.href = ROUTE_PATHS.ADMIN.DASHBOARD)}
+            className="h-6 w-6 rounded-md text-primary hover:text-primary/80 cursor-pointer"
+            title={'SEAS'}
+          >
+            <SeasLogo size={32} className="text-primary" />
+          </Button>
           {!isCollapsed && (
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              Admin Panel
-            </h1>
+            <button
+              type="button"
+              onClick={() =>
+                (window.location.href = ROUTE_PATHS.ADMIN.DASHBOARD)
+              }
+              className="text-lg font-semibold text-primary cursor-pointer text-left"
+              title="SEAS"
+            >
+              SEAS
+            </button>
           )}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggle}
-          className="h-8 w-8 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {isCollapsed ? (
-            <IconChevronsRight size={18} />
-          ) : (
-            <IconChevronLeft size={18} />
-          )}
-        </Button>
+        {!isCollapsed && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="h-6 w-6 cursor-pointer rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            title="Collapse sidebar"
+          >
+            <IconChevronLeft size={20} />
+          </Button>
+        )}
       </div>
+      {/* Welcome (expanded only) */}
+      {!isCollapsed && (
+        <div className="px-4 pb-2 text-xs text-gray-500 dark:text-gray-400">
+          {`Welcome back, Admin${displayName ? ` ${displayName}` : ''}`}
+        </div>
+      )}
+      {/* Expand button (collapsed only) */}
+      {isCollapsed && (
+        <div className="px-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="rounded-lg text-gray-700 dark:text-gray-300 cursor-pointer"
+            aria-label="Expand sidebar"
+            title="Expand sidebar"
+          >
+            <IconChevronsRight size={20} />
+          </Button>
+        </div>
+      )}
+      {/* Divider */}
+      <div className="mx-4 border-t border-gray-200 dark:border-gray-700" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-2">
+      <nav className={`flex-1 ${isCollapsed ? 'px-0' : 'px-4'} py-2`}>
         <div className="space-y-1">
           {menuItems.map((item) => (
             <SidebarItem
@@ -129,22 +179,22 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
       {/* Footer */}
       <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <Link
-          to={ROUTE_PATHS.HOME}
-          className={`flex items-center w-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md py-2 ${
-            isCollapsed ? 'justify-center px-2' : 'justify-start px-3'
-          } mb-2`}
+        <div
+          onClick={() => navigate({ to: ROUTE_PATHS.HOME })}
+          className={`flex items-center w-full ${
+            isCollapsed ? 'justify-center px-0' : 'justify-start px-2'
+          } text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl py-1.5 mb-2 cursor-pointer`}
           title="Go to Chat"
         >
           <IconHome size={20} />
           {!isCollapsed && <span className="ml-3 text-sm">Chat</span>}
-        </Link>
+        </div>
         <Button
           variant="ghost"
           onClick={handleLogout}
-          className={`flex items-center w-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-            isCollapsed ? 'justify-center px-2' : 'justify-start px-3'
-          }`}
+          className={`flex items-center w-full cursor-pointer ${
+            isCollapsed ? 'justify-center px-0' : 'justify-start px-2'
+          } text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-xl`}
           title="Logout"
         >
           <IconLogout size={20} />
