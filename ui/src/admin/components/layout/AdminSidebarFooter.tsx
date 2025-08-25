@@ -1,4 +1,5 @@
 import { ROUTE_PATHS } from '@/constants/routePaths';
+import useAuth from '@/hooks/useAuth';
 import { IconHome, IconLogout } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
@@ -11,10 +12,10 @@ export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
   isCollapsed,
 }) => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    // TODO: Implement logout functionality
-    console.log('Logout clicked');
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
