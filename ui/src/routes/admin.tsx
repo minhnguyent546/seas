@@ -12,7 +12,7 @@ function AdminRouteComponent() {
   const { isAuthenticated, isLoading, isAdmin } = useAdminAuth();
 
   if (isLoading) {
-    return <Loading message="Loading Admin Panel..." />;
+    return <Loading message="Loading..." />;
   }
 
   if (!isAuthenticated) {
