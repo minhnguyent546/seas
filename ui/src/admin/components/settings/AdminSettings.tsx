@@ -66,8 +66,26 @@ const SettingItem: React.FC<SettingItemProps> = ({
   );
 };
 
+type Settings = {
+  maintenanceMode: boolean;
+  userRegistration: boolean;
+  emailNotifications: boolean;
+  systemNotifications: boolean;
+  dataRetention: string; // days
+  maxSessionLength: string; // minutes
+  apiRateLimit: string; // rpm
+  backupEnabled: boolean;
+};
+
+type BooleanKeys<T> = {
+  [K in keyof T]-?: T[K] extends boolean ? K : never;
+}[keyof T];
+type StringKeys<T> = {
+  [K in keyof T]-?: T[K] extends string ? K : never;
+}[keyof T];
+
 export const AdminSettings: React.FC = () => {
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<Settings>({
     maintenanceMode: false,
     userRegistration: true,
     emailNotifications: true,
@@ -78,14 +96,14 @@ export const AdminSettings: React.FC = () => {
     backupEnabled: true,
   });
 
-  const handleToggle = (key: keyof typeof settings) => {
+  const handleToggle = (key: BooleanKeys<Settings>) => {
     setSettings((prev) => ({
       ...prev,
       [key]: !prev[key],
     }));
   };
 
-  const handleInputChange = (key: keyof typeof settings, value: string) => {
+  const handleInputChange = (key: StringKeys<Settings>, value: string) => {
     setSettings((prev) => ({
       ...prev,
       [key]: value,
@@ -156,6 +174,9 @@ export const AdminSettings: React.FC = () => {
               onChange={(e) =>
                 handleInputChange('apiRateLimit', e.target.value)
               }
+              min={0}
+              step={1}
+              inputMode="numeric"
               className="w-24 px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
             />
           </SettingItem>
@@ -223,6 +244,9 @@ export const AdminSettings: React.FC = () => {
               onChange={(e) =>
                 handleInputChange('maxSessionLength', e.target.value)
               }
+              min={0}
+              step={1}
+              inputMode="numeric"
               className="w-24 px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
             />
           </SettingItem>
@@ -270,7 +294,7 @@ export const AdminSettings: React.FC = () => {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button onClick={handleSave} className="px-6">
+        <Button onClick={handleSave} className="px-6" type="button">
           Save Changes
         </Button>
       </div>

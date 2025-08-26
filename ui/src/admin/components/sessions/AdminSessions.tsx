@@ -5,7 +5,10 @@ import {
   IconSearch,
   IconTrash,
 } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+
+type SessionStatus = 'active' | 'completed' | 'abandoned';
+type SessionStatusFilter = SessionStatus | 'all';
 
 interface ChatSession {
   id: string;
@@ -15,7 +18,7 @@ interface ChatSession {
   messageCount: number;
   createdAt: string;
   lastActivity: string;
-  status: 'active' | 'completed' | 'abandoned';
+  status: SessionStatus;
 }
 
 interface SessionTableProps {
@@ -77,7 +80,8 @@ const SessionTable: React.FC<SessionTableProps> = ({
                   <div className="h-8 w-8 flex-shrink-0">
                     <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-xs font-medium text-white">
-                        {session.userName.charAt(0).toUpperCase()}
+                        {session.userName?.trim().charAt(0).toUpperCase() ||
+                          '?'}
                       </span>
                     </div>
                   </div>
@@ -151,53 +155,57 @@ const SessionTable: React.FC<SessionTableProps> = ({
 
 export const AdminSessions: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<SessionStatusFilter>('all');
 
   // Mock data - replace with real data from API
-  const mockSessions: ChatSession[] = [
-    {
-      id: 'sess_1',
-      userId: 'user_1',
-      userName: 'John Doe',
-      title: 'Help with React components',
-      messageCount: 15,
-      createdAt: '2024-01-20',
-      lastActivity: '2 hours ago',
-      status: 'active',
-    },
-    {
-      id: 'sess_2',
-      userId: 'user_2',
-      userName: 'Jane Smith',
-      title: 'Database optimization question',
-      messageCount: 8,
-      createdAt: '2024-01-19',
-      lastActivity: '1 day ago',
-      status: 'completed',
-    },
-    {
-      id: 'sess_3',
-      userId: 'user_3',
-      userName: 'Bob Johnson',
-      title: 'API integration help',
-      messageCount: 3,
-      createdAt: '2024-01-18',
-      lastActivity: '3 days ago',
-      status: 'abandoned',
-    },
-  ];
+  const mockSessions = useMemo<ChatSession[]>(() => {
+    return [
+      {
+        id: 'sess_1',
+        userId: 'user_1',
+        userName: 'John Doe',
+        title: 'Help with React components',
+        messageCount: 15,
+        createdAt: '2024-01-20',
+        lastActivity: '2 hours ago',
+        status: 'active',
+      },
+      {
+        id: 'sess_2',
+        userId: 'user_2',
+        userName: 'Jane Smith',
+        title: 'Database optimization question',
+        messageCount: 8,
+        createdAt: '2024-01-19',
+        lastActivity: '1 day ago',
+        status: 'completed',
+      },
+      {
+        id: 'sess_3',
+        userId: 'user_3',
+        userName: 'Bob Johnson',
+        title: 'API integration help',
+        messageCount: 3,
+        createdAt: '2024-01-18',
+        lastActivity: '3 days ago',
+        status: 'abandoned',
+      },
+    ];
+  }, []);
 
-  const filteredSessions = mockSessions.filter((session) => {
-    const matchesSearch =
-      session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      session.id.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredSessions = useMemo(() => {
+    return mockSessions.filter((session) => {
+      const matchesSearch =
+        session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.id.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === 'all' || session.status === statusFilter;
+      const matchesStatus =
+        statusFilter === 'all' || session.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [mockSessions, searchTerm, statusFilter]);
 
   const handleViewSession = (session: ChatSession) => {
     // TODO: Implement view session functionality
@@ -273,7 +281,9 @@ export const AdminSessions: React.FC = () => {
 
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) =>
+            setStatusFilter(e.target.value as SessionStatusFilter)
+          }
           className="block border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
         >
           <option value="all">All Status</option>

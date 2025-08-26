@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 interface User {
   id: string;
@@ -97,7 +97,9 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                     variant="ghost"
                     size="icon"
                     onClick={() => onEdit(user)}
-                    className="h-8 w-8"
+                    className="h-8 w-8 cursor-pointer"
+                    type="button"
+                    title="Edit user"
                   >
                     <IconEdit size={16} />
                   </Button>
@@ -105,7 +107,9 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                     variant="ghost"
                     size="icon"
                     onClick={() => onDelete(user)}
-                    className="h-8 w-8 text-red-600 hover:text-red-900"
+                    className="h-8 w-8 text-red-600 hover:text-red-900 cursor-pointer"
+                    type="button"
+                    title="Delete user"
                   >
                     <IconTrash size={16} />
                   </Button>
@@ -123,41 +127,45 @@ export const AdminUsers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Mock data - replace with real data from API
-  const mockUsers: User[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'admin',
-      status: 'active',
-      createdAt: '2024-01-15',
-      lastLogin: '2024-01-20',
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      role: 'user',
-      status: 'active',
-      createdAt: '2024-01-10',
-      lastLogin: '2024-01-19',
-    },
-    {
-      id: '3',
-      name: 'Bob Johnson',
-      email: 'bob@example.com',
-      role: 'user',
-      status: 'inactive',
-      createdAt: '2024-01-05',
-      lastLogin: '2024-01-15',
-    },
-  ];
+  const mockUsers = useMemo<User[]>(() => {
+    return [
+      {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        role: 'admin',
+        status: 'active',
+        createdAt: '2024-01-15',
+        lastLogin: '2024-01-20',
+      },
+      {
+        id: '2',
+        name: 'Jane Smith',
+        email: 'jane@example.com',
+        role: 'user',
+        status: 'active',
+        createdAt: '2024-01-10',
+        lastLogin: '2024-01-19',
+      },
+      {
+        id: '3',
+        name: 'Bob Johnson',
+        email: 'bob@example.com',
+        role: 'user',
+        status: 'inactive',
+        createdAt: '2024-01-05',
+        lastLogin: '2024-01-15',
+      },
+    ];
+  }, []);
 
-  const filteredUsers = mockUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredUsers = useMemo(() => {
+    return mockUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [mockUsers, searchTerm]);
 
   const handleAddUser = () => {
     // TODO: Implement add user functionality
@@ -186,7 +194,11 @@ export const AdminUsers: React.FC = () => {
             Manage user accounts and permissions
           </p>
         </div>
-        <Button onClick={handleAddUser} className="flex items-center space-x-2">
+        <Button
+          onClick={handleAddUser}
+          className="flex items-center space-x-2"
+          type="button"
+        >
           <IconPlus size={16} />
           <span>Add User</span>
         </Button>
