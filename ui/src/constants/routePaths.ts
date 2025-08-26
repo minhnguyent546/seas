@@ -20,9 +20,8 @@ export const ROUTE_PATHS = {
   },
 } as const;
 
-// Type for all route paths
 export type AppRoutePath =
-  | (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS]
+  | typeof ROUTE_PATHS.HOME
   | (typeof ROUTE_PATHS.AUTH)[keyof typeof ROUTE_PATHS.AUTH]
   | (typeof ROUTE_PATHS.PROFILE)[keyof typeof ROUTE_PATHS.PROFILE]
   | (typeof ROUTE_PATHS.ADMIN)[keyof typeof ROUTE_PATHS.ADMIN];
