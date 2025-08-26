@@ -54,7 +54,7 @@ function SignupComponent() {
 
   // Redirect to home if already authenticated
   if (isAuthenticated) {
-    return <Navigate to={ROUTE_PATHS.HOME} />;
+    return <Navigate to={ROUTE_PATHS.HOME} replace={true} />;
   }
 
   const onSubmit: SubmitHandler<UserRegister> = async (data: UserRegister) => {
@@ -63,7 +63,7 @@ function SignupComponent() {
     resetError();
     try {
       await signupMutation.mutateAsync(data);
-      navigate({ to: '/login' });
+      navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
     } catch {
       // Error handling is done in the mutation's onError callback
     }
@@ -230,7 +230,10 @@ function SignupComponent() {
         </form>
         <div className="text-center text-sm mt-4 text-gray-700 dark:text-gray-100">
           {t('auth.alreadyHaveAccount')}{' '}
-          <Link to="/login" className="text-primary hover:underline">
+          <Link
+            to={ROUTE_PATHS.AUTH.LOGIN}
+            className="text-primary hover:underline"
+          >
             {t('auth.signIn')}
           </Link>
         </div>
