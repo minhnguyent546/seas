@@ -1,14 +1,19 @@
 import {
   ApiError,
   AuthService,
+  UsersService,
   type Body_auth_login as BodyAuthLogin,
   type UserPublic,
   type UserRegister,
-  UsersService,
 } from '@/client';
-import { ROUTE_PATHS } from '@/constants/path_routes';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { ROUTE_PATHS } from '@/constants/routePaths';
+import { router } from '@/router';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseMutationResult,
+} from '@tanstack/react-query';
 import { useState } from 'react';
 
 // Authentication query keys
@@ -16,6 +21,20 @@ export const AUTH_QUERY_KEYS = {
   currentUser: ['currentUser'] as const,
   users: ['users'] as const,
 } as const;
+
+export type AuthState = {
+  user: UserPublic | null | undefined;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+};
+
+export type AuthActions = {
+  signupMutation: UseMutationResult<void, Error, UserRegister>;
+  loginMutation: UseMutationResult<void, Error, BodyAuthLogin>;
+  logout: () => Promise<void>;
+  resetError: () => void;
+};
 
 // Helper function to extract error message from API error
 const extractErrorMessage = (
@@ -65,9 +84,8 @@ export const useAuthStatus = () => {
   };
 };
 
-const useAuth = () => {
+const useAuth = (): AuthState & AuthActions => {
   const [authError, setAuthError] = useState<string | null>(null);
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, isAuthenticated, isLoading } = useAuthStatus();
 
@@ -78,7 +96,7 @@ const useAuth = () => {
     },
     onSuccess: () => {
       setAuthError(null);
-      navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
+      router.navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
     },
     onError: (error: ApiError) => {
       const message = extractErrorMessage(error, 'Failed to create account');
@@ -95,11 +113,17 @@ const useAuth = () => {
     mutationFn: async (data: BodyAuthLogin) => {
       await AuthService.login({ formData: data });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       setAuthError(null);
       // Invalidate and refetch current user to update auth state
-      queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
-      navigate({ to: ROUTE_PATHS.HOME });
+      await queryClient.invalidateQueries({
+        queryKey: AUTH_QUERY_KEYS.currentUser,
+        refetchType: 'active',
+      });
+      await queryClient.refetchQueries({
+        queryKey: AUTH_QUERY_KEYS.currentUser,
+      });
+      router.navigate({ to: ROUTE_PATHS.HOME });
     },
     onError: (error: ApiError) => {
       const message = extractErrorMessage(
@@ -120,7 +144,7 @@ const useAuth = () => {
     } finally {
       // Clear all cached data and navigate to login
       queryClient.clear();
-      navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
+      router.navigate({ to: ROUTE_PATHS.AUTH.LOGIN });
     }
   };
 

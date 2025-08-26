@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LanguageSelector } from '@/components/ui/language-selector';
 import { PasswordInput } from '@/components/ui/password-input';
-import { ROUTE_PATHS } from '@/constants/path_routes';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import useAuth from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { usePageMeta } from '@/hooks/usePageTitle';
@@ -109,8 +109,10 @@ function Login() {
       // await AuthService.loginViaGoogleOauth2();
 
       // TODO: currently hardcoded as redirect response probably not working with http
-      const baseUrl = OpenAPI.BASE;
-      const googleOAuthUrl = `${baseUrl}/api/v1/auth/login/google-oauth2`;
+      const googleOAuthUrl = new URL(
+        '/api/v1/auth/login/google-oauth2',
+        OpenAPI.BASE,
+      ).toString();
       window.location.href = googleOAuthUrl;
     } catch (error) {
       console.error('Google OAuth login failed:', error);
@@ -141,8 +143,10 @@ function Login() {
 
     try {
       // TODO: currently hardcoded as redirect response probably not working with http
-      const baseUrl = OpenAPI.BASE;
-      const gitHubOAuthUrl = `${baseUrl}/api/v1/auth/login/github-oauth2`;
+      const gitHubOAuthUrl = new URL(
+        '/api/v1/auth/login/github-oauth2',
+        OpenAPI.BASE,
+      ).toString();
       window.location.href = gitHubOAuthUrl;
     } catch (error) {
       console.error('GitHub OAuth login failed:', error);
@@ -302,7 +306,10 @@ function Login() {
         </form>
         <div className="text-center text-sm mt-4 text-gray-700 dark:text-gray-100">
           {t('auth.dontHaveAccount')}{' '}
-          <Link to="/signup" className="text-primary hover:underline">
+          <Link
+            to={ROUTE_PATHS.AUTH.SIGNUP}
+            className="text-primary hover:underline"
+          >
             {t('auth.signup')}
           </Link>
         </div>

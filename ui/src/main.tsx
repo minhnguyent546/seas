@@ -1,19 +1,20 @@
+import App from '@/App';
 import { ApiError, OpenAPI } from '@/client';
 import { Loading } from '@/components/ui/loading';
-import { ROUTE_PATHS } from '@/constants/path_routes';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import '@/lib/i18n'; // Initialize i18n
+import { router } from '@/router';
 import {
   MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { RouterProvider } from '@tanstack/react-router';
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
 import './index.css';
-import { routeTree } from './routeTree.gen';
 
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
@@ -24,7 +25,11 @@ const handleApiError = (error: Error) => {
       currentPath === ROUTE_PATHS.AUTH.SIGNUP;
 
     if (!isOnAuthPage) {
-      window.location.href = ROUTE_PATHS.AUTH.LOGIN;
+      try {
+        router.navigate({ to: ROUTE_PATHS.AUTH.LOGIN, replace: true });
+      } catch {
+        window.location.assign(ROUTE_PATHS.AUTH.LOGIN);
+      }
     }
   }
 };
@@ -53,12 +58,12 @@ const queryClient = new QueryClient({
 // Configure OpenAPI client
 const configureOpenAPI = () => {
   OpenAPI.BASE = import.meta.env.VITE_API_URL;
+  if (!OpenAPI.BASE) {
+    console.warn('VITE_API_URL is not set; API requests will fail.');
+  }
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
 };
-
-// router
-const router = createRouter({ routeTree });
 
 // Register the router
 declare module '@tanstack/react-router' {

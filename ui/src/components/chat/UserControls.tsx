@@ -1,14 +1,21 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Dropdown,
   DropdownItem,
   DropdownSeparator,
 } from '@/components/ui/dropdown';
 import { LanguageSelector } from '@/components/ui/language-selector';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import useAuth from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { IconLogout, IconPlus, IconSettings } from '@tabler/icons-react';
-import { useState } from 'react';
+import { isAdminUser } from '@/lib/roles';
+import {
+  IconDashboard,
+  IconLogout,
+  IconPlus,
+  IconSettings,
+} from '@tabler/icons-react';
+import { Link } from '@tanstack/react-router';
 
 interface UserControlsProps {
   inline?: boolean;
@@ -25,16 +32,14 @@ export function UserControls({
 }: UserControlsProps) {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
-  const [testUser] = useState({
-    id: '1',
-    name: 'Test user',
-    image: undefined,
-  });
 
   const handleSettings = () => {
     console.log('Settings clicked');
     // Implementation would open settings panel
   };
+
+  // Check if user is admin
+  const isAdmin = isAdminUser(user);
 
   if (!user) {
     return null;
@@ -81,9 +86,6 @@ export function UserControls({
         width="w-60"
         trigger={
           <Avatar className="h-8 w-8 ring-2 ring-gray-300 dark:ring-gray-700 rounded-full cursor-pointer hover:ring-primary transition-colors">
-            {testUser.image ? (
-              <AvatarImage src={testUser.image} alt={userName} />
-            ) : null}
             <AvatarFallback className="bg-primary text-white rounded-full">
               {userInitials}
             </AvatarFallback>
@@ -97,6 +99,16 @@ export function UserControls({
           </div>
         </div>
         <DropdownSeparator />
+        {isAdmin && (
+          <>
+            <Link to={ROUTE_PATHS.ADMIN.DASHBOARD}>
+              <DropdownItem icon={<IconDashboard size={16} />}>
+                Admin Panel
+              </DropdownItem>
+            </Link>
+            <DropdownSeparator />
+          </>
+        )}
         <DropdownItem
           onClick={handleSettings}
           icon={<IconSettings size={16} />}

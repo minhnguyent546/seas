@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
-import * as React from 'react';
+import React, { useState } from 'react';
 
 export interface PasswordInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -9,7 +9,7 @@ export interface PasswordInputProps
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, error, ...props }, ref) => {
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);

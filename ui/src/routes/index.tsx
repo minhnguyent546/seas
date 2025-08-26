@@ -1,6 +1,6 @@
 import { Chat } from '@/components/chat/Chat';
 import { Loading } from '@/components/ui/loading';
-import { ROUTE_PATHS } from '@/constants/path_routes';
+import { ROUTE_PATHS } from '@/constants/routePaths';
 import useAuth from '@/hooks/useAuth';
 import { usePageMeta } from '@/hooks/usePageTitle';
 import { createFileRoute, Navigate } from '@tanstack/react-router';

@@ -67,7 +67,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     [sessionId, messages.length, onFirstMessage, handleSendMessage],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     hasHandledFirstMessage.current = false;
   }, [sessionId]);
 
