@@ -3,14 +3,10 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 
 
-class Token(BaseModel):
+class TokenData(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: float  # in seconds
-
-
-class TokenData(BaseModel):
-    sub: str | None = None  # store user id
 
 
 class NewPassword(BaseModel):

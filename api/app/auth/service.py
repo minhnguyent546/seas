@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 import app.auth.service as auth_service
 import app.users.service as users_service
-from app.auth.schemas import Token
+from app.auth.schemas import TokenData
 from app.auth.utils import create_access_token, hash_password, verify_password
 from app.core.config import settings
 from app.core.database import AsyncSession
@@ -34,7 +34,7 @@ async def authenticate_user(
 async def login_for_access_token(
     session: AsyncSession,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> Token:
+) -> TokenData:
     user = await auth_service.authenticate_user(
         session=session,
         username=form_data.username,
@@ -58,7 +58,7 @@ async def login_for_access_token(
     access_token = create_access_token(
         subject=user.id, expires_delta=access_token_expires
     )
-    return Token(
+    return TokenData(
         access_token=access_token,
         token_type="bearer",
         expires_in=access_token_expires.total_seconds(),
@@ -67,7 +67,7 @@ async def login_for_access_token(
 
 async def google_oauth2_callback(
     session: AsyncSession, auth_access_token: dict[str, Any]
-) -> Token:
+) -> TokenData:
     userinfo = auth_access_token.get("userinfo")
     access_token = auth_access_token.get("access_token")
     if not userinfo:
@@ -156,7 +156,7 @@ async def google_oauth2_callback(
     access_token = create_access_token(
         subject=user.id, expires_delta=access_token_expires
     )
-    return Token(
+    return TokenData(
         access_token=access_token,
         token_type="bearer",
         expires_in=access_token_expires.total_seconds(),
@@ -165,7 +165,7 @@ async def google_oauth2_callback(
 
 async def github_oauth2_callback(
     session: AsyncSession, auth_access_token: dict[str, Any]
-) -> Token:
+) -> TokenData:
     access_token = auth_access_token.get("access_token")
     if not access_token:
         raise HTTPException(
@@ -274,7 +274,7 @@ async def github_oauth2_callback(
     access_token = create_access_token(
         subject=user.id, expires_delta=access_token_expires
     )
-    return Token(
+    return TokenData(
         access_token=access_token,
         token_type="bearer",
         expires_in=access_token_expires.total_seconds(),
