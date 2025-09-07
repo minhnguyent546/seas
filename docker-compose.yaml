@@ -21,6 +21,40 @@ services:
     networks:
       - seas
 
+  redis:
+    image: redis:8.2-bookworm
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - redis-data:/data
+    command: redis-server --protected-mode no --requirepass "$REDIS_PASSWORD" --bind "0.0.0.0"
+    env_file: 
+      - .env
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD?Variable not set}
+    networks:
+      - seas
+
+  redisinsight:
+    image: redislabs/redisinsight:2.70
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl", "-f", "http://localhost:5540/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - redisinsight-data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - seas
+
   qdrant:
     image: qdrant/qdrant:latest
     restart: always
@@ -72,11 +106,16 @@ services:
         condition: service_healthy
       qdrant:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - seas
 
 volumes:
   seas-db-data:
   seas-qdrant-data:
+  redis-data:
+  redisinsight-data:
+
 networks:
   seas:

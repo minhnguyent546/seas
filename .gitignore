@@ -80,6 +80,10 @@ htmlcov/
 .env.dev
 .env.prod
 
+# redis
+redis.conf
+redis.orig.conf
+
 # other
 *.bak
 *.backup

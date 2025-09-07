@@ -6,10 +6,21 @@ services:
     ports:
       - "5433:5432"
 
+  redis:
+    restart: "no"
+    ports:
+      - "6379:6379"
+
+  redisinsight:
+    restart: "no"
+    ports:
+      - "5540:5540"
+
   qdrant:
     restart: "no"
     ports:
       - "6333:6333" # REST API
+
   adminer:
     restart: "no"
     ports:
