@@ -37,7 +37,7 @@
 
 - Git
 - Docker and Docker Compose
-- For UI: Node.js 20+ and Yarn (Berry v4)
+- For UI: Node.js 22.23.4+ and Yarn (Berry v4)
 - For API: `uv` (Python package and project manager)
 
 ## Setup
