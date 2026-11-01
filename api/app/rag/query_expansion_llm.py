@@ -9,6 +9,8 @@ from app.core.config import settings
 
 
 class QueryExpansionLLM:
+    IRRELEVANT_TOKEN = "IRRELEVANT"
+
     def __init__(self, num_new_queries: int):
         self.llm = app_utils.get_langchain_llm(
             model_name=settings.QUERY_EXPANSION_MODEL,
@@ -21,6 +23,7 @@ class QueryExpansionLLM:
             currentDateTime=datetime.now().strftime("ngày %d tháng %m năm %Y"),
             currentYear=datetime.now().year,
             numNewQueries=num_new_queries,
+            irrelevantToken=self.IRRELEVANT_TOKEN,
         )
         self.human_prompt_template = app_utils.get_prompt_template(
             template_name="query_expansion_human_prompt.j2"
@@ -48,7 +51,7 @@ class QueryExpansionLLM:
         )
 
         assert isinstance(response_content, str)
-        if "IRRELEVANT" in response_content:
+        if self.IRRELEVANT_TOKEN in response_content:
             return []
 
         new_queries: list[str] = [
