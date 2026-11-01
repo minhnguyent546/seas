@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.core.database import AsyncSessionDep
 from app.users.models import User
 from app.users.schemas import UserRole
+from app.utils import PASSWORD_RESET_TOKEN_TYPE
 
 cookie_scheme = APIKeyCookie(name="access_token", auto_error=False)
 
@@ -41,7 +42,7 @@ async def get_current_user(
             algorithms=[settings.ALGORITHM],
         )
         user_id = payload.get("sub")
-        if user_id is None:
+        if user_id is None or payload.get("type") == PASSWORD_RESET_TOKEN_TYPE:
             raise credentials_exception
     except (jwt.InvalidTokenError, ValidationError) as e:
         raise credentials_exception from e

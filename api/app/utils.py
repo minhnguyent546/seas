@@ -17,6 +17,8 @@ from app.core.config import settings, timezone_vi
 from app.schemas import EmailData
 from app.templates import email_templates, prompt_templates
 
+PASSWORD_RESET_TOKEN_TYPE = "password_reset"
+
 
 def serialize_datetime(value: datetime) -> str:
     try:
@@ -127,7 +129,12 @@ def generate_password_reset_token(email: str) -> str:
     now = datetime.now(tz=timezone_vi)
     expire = now + time_delta
     exp = expire.timestamp()
-    to_encode = {"exp": exp, "nbf": now.timestamp(), "sub": email}
+    to_encode = {
+        "exp": exp,
+        "nbf": now.timestamp(),
+        "sub": email,
+        "type": PASSWORD_RESET_TOKEN_TYPE,
+    }
     encoded_jwt = jwt.encode(
         payload=to_encode,
         key=settings.SECRET_KEY,
@@ -141,6 +148,9 @@ def verify_password_reset_token(token: str) -> str | None:
         decoded_token = jwt.decode(
             jwt=token, key=settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
+        if decoded_token.get("type") != PASSWORD_RESET_TOKEN_TYPE:
+            logger.error("Token is not a password reset token")
+            return None
         return decoded_token.get("sub")
     except jwt.InvalidTokenError:
         logger.error("Invalid password reset token")
