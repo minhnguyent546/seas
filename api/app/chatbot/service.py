@@ -44,13 +44,20 @@ async def process_query(
         )
 
     chat_llm = RagChatLLM()
+    # Retrieve before streaming: once the stream sends 200, errors cannot
+    # change the status code.
+    similarity_search_result = await chat_llm.rag_service.similarity_search(
+        session=session,
+        query_params=query_params,
+    )
 
     async def stream_generator() -> AsyncGenerator[str, None]:
         response_buffer = StringIO()
         try:
             async with asyncio.timeout(120):  # 2 minutes timeout
                 async for chunk in chat_llm.astream(
-                    session=session, query_params=query_params
+                    query_params=query_params,
+                    similarity_search_result=similarity_search_result,
                 ):
                     chunk_content = extract_content_from_base_message(chunk)
                     if not chunk_content:

@@ -42,14 +42,9 @@ class RagChatLLM:
 
     async def astream(
         self,
-        session: AsyncSession,
         query_params: QueryParams,
+        similarity_search_result: SimilaritySearchResult,
     ) -> AsyncIterator[BaseMessageChunk]:
-        similarity_search_result = await self.rag_service.similarity_search(
-            session=session,
-            query_params=query_params,
-        )
-
         document_tags = [
             DocumentTag(
                 title=chunk.chunk_metadata.get("title") or "",
