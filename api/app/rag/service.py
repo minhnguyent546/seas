@@ -580,6 +580,32 @@ class RagService:
                 detail=f"Error during performing similarity search: {err}",
             ) from err
 
+    async def _upsert_points_and_commit(
+        self,
+        session: AsyncSession,
+        qdrant_points: list[qdrant_models.PointStruct],
+    ) -> None:
+        """Write Qdrant first, so a failed upsert leaves no SQL rows."""
+        if qdrant_points:
+            await self._qdrant_client.upsert(
+                collection_name=settings.QDRANT_COLLECTION_NAME,
+                points=qdrant_points,
+            )
+            logger.debug(f"Added {len(qdrant_points)} points to Qdrant")
+
+        try:
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            if qdrant_points:
+                await self._qdrant_client.delete(
+                    collection_name=settings.QDRANT_COLLECTION_NAME,
+                    points_selector=qdrant_models.PointIdsList(
+                        points=[point.id for point in qdrant_points]
+                    ),
+                )
+            raise
+
     async def add_document_to_database(
         self, session: AsyncSession, upload_file: UploadFile
     ) -> MessageResponse:
@@ -668,19 +694,11 @@ class RagService:
                     )
                 )
 
-            # batch upsert to Qdrant
-            if qdrant_points:
-                logger.debug("Adding points to Qdrant...")
-                await self._qdrant_client.upsert(
-                    collection_name=settings.QDRANT_COLLECTION_NAME,
-                    points=qdrant_points,
-                )
-                # TODO: how to rollback if upsert fails?
-                logger.debug(f"Added {len(qdrant_points)} points to Qdrant")
-
             session.add_all(doc_section_dbs)
             session.add_all(doc_section_chunk_dbs)
-            await session.commit()
+            await self._upsert_points_and_commit(
+                session=session, qdrant_points=qdrant_points
+            )
 
             return MessageResponse(
                 message=f"Document {upload_file.filename} added to the databases",
@@ -956,39 +974,11 @@ class RagService:
 
             # Step 4: Batch operations (all or nothing for data consistency)
             try:
-                # Add document sections to session first
                 session.add_all(all_doc_sections)
-
-                # Add all chunks to session
                 session.add_all(all_doc_section_chunk_dbs)
-
-                # Commit database transaction first to ensure data consistency
-                await session.commit()
-
-                # Batch upsert to Qdrant after successful database commit
-                if all_qdrant_points:
-                    logger.debug(
-                        f"Adding {len(all_qdrant_points)} points to Qdrant..."
-                    )
-                    try:
-                        await self._qdrant_client.upsert(
-                            collection_name=settings.QDRANT_COLLECTION_NAME,
-                            points=all_qdrant_points,
-                        )
-                        logger.debug(
-                            f"Successfully added {len(all_qdrant_points)} points to Qdrant"
-                        )
-                    except Exception as qdrant_err:
-                        logger.error(
-                            f"Qdrant upsert failed after successful database commit: {qdrant_err}"
-                        )
-                        # Database changes are already committed, but Qdrant failed
-                        # Log this as a warning since data is partially consistent
-                        logger.warning(
-                            "Database records created successfully, but vector search may be incomplete. "
-                            "Manual Qdrant cleanup may be required."
-                        )
-                        # Don't raise the exception - database operations succeeded
+                await self._upsert_points_and_commit(
+                    session=session, qdrant_points=all_qdrant_points
+                )
 
                 logger.info(
                     f"Successfully processed {len(successful_files)} files in batch"
