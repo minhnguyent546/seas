@@ -1,6 +1,9 @@
+import os
 import platform
 import time
+import tomllib
 from datetime import datetime
+from typing import Any
 
 import psutil
 from fastapi import HTTPException, status
@@ -10,6 +13,30 @@ from sqlalchemy import text
 from app.core.config import settings, timezone_vi
 from app.core.database import AsyncSessionLocal
 from app.utils import serialize_datetime
+
+
+def _read_api_version(pyproject_path: str) -> str | None:
+    try:
+        with open(pyproject_path, "rb") as f:
+            pyproject = tomllib.load(f)
+    except (OSError, tomllib.TOMLDecodeError) as err:
+        logger.warning(
+            f"Cannot read the API version from {pyproject_path}: {err}"
+        )
+        return None
+    return pyproject.get("project", {}).get("version")
+
+
+API_VERSION = _read_api_version(
+    os.path.normpath(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..",
+            "..",
+            "pyproject.toml",
+        )
+    )
+)
 
 
 async def check_health(start_time: float):
@@ -29,10 +56,10 @@ async def check_health(start_time: float):
             # Get system info
             memory = psutil.virtual_memory()
 
-            health_check_data = {
+            health_check_data: dict[str, Any] = {
                 "status": "ok",
                 "datetime": serialize_datetime(datetime.now(tz=timezone_vi)),
-                "api_version": getattr(settings, "API_VERSION", "1.0.0"),
+                "api_version": API_VERSION,
                 "uptime": uptime,
                 "system": {
                     "cpu_usage": f"{psutil.cpu_percent()}%",
