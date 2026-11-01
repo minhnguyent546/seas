@@ -189,6 +189,7 @@ class RagService:
         prompt = app_utils.get_prompt(
             template_name="table_description.j2",
             tableContent=table_md_content,
+            tableHeaderSymbol=self.TABLE_HEADER_SYMBOL,
         )
         while True:
             try:
