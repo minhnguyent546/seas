@@ -1219,8 +1219,10 @@ class RagService:
                 for chunk, vector in zip(
                     chunks_batch, chunk_vectors, strict=True
                 ):
-                    # Generate new unique point ID for recomputation
-                    chunk.qdrant_point_id = str(uuid.uuid4())  # pyright: ignore
+                    # Reuse point ids: SQL rows must stay valid for the old
+                    # collection until the setting switches.
+                    if chunk.qdrant_point_id is None:
+                        chunk.qdrant_point_id = str(uuid.uuid4())  # pyright: ignore[reportAttributeAccessIssue]
 
                     qdrant_points.append(
                         qdrant_models.PointStruct(
