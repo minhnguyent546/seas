@@ -194,7 +194,9 @@ async def github_oauth2_callback(
                 emails = email_response.json()
                 # Get the primary email
                 for email_info in emails:
-                    if email_info.get("primary", False):
+                    if email_info.get("primary", False) and email_info.get(
+                        "verified", False
+                    ):
                         email = email_info.get("email")
                         break
 
