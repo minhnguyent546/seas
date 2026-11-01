@@ -248,7 +248,7 @@ class RagService:
                     table_title, summarized_table = self._extract_table_title(
                         summarized_table
                     )
-                    table_mdatadata = section_metadata
+                    table_mdatadata = {**section_metadata}
                     if table_title:
                         table_mdatadata[self.TABLE_TOK] = table_title
                     new_document_sections.append(
