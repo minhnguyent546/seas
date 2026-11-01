@@ -31,6 +31,10 @@ class ChatMessageCreate(BaseModel):
     content: str
 
 
+class UserChatMessageCreate(BaseModel):
+    content: str
+
+
 class ChatMessageFeedbackType(str, enum.Enum):
     LIKE_ACCURATE_INFORMATION = "LIKE_ACCURATE_INFORMATION"
     LIKE_HELPFUL_ANSWER = "LIKE_HELPFUL_ANSWER"

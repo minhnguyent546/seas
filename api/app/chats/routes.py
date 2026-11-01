@@ -12,12 +12,13 @@ from app.chats.schemas import (
     ChatSessionCreate,
     ChatSessionPublic,
     ChatSessionUpdate,
+    UserChatMessageCreate,
 )
 from app.deps import (
     AsyncSessionDep,
     CurrentActiveUserDep,
 )
-from app.schemas import MessageResponse
+from app.schemas import MessageResponse, Sender
 
 router = APIRouter(prefix="/chats", tags=["chats"])
 
@@ -173,7 +174,7 @@ async def get_chat_messages(
 )
 async def create_new_message(
     chat_session_id: uuid.UUID,
-    chat_message_create: ChatMessageCreate,
+    user_chat_message_create: UserChatMessageCreate,
     session: AsyncSessionDep,
     current_user: CurrentActiveUserDep,
 ):
@@ -181,7 +182,9 @@ async def create_new_message(
     chat_message = await chats_service.create_new_message(
         session=session,
         chat_session_id=str(chat_session_id),
-        chat_message_create=chat_message_create,
+        chat_message_create=ChatMessageCreate(
+            sender=Sender.USER, content=user_chat_message_create.content
+        ),
         user_id=str(current_user.id),
     )
     return chat_message
