@@ -4,7 +4,7 @@ import time
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, HTTPException, status
+from fastapi import BackgroundTasks, Depends, FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
@@ -16,6 +16,7 @@ from app.api import api_router
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal, init_db
 from app.core.health import check_health
+from app.deps import get_current_superuser
 from app.schemas import MessageResponse
 from app.utils import custom_generate_unique_id
 
@@ -45,11 +46,9 @@ async def lifespan(app: FastAPI):
             asyncio.create_task(rag_models_manager.preload_models())
 
         yield
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred during startup",
-        ) from e
+    except Exception:
+        logger.exception("An error occurred during startup")
+        raise
     finally:
         # clean up here
         pass
@@ -97,6 +96,7 @@ async def health_check():
     f"{settings.API_PREFIX}/test-send-email",
     response_model=MessageResponse,
     tags=["utils"],
+    dependencies=[Depends(get_current_superuser)],
     include_in_schema=(settings.ENVIRONMENT == "development"),
 )
 async def test_send_email(email_to: EmailStr):
@@ -114,6 +114,7 @@ async def test_send_email(email_to: EmailStr):
     f"{settings.API_PREFIX}/test-send-email-background",
     response_model=MessageResponse,
     tags=["utils"],
+    dependencies=[Depends(get_current_superuser)],
     include_in_schema=(settings.ENVIRONMENT == "development"),
 )
 async def test_send_email_background(
