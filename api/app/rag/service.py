@@ -490,9 +490,15 @@ class RagService:
                 for chunk in document_section_chunks
             ]
 
-            score_map = {
+            point_score_map = {
                 str(result.id): result.score
                 for result in fused_qdrant_search_results
+            }
+            score_map = {
+                str(chunk.id): point_score_map.get(
+                    str(chunk.qdrant_point_id), 0.0
+                )
+                for chunk in document_section_chunks
             }
 
             # reranking
