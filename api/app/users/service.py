@@ -99,7 +99,7 @@ async def update_my_password(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="New password must be different from current password",
         )
-    current_user.hashed_password = hash_password(update_password.new_password)
+    current_user.password = hash_password(update_password.new_password)
     session.add(current_user)
     await session.commit()
     return MessageResponse(message='"Password updated successfully"')
