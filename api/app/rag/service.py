@@ -120,7 +120,7 @@ class RagService:
                 content = md_content.content
             except Exception as frontmatter_err:
                 logger.error(
-                    f"Failed to parse frontmatter in {md_file_path}: {frontmatter_err}. Treating as plain markdown."
+                    f"Failed to parse frontmatter in {md_file_path}: {frontmatter_err}"
                 )
                 raise RuntimeError(
                     f"Failed to parse frontmatter in {md_file_path}: {frontmatter_err}."
