@@ -56,4 +56,4 @@ class QueryExpansionLLM:
             for line in response_content.split("\n")
             if line.strip()
         ]
-        return new_queries
+        return new_queries[: self.num_new_queries]

@@ -37,7 +37,8 @@ class QueryParams(BaseModel):
     num_new_queries: Annotated[
         int,
         Field(
-            description="Number of new queries to expand the query. Less than 1 means no expansion."
+            le=16,
+            description="Number of new queries to expand the query. Less than 1 means no expansion.",
         ),
     ] = 3
     rerank: Annotated[
