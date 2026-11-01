@@ -521,7 +521,7 @@ class RagService:
                 )
                 assert rerank_results is not None
                 for i, chunk in enumerate(document_section_chunks_public):
-                    rrf_score = score_map.get(chunk.id, 0.0)  # noqa: F841  # pyright: ignore[reportUnusedVariable]
+                    # rrf_score = score_map.get(chunk.id, 0.0)
                     rerank_score = rerank_results[i]
 
                     # final_score = 0.3 * rrf_score + 0.7 * rerank_score

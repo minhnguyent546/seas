@@ -35,11 +35,6 @@ class UserRegister(BaseModel):
     password: Annotated[str, Field(min_length=6, max_length=128)]
 
 
-class UserLogin(BaseModel):
-    username: Annotated[str, Field(min_length=3, max_length=50)]
-    password: Annotated[str, Field(min_length=6, max_length=128)]
-
-
 class UserUpdate(BaseModel):
     email: EmailStr | None = None
     full_name: Annotated[str | None, Field(min_length=3, max_length=100)] = (

@@ -29,10 +29,6 @@ class QueryExpansionLLM:
             template_name="query_expansion_human_prompt.j2"
         )
 
-    async def enhance_query(self, query: str) -> str:
-        """Enhance query by rewriting it to be more specific and detailed."""
-        raise NotImplementedError("Not implemented")
-
     async def expand_query(self, query: str) -> list[str]:
         """Expand query by creating new queries that are similar to the original query."""
         _start_time = time.perf_counter()
