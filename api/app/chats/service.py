@@ -234,7 +234,10 @@ async def create_new_message(
     chat_session.updated_at = message_created_at
     session.add(chat_message)
     await session.commit()
-    await session.refresh(chat_message)
+    # Async sessions cannot lazy-load this during response serialization.
+    await session.refresh(
+        chat_message, attribute_names=["chat_message_feedback"]
+    )
     return chat_message
 
 
