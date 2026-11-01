@@ -262,6 +262,8 @@ class RagService:
 
         except Exception as err:
             logger.error(f"Failed to process table in document section: {err}")
+            if isinstance(err, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to process table in document section: {err}",
@@ -349,6 +351,8 @@ class RagService:
             )
         except Exception as err:
             logger.error(f"Failed to split markdown on headers: {err}")
+            if isinstance(err, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to split markdown on headers: {err}",
@@ -563,6 +567,8 @@ class RagService:
 
         except Exception as err:
             logger.debug(f"Error during performing similarity search: {err}")
+            if isinstance(err, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error during performing similarity search: {err}",
@@ -686,6 +692,8 @@ class RagService:
             if saved_file_path is not None and os.path.exists(saved_file_path):
                 os.remove(saved_file_path)
             logger.error(f"Failed to add document: {err}")
+            if isinstance(err, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to add document: {err}",
@@ -1034,6 +1042,8 @@ class RagService:
                     "failed_files_count": len(failed_files),
                 },
             )
+            if isinstance(err, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Unexpected error in batch processing: {err}",
@@ -1106,6 +1116,8 @@ class RagService:
 
         except Exception as err:
             logger.error(f"Error exporting document sections chunks: {err}")
+            if isinstance(err, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to export document sections chunks: {err}",
@@ -1261,6 +1273,8 @@ class RagService:
             await session.rollback()
             # Note: Qdrant changes cannot be rolled back automatically
             # The collection may contain partial embeddings from successful batches
+            if isinstance(e, HTTPException):
+                raise
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to recompute embeddings: {str(e)}. Some embeddings may have been created in Qdrant.",
