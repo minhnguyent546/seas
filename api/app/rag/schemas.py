@@ -52,6 +52,29 @@ class QueryParams(BaseModel):
     ] = None
 
 
+class BatchUploadFileResult(BaseModel):
+    filename: str | None
+    error: str | None = None
+    details: dict[str, int] = {}
+
+
+class BatchUploadSummary(BaseModel):
+    total_files: int
+    successful_count: int
+    failed_count: int
+    total_doc_sections: int | None = None
+    total_doc_section_chunks: int | None = None
+    total_qdrant_points: int | None = None
+    config: dict[str, int] | None = None
+
+
+class BatchUploadResponse(BaseModel):
+    message: str
+    successful_files: list[BatchUploadFileResult]
+    failed_files: list[BatchUploadFileResult]
+    summary: BatchUploadSummary
+
+
 class SimilaritySearchResult(BaseModel):
     num_chunks: int
     reranked: bool

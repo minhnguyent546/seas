@@ -19,6 +19,7 @@ from app.deps import (
 from app.rag.query_expansion_llm import QueryExpansionLLM
 from app.rag.rag_models_manager import rag_models_manager
 from app.rag.schemas import (
+    BatchUploadResponse,
     QueryParams,
     RecomputeEmbeddingsParams,
     SimilaritySearchResult,
@@ -57,7 +58,8 @@ async def add_document_to_database(
 @router.post(
     "/documents/batch-upload",
     dependencies=[Depends(get_current_superuser)],
-    response_model=MessageResponse,
+    response_model=BatchUploadResponse,
+    responses={400: {"model": BatchUploadResponse}},
 )
 async def add_document_to_database_in_batch(
     files: Annotated[

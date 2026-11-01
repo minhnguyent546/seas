@@ -32,6 +32,7 @@ from app.rag.models import (
 from app.rag.query_expansion_llm import QueryExpansionLLM
 from app.rag.rag_models_manager import rag_models_manager
 from app.rag.schemas import (
+    BatchUploadResponse,
     DocumentSectionChunkPublic,
     QueryParams,
     RecomputeEmbeddingsParams,
@@ -805,7 +806,7 @@ class RagService:
             if not valid_doc_sections:
                 return JSONResponse(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    content={
+                    content=BatchUploadResponse.model_validate({
                         "message": "No valid files to process",
                         "successful_files": successful_files,
                         "failed_files": failed_files,
@@ -814,7 +815,7 @@ class RagService:
                             "successful_count": 0,
                             "failed_count": len(failed_files),
                         },
-                    },
+                    }).model_dump(),
                 )
 
             # Step 2: Initialize Qdrant collection
@@ -999,7 +1000,7 @@ class RagService:
                 successful_files.clear()
 
             return JSONResponse(
-                content={
+                content=BatchUploadResponse.model_validate({
                     "message": f"Batch processing completed. {len(successful_files)} successful, {len(failed_files)} failed.",
                     "successful_files": successful_files,
                     "failed_files": failed_files,
@@ -1024,7 +1025,7 @@ class RagService:
                             "chunk_overlap": settings.CHUNK_OVERLAP,
                         },
                     },
-                }
+                }).model_dump()
             )
 
         except Exception as err:
