@@ -230,13 +230,19 @@ def extract_markdown_tables(
 def get_langchain_llm(model_name: str, **kwargs):
     try:
         provider, model_name = model_name.split("/", 1)
+        # pydantic-settings does not export ../.env to os.environ, so pass
+        # the keys explicitly.
         if provider == "google":
             from langchain_google_genai import ChatGoogleGenerativeAI
 
+            if settings.GOOGLE_API_KEY:
+                kwargs.setdefault("google_api_key", settings.GOOGLE_API_KEY)
             return ChatGoogleGenerativeAI(model=model_name, **kwargs)
         elif provider == "openai":
             from langchain_openai import ChatOpenAI
 
+            if settings.OPENAI_API_KEY:
+                kwargs.setdefault("openai_api_key", settings.OPENAI_API_KEY)
             return ChatOpenAI(model=model_name, **kwargs)
         elif provider == "openrouter":
             from langchain_openai import (
